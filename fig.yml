@@ -1,0 +1,24 @@
+# MANAGING A DJANGO WEBAPP WITH FIG
+#
+# When starting a new project: 
+#	- Create a new working directory and add a 'volumes' directive below to mount it over /opt/django_project
+#	- Copy this fig file into your new working directory and 'fig up',
+#	- Run the setup project command from below, 'fig up' again, check django is running OK in a browser
+#
+# COMMANDS:
+#	Start/restart a server:
+#		fig up -d
+#	Setup project/directory structure (new projects):
+# 		fig run webapp django-admin.py startproject django_project /opt/django_project
+#	Initialise database (configure settings.py first):
+#		fig run webapp python3.4 /opt/django_project/manage.py syncdb
+#	Initialise app:
+#		fig run webapp python3.4 /opt/django_project/manage.py startapp [app_label]
+webapp:
+  image: centos6-python3-django
+  command: supervisord -n
+  volumes:
+    - /Users/dtaylor/code:/code
+    - /Users/dtaylor/code/git/django/license-generator:/opt/django_project
+  ports:
+    - "80:80"
