@@ -15,7 +15,27 @@ class NewVisitorTest(unittest.TestCase):
 
 		# They notice the page title and header mention the license generator
 		self.assertIn("License Generator", self.browser.title)
-		self.fail("Finish the test!")
+
+	def test_filename_updates(self):
+		# Alfrescan adds a holder name, filename should include it
+		self.browser.get("http://docker.local.com")
+		input_holder_name = self.browser.find_element_by_id('holder_name')
+		self.assertEqual(
+			input_holder_name.get_attribute('placeholder'),
+			'Enter an account holder name'
+		)
+
+		#They add 'Alfresco' to the holder name box
+		input_holder_name.send_keys('Alfresco')
+
+		#The filename inputbox automatically updates to include the account holder name
+		input_filename = self.browser.find_element_by_id('filename')
+		self.assertEqual(
+			input_filename.get_attribute('value'),
+			'Alfresco.lic'
+		)
+
+		self.fail('Finish the test!')
 
 if __name__ == '__main__':
 	unittest.main(warnings='ignore')

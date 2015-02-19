@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'license_generator_form',
 )
 
 MIDDLEWARE_CLASSES = (
