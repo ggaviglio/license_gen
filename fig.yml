@@ -15,10 +15,8 @@
 #	Initialise app:
 #		fig run webapp python3.4 /opt/django_project/manage.py startapp [app_label]
 webapp:
-  image: centos6-python3-django
-  command: supervisord -n
+  build: .
   volumes:
-    - /Users/dtaylor/code:/code
-    - /Users/dtaylor/code/git/django/license-generator:/opt/django_project
+    - .:/opt/django_project
   ports:
     - "80:80"
