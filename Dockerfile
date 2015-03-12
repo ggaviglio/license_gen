@@ -1,4 +1,4 @@
-FROM centos6-python3-django
+FROM danzilla/centos6-python3-django
 
 WORKDIR /opt/django_project
 
