@@ -18,6 +18,7 @@ webapp:
   build: .
   volumes:
     - .:/opt/django_project
+    - ./static:/opt/django_project/webapp/static
   ports:
     - "80:80"
 
