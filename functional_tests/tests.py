@@ -74,9 +74,8 @@ class NewVisitorTest(LiveServerTestCase):
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
 
-
         # Clicking the tabs changes the form sticky title
-        initial_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text    
+        initial_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
         self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
         new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
 
@@ -85,7 +84,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
         last_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
 
-        self.assertNotEqual(new_topbar_title, last_topbar_title)        
+        self.assertNotEqual(new_topbar_title, last_topbar_title)
 
         # Clicking the tabs changes the visible data
         original_content = self.browser.find_elements_by_css_selector('.panel')
@@ -97,7 +96,6 @@ class NewVisitorTest(LiveServerTestCase):
 
         self.fail('Finish the test!')
 
-
     def test_layout_and_styling(self):
         # Alfrescan goes to the home page
         self.browser.get(MY_IP)
@@ -105,9 +103,26 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Alfrescan notices the header is centered
         header_element = self.browser.find_element_by_tag_name('h1')
-
         self.assertAlmostEqual(
             header_element.location['x'] + header_element.size['width'] / 2,
             512,
             delta=10
         )
+
+    def test_responsive_layout_gets_activated(self):
+        # Alfrescan goes to the home page
+        self.browser.get(MY_IP)
+        self.browser.set_window_size(1024, 768)
+
+        # Alfrescan sees how the top navegation bar has some options
+        actual_options_top_navbar = self.browser.find_elements_by_css_selector('.navbar-nav li a')
+        expected_options_top_navbar = ["Raise a JIRA ticket for this app", "Upload and check an existing license"]
+        for options in actual_options_top_navbar[:2]:
+            self.assertIn(options.text, expected_options_top_navbar)
+
+        # At the minute, yhe browser get resized into a smaller view
+        self.browser.set_window_size(765, 322)
+
+        # Alfrescan will not see previous elements. They will vanished
+        refresh_options_top_navbar = self.browser.find_elements_by_css_selector('.navbar-nav li.active a')
+        self.assertEqual(len(refresh_options_top_navbar), 0)
