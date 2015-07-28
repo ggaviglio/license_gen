@@ -60,12 +60,12 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'license-generator', 
-        'TEST_NAME': 'test-license-generator',    
+        'NAME': 'license-generator',
+        'TEST_NAME': 'test-license-generator',
         'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': '192.168.59.103',
-        'PORT': '3306',      
+        'PORT': '3306',
 
     }
 }

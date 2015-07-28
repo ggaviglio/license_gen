@@ -21,7 +21,7 @@ class NewVisitorTest(LiveServerTestCase):
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertEqual("License Generator", header_text)
 
-    def test_home_page_contains_a_tabbed_form(self):
+    def test_home_page_contains_tabbed_form(self):
         # Alfrescan visits the main page
         self.browser.get(MY_IP)
 
@@ -29,7 +29,7 @@ class NewVisitorTest(LiveServerTestCase):
         tabs_form = self.browser.find_elements_by_css_selector("[role='tab']")
         self.assertEqual(len(tabs_form), 2)
 
-        # Alfrescan notices that one tab for Alfresco licenses
+        # Alfrescan notices that one tab is for Alfresco licenses
         self.assertIn("Alfresco License", tabs_form[0].text)
 
         # Alfrescan also notices that the other one is for Activiti licenses
@@ -46,8 +46,57 @@ class NewVisitorTest(LiveServerTestCase):
         for header in actual_headers[:4]:
             self.assertIn(header.text, expected_headers)
 
-        # There are also 2 main buttons - Generate and download & Clear Form -
+    def test_home_page_has_tabs_to_change_visible_license_form(self):
+        # Alfrescan visits the main page
+        self.browser.get(MY_IP)
+
+        # Alfrescan sees tabs for the different data licenses
+        license_tabs = self.browser.find_elements_by_css_selector('#myTab li a')
+        self.assertEqual(len(license_tabs), 2)
+
+        # Alfrescan can see the title of both tabs as follows:
+        expected_tabs = ['Alfresco License Generator', 'Activiti License Generator']
+        first_tab = self.browser.find_elements_by_css_selector('#myTab li a')[0]
+        second_tab = self.browser.find_elements_by_css_selector('#myTab li a')[1]
+
+        self.assertEqual(first_tab.text, expected_tabs[0])
+        self.assertEqual(second_tab.text, expected_tabs[1])
+
+        # Clicking the tabs changes the active tab from one to another
+        default_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        new_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+
+        self.assertEqual(default_tab_selected, new_tab_selected)
+
+        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        last_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+
+        self.assertNotEqual(new_tab_selected, last_tab_selected)
+
+
+        # Clicking the tabs changes the form sticky title
+        initial_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text    
+        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+
+        self.assertNotEqual(initial_topbar_title, new_topbar_title)
+
+        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        last_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+
+        self.assertNotEqual(new_topbar_title, last_topbar_title)        
+
+        # Clicking the tabs changes the visible data
+        original_content = self.browser.find_elements_by_css_selector('.panel')
+        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        new_content = self.browser.find_elements_by_css_selector('.panel')
+        self.assertEqual(original_content, new_content)
+        final_content = self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        self.assertNotEqual(new_content, final_content)
+
         self.fail('Finish the test!')
+
 
     def test_layout_and_styling(self):
         # Alfrescan goes to the home page
@@ -60,5 +109,5 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertAlmostEqual(
             header_element.location['x'] + header_element.size['width'] / 2,
             512,
-            delta=5
+            delta=10
         )
