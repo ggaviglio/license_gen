@@ -109,7 +109,7 @@ class NewVisitorTest(LiveServerTestCase):
             delta=10
         )
 
-    def test_responsive_layout_gets_activated(self):
+    def test_responsive_layout_top_navbar(self):
         # Alfrescan goes to the home page
         self.browser.get(MY_IP)
         self.browser.set_window_size(1024, 768)
