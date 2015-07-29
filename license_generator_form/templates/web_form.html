@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>License Generator</title>
         <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">       
-        <link href="{% static "css/tabbedform.css" %}" rel="stylesheet" type="text/css">               
+        <link href="{% static "css/tabbedform.css" %}" rel="stylesheet" type="text/css"> 
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/css/bootstrap-select.min.css" />
+        <link href="{% static "css/awesome-bootstrap-checkbox.css" %}" rel="stylesheet" type="text/css"> 
+        
     </head>
 
     <body>
@@ -65,17 +69,94 @@
                         <div id="myTabContent" class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="alfresco_tab">
                                 
-                                    <form id="alfresco_form">
+                                    <form id="alfresco_form" class="form-horizontal" role="form">
 
                                         <div class="panel" style="border-width: 0px;">
                                             <div class="panel-body jumbotron">                                              
                                                 <h3><b>Generate a new license</b></h3>
                                                 <hr>
-                                                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">Release key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    
+                                                    <select class="selectpicker form-control" id="release_key" name="release_key" aria-describedby="sizing-addon2">
+                                                        <option value="ent22" >ent22</option>
+                                                        <option value="ent30" >ent30</option>
+                                                        <option value="ent31" >ent31</option>
+                                                        <option value="ent32" >ent32</option>
+                                                        <option value="ent33" >ent33</option>
+                                                        <option value="ent34" >ent34</option>
+                                                        <option value="ent35" >ent35</option>
+                                                        <option value="ent40" >ent40</option>
+                                                        <option value="ent41" >ent41</option>
+                                                        <option value="ent42" >ent42</option>
+                                                        <option value="ent43" >ent43</option>
+                                                        <option value="test42" >test42</option>
+                                                        <option value="unit10" >unit10</option>
+                                                        <option value="unit10Alfresco2" >unit10Alfresco2</option>
+                                                        <option value="unit11" >unit11</option>
+                                                        <option value="ent50" selected="selected">ent50</option>
+                                                    </select>                                                    
+                                                </div>
+                                                <span style="padding-left:125px;">Select the release this license is for</span>
+                                                <br><br>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2" style="padding-right:73px;">Notes</span>
+                                                    <textarea id="notes" name="notes" rows="10" cols="50" class="form-control" aria-describedby="sizing-addon2" placeholder="Reason for generation, any other information worth logging for this license... etc."></textarea>
+                                                </div>
+
+                                                <br>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">External ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    <input type="text" id="external_id" name="external_id" class="form-control" aria-describedby="sizing-addon2">
+                                                </div>
+
+                                                <br>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">External ID type</span>
+                                                    <input type="text" id="external_id_type" name="external_id_type" class="form-control" aria-describedby="sizing-addon2">
+                                                </div>
+                                                <span style="padding-left:125px;">e.g. 'salesforce'</span>
+                                                <br><br>
+
+                                                
                                             </div>
+
+
                                             <div class="panel-body jumbotron"> 
                                                 <h3><b>License types</b></h3>
                                                 <hr>
+                                                <fieldset>
+                                                    <div class="checkbox checkbox-success">
+                                                        <input id="tag_trial" name="tag_trial" value="1" type="checkbox">
+                                                        <label for="tag_trial">Trial</label>
+                                                    </div>
+
+                                                    <div class="checkbox checkbox-success">
+                                                        <input id="tag_internal_use_only" name="tag_internal_use_only" value="1" type="checkbox">
+                                                        <label for="tag_internal_use_only">Internal use only</label>
+                                                    </div>
+
+                                                    <div class="checkbox checkbox-success">
+                                                        <input id="tag_proof_of_concept" name="tag_proof_of_concept" value="1" type="checkbox">
+                                                        <label for="tag_proof_of_concept">Proof of concept</label>
+                                                    </div>
+
+                                                    <div class="checkbox checkbox-success">
+                                                        <input id="tag_extension" name="tag_extension" value="1" type="checkbox">
+                                                        <label for="tag_extension">Extension</label>
+                                                    </div>
+
+                                                    <div class="checkbox checkbox-success">
+                                                        <input id="tag_perpetual" name="tag_perpetual" value="1" type="checkbox">
+                                                        <label for="tag_perpetual">Perpetual</label>
+                                                    </div>
+                                                </fieldset>    
+                                                <br>
+
                                             </div>
                                             <div class="panel-body jumbotron"> 
                                                 <h3><b>License arguments</b></h3>
@@ -101,6 +182,31 @@
                                             <div class="panel-body jumbotron"> 
                                                 <h3><b>Generate a new license</b></h3>
                                                 <hr>
+                                                
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2" style="padding-right:73px;">Notes</span>
+                                                    <textarea id="notes" name="notes" rows="10" cols="50" class="form-control" aria-describedby="sizing-addon2" placeholder="Reason for generation, any other information worth logging for this license... etc."></textarea>
+                                                </div>
+
+                                                <br>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">External ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    <input type="text" id="external_id" name="external_id" class="form-control" aria-describedby="sizing-addon2">
+                                                </div>
+
+                                                <br>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">External ID type</span>
+                                                    <input type="text" id="external_id_type" name="external_id_type" class="form-control" aria-describedby="sizing-addon2">
+                                                </div>
+                                                <span style="padding-left:125px;">e.g. 'salesforce'</span>
+                                                <br><br>
+
+
+
+
                                             </div>
                                             <div class="panel-body jumbotron"> 
                                                 <h3><b>License types</b></h3>
@@ -134,6 +240,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{% static "responsive/bootstrap-tabcollapse.js" %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
         <script type="text/javascript">
             $('#myTab').tabCollapse();
 
@@ -144,6 +251,10 @@
                 $(".navbar-brand").text(text);
                 
             });
+
+
+
+  
         </script>        
 
     </body>
