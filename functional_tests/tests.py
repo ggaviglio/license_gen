@@ -63,18 +63,18 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertEqual(second_tab.text, expected_tabs[1])
 
         # Clicking the tabs changes the active tab from one to another
-        default_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        default_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
         self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
-        new_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        new_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
 
         self.assertEqual(default_tab_selected, new_tab_selected)
 
         self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
-        last_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        last_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
 
-        # Clicking the tabs changes the form sticky title
+        # Clicking the tabs changes the sticky top navbar title
         initial_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
         self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
         new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
@@ -83,7 +83,6 @@ class NewVisitorTest(LiveServerTestCase):
 
         self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
         last_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
-
         self.assertNotEqual(new_topbar_title, last_topbar_title)
 
         # Clicking the tabs changes the visible data
@@ -120,9 +119,29 @@ class NewVisitorTest(LiveServerTestCase):
         for options in actual_options_top_navbar[:2]:
             self.assertIn(options.text, expected_options_top_navbar)
 
-        # At the minute, yhe browser get resized into a smaller view
-        self.browser.set_window_size(765, 322)
+        # At the minute the browser get resized into a smaller view
+        self.browser.set_window_size(600, 322)
 
         # Alfrescan will not see previous elements. They will vanished
         refresh_options_top_navbar = self.browser.find_elements_by_css_selector('.navbar-nav li.active a')
         self.assertEqual(len(refresh_options_top_navbar), 0)
+
+    def test_responsive_layout_tabs(self):
+        # Alfrescan goes to the home page
+        self.browser.get(MY_IP)
+        self.browser.set_window_size(1024, 768)
+
+        # Alfrescan sees clearly a tabbed form non-collapsed. There are 2 tabs
+        non_collapsed_number_tabs = len(self.browser.find_elements_by_css_selector('#myTab li a'))
+        self.assertEqual(non_collapsed_number_tabs, 2)
+
+        # At the minute the browser get resized into a smaller view
+        self.browser.set_window_size(600, 322)
+
+        # Alfrescan sees how both tabs disappears
+        # Alfrescan try to click on a tab that does not longer exists
+        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        collapsed_number_tabs = len(self.browser.find_elements_by_css_selector('#myTab li a'))
+        self.assertEqual(collapsed_number_tabs, 0)
+
+         
