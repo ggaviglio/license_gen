@@ -1,6 +1,4 @@
-body {
-  padding-top: 70px;
-}
+
 
 .tab-pane {
 
@@ -15,9 +13,12 @@ body {
     margin-bottom: 0; 
 }
 
-div.panel hr { border-color: green;}
+div.panel hr { border-color: orange;}
 
 
 
 div.panel {border-width: 0px;}
+
+
+
 
