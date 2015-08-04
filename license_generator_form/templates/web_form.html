@@ -156,25 +156,25 @@
                                             <hr>
                                             <div class="row">
                                                 <div class="col-md-6 col-xs-12">
-                                                    <div class="input-group">
+                                                    <div class="input-group" id="format-account-holder">
                                                         <span class="input-group-addon" id="sizing-addon2">Account holder name</span>
                                                         <input type="text" id="field_holder_name" name="field_holder_name" class="form-control" aria-describedby="sizing-addon2">
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon" id="sizing-addon2" style="padding-right:67px; background-color:#ACC8E8;">Expiry (days)</span>
+                                                    <div class="input-group" id="format-expiry-days">
+                                                        <span class="input-group-addon" id="sizing-addon2">Expiry (days)</span>
                                                         <input type="number" id="field_days" name="field_days" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon" id="sizing-addon2" style="padding-right:47px; background-color:#ACC8E8;">Maximum users</span>
+                                                    <div class="input-group" id="format-maximum-users">
+                                                        <span class="input-group-addon" id="sizing-addon2">Maximum users</span>
                                                         <input type="number" id="field_max_users" name="field_max_users" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group">
+                                                    <div class="input-group" id="format-heartbeat-url">
                                                         <div class="checkbox checkbox-success">
                                                             <input id="field_no_heartbeat" name="field_no_heartbeat" value="1" type="checkbox">
                                                             <label for="field_no_heartbeat">No heartbeat</label>
@@ -198,8 +198,8 @@
                                                 </div>
                                                 <!-- From now on we will have the other 6 field inputs left   -->
                                                 <div class="col-md-6 col-xs-12">
-                                                    <div class="input-group">
-                                                        <span style="background-color:#D5EBF2; padding-right:108px;" class="input-group-addon" id="sizing-addon2">License type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    <div class="input-group" id="format-license-type">
+                                                        <span class="input-group-addon" id="sizing-addon2">License type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                         
                                                         <select class="form-control" id="field_license_type" name="field_license_type" aria-describedby="sizing-addon2">
                                                             <option value="enterprise" >ENTERPRISE</option>
@@ -208,15 +208,15 @@
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group has-feedback">
-                                                        <span class="input-group-addon" id="sizing-addon2" style="padding-right:133px;background-color:#ACC8E8;">Expiry (date)</span>
+                                                    <div class="input-group has-feedback" id="format-expiry-date">
+                                                        <span class="input-group-addon" id="sizing-addon2">Expiry (date)</span>
                                                         <input type="date" id="field_end_date" name="field_end_date" class="form-control" aria-describedby="sizing-addon2">
                                                         <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon" id="sizing-addon2" style="padding-right:75px;background-color:#ACC8E8;">Maximum documents</span>
+                                                    <div class="input-group" id="format-maximum-documents">
+                                                        <span class="input-group-addon" id="sizing-addon2">Maximum documents</span>
                                                         <input type="number" id="field_max_docs" name="field_max_docs" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                     </div>
                                                     <br>
@@ -229,7 +229,7 @@
                                                     </div>
                                                     <br>
 
-                                                    <div class="input-group has-feedback">
+                                                    <div class="input-group has-feedback" id="format-transformation-server">
                                                         <span class="input-group-addon" id="sizing-addon2">Transformation Server end date</span>
                                                         <input type="date" id="field_ats_end_date" name="field_ats_end_date" class="form-control" aria-describedby="sizing-addon2">
                                                         <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
@@ -252,22 +252,23 @@
                                         <div class="panel-body jumbotron"> 
                                             <h3><b>Generate</b></h3>
                                             <hr>
-
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">License Filename</span>
-                                                <input type="text" id="output_filename" name="output_filename" class="form-control" aria-describedby="sizing-addon2">
-                                            </div>
-                                            <br>
-
-                                            <div class="button-group row">
-                                                <div class="col-md-6 col-xs-12">    
-                                                    <button type="submit" class="btn btn-block btn-primary">Generate and download</button>
+                                            <div id="format-license-filename">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">License Filename</span>
+                                                    <input type="text" id="output_filename" name="output_filename" class="form-control" aria-describedby="sizing-addon2">
                                                 </div>
+                                                <br>
 
-                                                <div class="col-md-6 col-xs-12">
-                                                    <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
+                                                <div class="button-group row">
+                                                    <div class="col-md-6 col-xs-12">    
+                                                        <button type="submit" class="btn btn-block btn-primary">Generate and download</button>
+                                                    </div>
+
+                                                    <div class="col-md-6 col-xs-12">
+                                                        <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </div>                                            
                                             <br>
                                         </div>
                                     </div>
@@ -284,21 +285,21 @@
                                             <h3><b>Generate a new license</b></h3>
                                             <hr>
                                             
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="sizing-addon2" style="padding-right:73px;">Notes</span>
+                                            <div class="input-group" id="format-notes">
+                                                <span class="input-group-addon" id="sizing-addon2">Notes</span>
                                                 <textarea id="notes" name="notes" rows="10" cols="50" class="form-control" aria-describedby="sizing-addon2" placeholder="Reason for generation, any other information worth logging for this license... etc."></textarea>
                                             </div>
 
                                             <br>
 
-                                            <div class="input-group">
+                                            <div class="input-group" id="format-external-id">
                                                 <span class="input-group-addon" id="sizing-addon2">External ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                 <input type="text" id="external_id" name="external_id" class="form-control" aria-describedby="sizing-addon2">
                                             </div>
 
                                             <br>
 
-                                            <div class="input-group">
+                                            <div class="input-group" id="format-external-id-type">
                                                 <span class="input-group-addon" id="sizing-addon2">External ID type</span>
                                                 <input type="text" id="external_id_type" name="external_id_type" class="form-control" aria-describedby="sizing-addon2">
                                             </div>
@@ -344,33 +345,33 @@
                                                 <!-- row -->
                                                 <div class="row">
                                                     <div class="col-md-6 col-xs-12">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Account holder name</span>
+                                                        <div class="input-group" id="format-account-holder">
+                                                            <span class="input-group-addon" id="sizing-addon2">Account holder name</span>
                                                             <input type="text" id="field_holder_name" name="field_holder_name" class="form-control" aria-describedby="sizing-addon2">
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group has-feedback">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:133px;background-color:#ACC8E8;">Valid from (date)</span>
+                                                        <div class="input-group has-feedback" id="format-start-date">
+                                                            <span class="input-group-addon" id="sizing-addon2">Valid from (date)</span>
                                                             <input type="date" id="field_start_date" name="field_start_date" class="form-control" aria-describedby="sizing-addon2">
                                                             <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Number of admins</span>
+                                                        <div class="input-group" id="format-number-admins">
+                                                            <span class="input-group-addon" id="sizing-addon2">Number of admins</span>
                                                             <input type="number" id="field_number_of_admins" name="field_number_of_admins" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Number of editors</span>
+                                                        <div class="input-group" id="format-number-editors">
+                                                            <span class="input-group-addon" id="sizing-addon2">Number of editors</span>
                                                             <input type="number" id="field_number_of_editors" name="field_number_of_editors" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span style="background-color:#D5EBF2; padding-right:108px;" class="input-group-addon" id="sizing-addon2">Multi_tenant &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        <div class="input-group" id="format-multi-tenant">
+                                                            <span class="input-group-addon" id="sizing-addon2">Multi_tenant</span>
                                                 
                                                             <select class="form-control" id="field_multi_tenant" name="field_multi_tenant" aria-describedby="sizing-addon2">
                                                                 <option value="true">True</option>
@@ -383,8 +384,8 @@
                                                     </div>
 
                                                     <div class="col-md-6 col-xs-12">
-                                                        <div class="input-group">
-                                                            <span style="background-color:#D5EBF2; padding-right:108px;" class="input-group-addon" id="sizing-addon2">Version &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        <div class="input-group" id="format-version">
+                                                            <span class="input-group-addon" id="sizing-addon2">Version</span>
                                                 
                                                             <select class="form-control" id="field_version" name="field_version" aria-describedby="sizing-addon2">
                                                                 <option value="1.0ent" selected="selected">1.0ent</option>
@@ -392,27 +393,27 @@
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group has-feedback">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:133px;background-color:#ACC8E8;">Valid to (date)</span>
+                                                        <div class="input-group has-feedback" id="format-end-date">
+                                                            <span class="input-group-addon" id="sizing-addon2">Valid to (date)</span>
                                                             <input type="date" id="field_end_date" name="field_end_date" class="form-control" aria-describedby="sizing-addon2">
                                                             <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Number of licenses</span>
+                                                        <div class="input-group" id="format-number-licenses">
+                                                            <span class="input-group-addon" id="sizing-addon2">Number of licenses</span>
                                                             <input type="number" id="field_number_of_licenses" name="field_number_of_licenses" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Number of processes</span>
+                                                        <div class="input-group" id="format-number-processes">
+                                                            <span class="input-group-addon" id="sizing-addon2">Number of processes</span>
                                                             <input type="number" id="field_number_of_processes" name="field_number_of_processes" class="form-control" aria-describedby="sizing-addon2" min="0">
                                                         </div>
                                                         <br>
 
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">Default tenant</span>
+                                                        <div class="input-group" id="format-default-tenant">
+                                                            <span class="input-group-addon" id="sizing-addon2">Default tenant</span>
                                                             <input type="text" id="field_default_tenant" name="field_default_tenant" class="form-control" aria-describedby="sizing-addon2">
                                                         </div>
                                                         <br>
@@ -425,21 +426,23 @@
                                         <div class="panel-body jumbotron"> 
                                             <h3><b>Generate</b></h3>
                                             <hr>
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="sizing-addon2" style="padding-right:54px; background-color:#ACC8E8;">License Filename</span>
-                                                <input type="text" id="output_filename" name="output_filename" class="form-control" aria-describedby="sizing-addon2">
-                                            </div>
-                                            <br><br>
+                                            <div id="format-license-filename">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="sizing-addon2">License Filename</span>
+                                                    <input type="text" id="output_filename" name="output_filename" class="form-control" aria-describedby="sizing-addon2">
+                                                </div>
+                                                <br><br>
 
-                                            <div class="button-group row">
-                                                <div class="col-md-6 col-xs-12">    
-                                                    <button type="submit" class="btn btn-block btn-primary">Generate and download</button>
+                                                <div class="button-group row">
+                                                    <div class="col-md-6 col-xs-12">    
+                                                        <button type="submit" class="btn btn-block btn-primary">Generate and download</button>
+                                                    </div>
+                                                    <div class="col-md-6 col-xs-12">
+                                                        <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6 col-xs-12">
-                                                    <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
-                                                </div>
+                                                <br>
                                             </div>
-                                            <br>
 
                                         </div>
                                     </div>  

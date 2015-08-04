@@ -1,34 +1,14 @@
-from django.test import LiveServerTestCase
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from .base import FunctionalTest
 from unittest import skip
 
-MY_IP = "http://192.168.59.103"
 
-
-class NewVisitorTest(LiveServerTestCase):
-    def setUp(self):
-        self.browser = webdriver.Remote(MY_IP + ":4444/wd/hub", webdriver.DesiredCapabilities.FIREFOX)
-        self.browser.implicitly_wait(3)
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def test_site_loads(self):
-        # Alfrescan wants to generate a license, visits the URL
-        self.browser.get(MY_IP)
-
-        # They notice the page title and header mention the license generator
-        self.assertIn("License Generator", self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertEqual("License Generator", header_text)
+class HomePageTest(FunctionalTest):
 
     def get_form_elements(self, brand):
         form_elements = {}
-        
         form_elements['notes'] = self.browser.find_element_by_css_selector("#"+brand+"_form #notes")
         form_elements['external_id'] = self.browser.find_element_by_css_selector("#"+brand+"_form #external_id")
-        form_elements['external_id_type'] = self.browser.find_element_by_css_selector("#"+brand+"_form #external_id_type")            
+        form_elements['external_id_type'] = self.browser.find_element_by_css_selector("#"+brand+"_form #external_id_type")
 
         form_elements['checkboxes'] = self.browser.find_elements_by_css_selector("#"+brand+"_form #tag_license_types input")
 
@@ -90,15 +70,14 @@ class NewVisitorTest(LiveServerTestCase):
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), False)
         else: #ACTIVITI
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "")
-            self.assertEqual(form_elements['number_editors'].get_attribute('value'), "") 
+            self.assertEqual(form_elements['number_editors'].get_attribute('value'), "")
             self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "false")
             self.assertEqual(form_elements['version'].get_attribute('value'), '1.0ent')
-            self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['number_processes'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "") 
+            self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "")
+            self.assertEqual(form_elements['number_processes'].get_attribute('value'), "")
+            self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "")
 
         self.assertEqual(form_elements['license_filename'].get_attribute('value'), "")
-
 
     def check_form_elements_filled(self, brand, form_elements):
 
@@ -140,8 +119,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertEqual(form_elements['license_filename'].get_attribute('value'), "some license filename")
 
     def fill_in_form_elements(self, brand, form_elements):
-        
-        
         form_elements['notes'].send_keys('some notes')
         form_elements['external_id'].send_keys('some external id')
         form_elements['external_id_type'].send_keys('some external id type')
@@ -180,11 +157,15 @@ class NewVisitorTest(LiveServerTestCase):
 
         form_elements['license_filename'].send_keys('some license filename')
 
+    def test_site_loads(self):
+        # Alfrescan wants to generate a license, visits the URL
+        # They notice the page title and header mention the license generator
+        self.assertIn("License Generator", self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertEqual("License Generator", header_text)
+
     @skip
     def test_home_page_contains_tabbed_form(self):
-        # Alfrescan visits the main page
-        self.browser.get(MY_IP)
-
         # There are two tabs above a form
         tabs_form = self.browser.find_elements_by_css_selector("[role='tab']")
         self.assertEqual(len(tabs_form), 2)
@@ -205,11 +186,9 @@ class NewVisitorTest(LiveServerTestCase):
         expected_headers = ['Generate a new license', 'License types', 'License arguments', 'Generate']
         for header in actual_headers[:4]:
             self.assertIn(header.text, expected_headers)
+
     @skip
     def test_home_page_has_tabs_to_change_visible_license_form(self):
-        # Alfrescan visits the main page
-        self.browser.get(MY_IP)
-
         # Alfrescan sees tabs for the different data licenses
         license_tabs = self.browser.find_elements_by_css_selector('#myTab li a')
         self.assertEqual(len(license_tabs), 2)
@@ -254,11 +233,9 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(new_content, final_content)
 
         self.fail('Finish the test!')
+
     @skip
     def test_user_can_clear_info_from_alfresco_form(self):
-        # Alfrescan goes to the home page
-        self.browser.get(MY_IP)
-
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
         self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
         form_elements_alfresco = {}
@@ -280,9 +257,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.check_form_elements_empty("alfresco", form_elements_alfresco)
 
     def test_user_can_clear_info_from_activiti_form(self):
-        # Alfrescan goes to the home page
-        self.browser.get(MY_IP)
-
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
         self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
         form_elements_activiti = {}
@@ -302,36 +276,3 @@ class NewVisitorTest(LiveServerTestCase):
         form_elements_activiti = self.get_form_elements("activiti")
         # Alfrescan sees how every form element is empty
         self.check_form_elements_empty("activiti", form_elements_activiti)
-
-
-    @skip
-    def test_layout_and_styling(self):
-        # Alfrescan goes to the home page
-        self.browser.get(MY_IP)
-        self.browser.set_window_size(1024, 768)
-
-        # Alfrescan notices the header is centered
-        header_element = self.browser.find_element_by_tag_name('h1')
-        self.assertAlmostEqual(
-            header_element.location['x'] + header_element.size['width'] / 2,
-            512,
-            delta=10
-        )
-    @skip
-    def test_responsive_layout_top_navbar(self):
-        # Alfrescan goes to the home page
-        self.browser.get(MY_IP)
-        self.browser.set_window_size(1024, 768)
-
-        # Alfrescan sees how the top navegation bar has some options
-        actual_options_top_navbar = self.browser.find_elements_by_css_selector('.navbar-nav li a')
-        expected_options_top_navbar = ["Raise a JIRA ticket for this app", "Upload and check an existing license"]
-        for options in actual_options_top_navbar[:2]:
-            self.assertIn(options.text, expected_options_top_navbar)
-
-        # At the minute the browser get resized into a smaller view
-        self.browser.set_window_size(600, 322)
-
-        # Alfrescan will not see previous elements. They will vanished
-        refresh_options_top_navbar = self.browser.find_elements_by_css_selector('.navbar-nav li.active a')
-        self.assertEqual(len(refresh_options_top_navbar), 0)

@@ -46,6 +46,95 @@ body {
 	background-color:#ACC8E8;
 }
 
+#format-account-holder span {
+	background-color:#ACC8E8;	
+}
+
+#format-expiry-days span {
+	padding-right:67px; 
+	background-color:#ACC8E8;
+}
+
+#format-maximum-users span {
+	padding-right:47px; 
+	background-color:#ACC8E8;
+}
+
+#format-heartbeat-url span {
+	padding-right:73px; 	
+}
+
+#format-license-type span {
+	padding-right:108px; 
+	background-color:#ACC8E8;
+}
+
+#format-expiry-date span {
+	padding-right:133px; 
+	background-color:#ACC8E8;
+	
+}
+
+#format-maximum-documents span {
+	padding-right:75px; 
+	background-color:#ACC8E8;
+}
+
+#format-transformation-server span {	
+	background-color:#ACC8E8;
+}
+
+#format-license-filename span {
+	padding-right:54px; 
+	background-color:#ACC8E8;
+}
+
+#format-start-date span {
+	padding-right:44px; 
+	background-color:#ACC8E8;	
+}
+
+#format-number-admins span {
+	padding-right:30px; 
+	background-color:#ACC8E8;
+}
+
+#format-number-editors span {
+	padding-right:33px; 
+	background-color:#ACC8E8;
+}
+
+#format-multi-tenant span {
+	padding-right:70px; 
+	background-color:#ACC8E8;
+}
+
+#format-version span {
+	padding-right:100px; 
+	background-color:#ACC8E8;
+}
+
+#format-end-date span {
+	padding-right:60px; 
+	background-color:#ACC8E8;
+}
+
+#format-number-licenses span {
+	padding-right:25px; 
+	background-color:#ACC8E8;
+}
+
+#format-number-processes span {
+	padding-right:10px; 
+	background-color:#ACC8E8;
+}
+
+#format-default-tenant span {
+	padding-right:57px; 
+	background-color:#ACC8E8;
+}
+
+
 /*This piece of code make responsive tabs which get stacked
 automatically*/
 @media (max-width: 991px) { 
