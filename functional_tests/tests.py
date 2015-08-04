@@ -62,8 +62,8 @@ class NewVisitorTest(LiveServerTestCase):
 
     def check_form_elements_empty(self, brand, form_elements):
 
-        self.assertEqual(form_elements['notes'].get_attribute('value'), "some notes")
-        self.assertEqual(form_elements['external_id'].get_attribute('value'), "some external id")
+        self.assertEqual(form_elements['notes'].get_attribute('value'), "")
+        self.assertEqual(form_elements['external_id'].get_attribute('value'), "")
         self.assertEqual(form_elements['external_id_type'].get_attribute('value'), "")
 
         num_selected_checkboxes = 0
@@ -91,8 +91,8 @@ class NewVisitorTest(LiveServerTestCase):
         else: #ACTIVITI
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "")
             self.assertEqual(form_elements['number_editors'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['multi_tenant'].is_selected(), False)
-            self.assertEqual(form_elements['version'].is_selected(), False)
+            self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "false")
+            self.assertEqual(form_elements['version'].get_attribute('value'), '1.0ent')
             self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "") 
             self.assertEqual(form_elements['number_processes'].get_attribute('value'), "") 
             self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "") 
@@ -129,20 +129,19 @@ class NewVisitorTest(LiveServerTestCase):
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), True)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), True)
         else: #ACTIVITI
-            self.assertEqual(form_elements['number_admins'].get_attribute('value'), "")
-            self.assertEqual(form_elements['number_editors'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['multi_tenant'].is_selected(), False)
-            self.assertEqual(form_elements['version'].is_selected(), False)
-            self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['number_processes'].get_attribute('value'), "") 
-            self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "") 
+            self.assertEqual(form_elements['number_admins'].get_attribute('value'), "3")
+            self.assertEqual(form_elements['number_editors'].get_attribute('value'), "3")
+            self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "true")
+            self.assertEqual(form_elements['version'].get_attribute('value'), "1.0ent")
+            self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "3")
+            self.assertEqual(form_elements['number_processes'].get_attribute('value'), "3")
+            self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "some tenant")
 
-        self.assertEqual(form_elements['license_filename'].get_attribute('value'), "")
+        self.assertEqual(form_elements['license_filename'].get_attribute('value'), "some license filename")
 
     def fill_in_form_elements(self, brand, form_elements):
-
-        form_elements['release_key'] = self.browser.find_element_by_css_selector("#"+brand+"_form select#release_key > option[value='ent31']")
-        form_elements['release_key'].click()
+        
+        
         form_elements['notes'].send_keys('some notes')
         form_elements['external_id'].send_keys('some external id')
         form_elements['external_id_type'].send_keys('some external id type')
@@ -153,6 +152,9 @@ class NewVisitorTest(LiveServerTestCase):
         form_elements['account_holder_name'].send_keys('some account holder name')
 
         if brand == "alfresco":
+            form_elements['release_key'] = self.browser.find_element_by_css_selector("#"+brand+"_form select#release_key > option[value='ent31']")
+            form_elements['release_key'].click()
+
             form_elements['expiry_days'].send_keys('3')
             form_elements['maximum_users'].send_keys('3')
             form_elements['no_heartbeat'].click()
@@ -252,24 +254,54 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(new_content, final_content)
 
         self.fail('Finish the test!')
-
-    def test_user_can_delete_info_from_forms(self):
+    @skip
+    def test_user_can_clear_info_from_alfresco_form(self):
         # Alfrescan goes to the home page
         self.browser.get(MY_IP)
 
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
         self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
-
+        form_elements_alfresco = {}
 
         # Alfrescan check all form elements available to be filled
-        form_elements_alfresco = self.get_form_elements("alfresco")        
+        form_elements_alfresco = self.get_form_elements("alfresco")
         # Alfrescan sees how every form element is empty
         self.check_form_elements_empty("alfresco", form_elements_alfresco)
         # Alfrescan procedes to fill in each form elements within the tab selected
         self.fill_in_form_elements("alfresco", form_elements_alfresco)
         # Alfrescan sees how every form element hold some information
+        self.check_form_elements_filled("alfresco", form_elements_alfresco)
+        # Alfrescan goes to the Clear form button and click over this
+        self.browser.find_element_by_css_selector("#alfresco_form #clear_form").click()
 
-        
+        # Alfrescan check all form elements available to be filled
+        form_elements_alfresco = self.get_form_elements("alfresco")
+        # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("alfresco", form_elements_alfresco)
+
+    def test_user_can_clear_info_from_activiti_form(self):
+        # Alfrescan goes to the home page
+        self.browser.get(MY_IP)
+
+        # Alfrescan notices how all the input form elements are empty -Alfresco form-
+        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        form_elements_activiti = {}
+
+        # Alfrescan check all form elements available to be filled
+        form_elements_activiti = self.get_form_elements("activiti")
+        # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("activiti", form_elements_activiti)
+        # Alfrescan procedes to fill in each form elements within the tab selected
+        self.fill_in_form_elements("activiti", form_elements_activiti)
+        # Alfrescan sees how every form element hold some information
+        self.check_form_elements_filled("activiti", form_elements_activiti)
+        # Alfrescan goes to the Clear form button and click over this
+        self.browser.find_element_by_css_selector("#activiti_form #clear_form").click()
+
+        # Alfrescan check all form elements available to be filled
+        form_elements_activiti = self.get_form_elements("activiti")
+        # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("activiti", form_elements_activiti)
 
 
     @skip

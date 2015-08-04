@@ -11,71 +11,7 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/css/bootstrap-select.min.css" />
         <link rel="stylesheet" href="{% static "awesome-bootstrap-checkbox-master/bower_components/Font-Awesome/css/font-awesome.css" %}" type="text/css">    
-        <link rel="stylesheet" href="{% static "awesome-bootstrap-checkbox-master/awesome-bootstrap-checkbox.css" %}" type="text/css"> 
-
-        <style>
-
-            @media (max-width: 991px) {
-                .navbar-header {
-                    float: none;
-                }
-                .navbar-left,.navbar-right {
-                    float: none !important;
-                }
-                .navbar-toggle {
-                    display: block;
-                }
-                .navbar-collapse {
-                    border-top: 1px solid transparent;
-                    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-                }
-                .navbar-fixed-top {
-                    top: 0;
-                    border-width: 0 0 1px;
-                }
-                .navbar-collapse.collapse {
-                    display: none!important;
-                }
-                .navbar-nav {
-                    float: none!important;
-                    margin-top: 7.5px;
-                }
-                .navbar-nav>li {
-                    float: none;
-                }
-                .navbar-nav>li>a {
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                }
-                .collapse.in{
-                    display:block !important;
-                }
-            }
-
-            /*This piece of code make responsive tabs which get stacked
-            automatically*/
-            @media (max-width: 991px) { 
-                    .nav-tabs > li {
-                    float:none;
-                    border:1px solid #dddddd;
-                    border-radius: 5px 5px 0px 0px;
-                }
-                .nav-tabs > li.active > a{
-                    border:none;
-                }
-                .nav > li > a:hover, .nav > li > a:focus,
-                .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus
-                 {                    
-                    font-weight: bold;
-                    border:none;
-                }
-
-                .button-group > div {
-                    margin: 3px;
-                }
-            }
-        </style>
-        
+        <link rel="stylesheet" href="{% static "awesome-bootstrap-checkbox-master/awesome-bootstrap-checkbox.css" %}" type="text/css">         
     </head>
 
     <body>
@@ -115,7 +51,7 @@
 
         <!-- Begin content page -->
         <div class="container">
-            <h1 class="text-center">License Generator</h1> 
+            <h1 class="text-center">License Generator</h1>         
             <br>
             <div class="row">
                 <div class="col-md-12 col-xs-12">
@@ -131,13 +67,13 @@
                         <div id="myTabContent" class="tab-content">
                             <div role="tabpanel" class="tab-pane fade in active" id="alfresco_tab">                                
                                 <form id="alfresco_form" class="form-horizontal" role="form" method="POST">
-                                    <div class="panel" style="border-width: 0px;">
+                                    <div class="panel">
                                         <div class="panel-body jumbotron">                                              
                                             <h3><b>Generate a new license</b></h3>
                                             <hr>
 
-                                            <div class="input-group">
-                                                <span style="background-color:#C9FFC9;" class="input-group-addon" id="sizing-addon2">Release key &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            <div class="input-group" id="format-release-key">
+                                                <span class="input-group-addon" id="sizing-addon2">Release key</span>
                                                 <label for="release_key"></label>
                                                 <select class="form-control" id="release_key" name="release_key" aria-describedby="sizing-addon2">
                                                     <option value="ent22" >ent22</option>
@@ -161,21 +97,21 @@
                                             <span style="padding-left:125px;">Select the release this license is for</span>
                                             <br><br>
 
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="sizing-addon2" style="padding-right:73px; background-color:#DEFADE;">Notes</span>
+                                            <div class="input-group" id="format-notes">
+                                                <span class="input-group-addon" id="sizing-addon2">Notes</span>
                                                 <textarea id="notes" name="notes" rows="10" cols="50" class="form-control" aria-describedby="sizing-addon2" placeholder="Reason for generation, any other information worth logging for this license... etc."></textarea>
                                             </div>
 
                                             <br>
 
-                                            <div class="input-group">
+                                            <div class="input-group" id="format-external-id">
                                                 <span class="input-group-addon" id="sizing-addon2">External ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                 <input type="text" id="external_id" name="external_id" class="form-control" aria-describedby="sizing-addon2">
                                             </div>
 
                                             <br>
 
-                                            <div class="input-group">
+                                            <div class="input-group" id="format-external-id-type">
                                                 <span class="input-group-addon" style="background-color:#ACC8E8;" id="sizing-addon2">External ID type</span>
                                                 <input type="text" id="external_id_type" name="external_id_type" class="form-control" aria-describedby="sizing-addon2">
                                             </div>
@@ -329,7 +265,7 @@
                                                 </div>
 
                                                 <div class="col-md-6 col-xs-12">
-                                                    <button type="reset" class="btn btn-block btn-warning">Clear Form</button>
+                                                    <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
                                                 </div>
                                             </div>
                                             <br>
@@ -343,7 +279,7 @@
                             <div role="tabpanel" class="tab-pane fade" id="activiti_tab">
                                 <form id="activiti_form">
 
-                                    <div class="panel" style="border-width: 0px;">
+                                    <div class="panel">
                                         <div class="panel-body jumbotron"> 
                                             <h3><b>Generate a new license</b></h3>
                                             <hr>
@@ -436,7 +372,7 @@
                                                         <div class="input-group">
                                                             <span style="background-color:#D5EBF2; padding-right:108px;" class="input-group-addon" id="sizing-addon2">Multi_tenant &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                 
-                                                            <select class="selectpicker form-control" id="field_multi_tenant" name="field_multi_tenant" aria-describedby="sizing-addon2">
+                                                            <select class="form-control" id="field_multi_tenant" name="field_multi_tenant" aria-describedby="sizing-addon2">
                                                                 <option value="true">True</option>
                                                                 <option value="false" selected="selected">False</option>
                                                             </select>
@@ -450,7 +386,7 @@
                                                         <div class="input-group">
                                                             <span style="background-color:#D5EBF2; padding-right:108px;" class="input-group-addon" id="sizing-addon2">Version &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                 
-                                                            <select class="selectpicker form-control" id="field_version" name="field_version" aria-describedby="sizing-addon2">
+                                                            <select class="form-control" id="field_version" name="field_version" aria-describedby="sizing-addon2">
                                                                 <option value="1.0ent" selected="selected">1.0ent</option>
                                                             </select>
                                                         </div>
@@ -500,7 +436,7 @@
                                                     <button type="submit" class="btn btn-block btn-primary">Generate and download</button>
                                                 </div>
                                                 <div class="col-md-6 col-xs-12">
-                                                    <button type="reset" class="btn btn-block btn-warning">Clear Form</button>
+                                                    <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
                                                 </div>
                                             </div>
                                             <br>
