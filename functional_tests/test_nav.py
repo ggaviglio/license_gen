@@ -23,6 +23,7 @@ class NavTest(FunctionalTest):
     def test_jira_link_redirects_to_jira(self):
         # Alfrescan clicks the jira link
         self.browser.find_element_by_id('jira_link').click()
+        self.browser.switch_to.window(self.browser.window_handles[1])
         # Alfrescan is redirected to the jira ticket page
         self.assertIn("jira", self.browser.current_url)
 

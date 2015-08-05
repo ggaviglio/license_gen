@@ -232,8 +232,6 @@ class HomePageTest(FunctionalTest):
         final_content = self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
         self.assertNotEqual(new_content, final_content)
 
-        self.fail('Finish the test!')
-
     @skip
     def test_user_can_clear_info_from_alfresco_form(self):
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
