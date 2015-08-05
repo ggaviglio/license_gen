@@ -25,6 +25,24 @@ class NavTest(FunctionalTest):
         self.browser.find_element_by_id('jira_link').click()
         # Alfrescan is redirected to the jira ticket page
         self.assertIn("jira", self.browser.current_url)
+
+    def test_home_link_keeps_same_name_as_clicked_alfresco_tab(self):
+        # Alfrescan sees the Alfresco tab and click on it
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
+        selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a')
+        # Title of that tab matches with the text that appears on the navbar
+        nav_title = self.browser.find_element_by_css_selector('.navbar-brand')
+
+        self.assertEqual(selected_tab.text, nav_title.text)
+
+    def test_home_link_keeps_same_name_as_clicked_activiti_tab(self):
+        # Alfrescan sees the Activiti tab and click on it
+        self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
+        selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a')
+        # Title of that tab matches with the text that appears on the navbar
+        nav_title = self.browser.find_element_by_css_selector('.navbar-brand')
+        self.assertEqual(selected_tab.text, nav_title.text)
+
     @skip
     def test_license_check_link_shows_popup(self):
         pass
