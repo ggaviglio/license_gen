@@ -1,3 +1,19 @@
+
+/* For navigation image */
+nav img {
+	  height: 170%;
+    float: left;
+    margin-top: -7px;
+    margin-right: 7px;
+    margin-left: -10px;
+}
+
+.navbar-brand {
+	width:297px;
+}
+
+
+/* For general appearance */
 .tab-pane {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
@@ -9,7 +25,6 @@
 .nav-tabs {
     margin-bottom: 0; 
 }
-
 
 div.panel hr {
 	border-color: orange;
@@ -23,8 +38,12 @@ body {
 	padding-top: 70px;
 }
 
+/* For form elements appearance */
+#text-leyend {
+	padding-left:125px;
+}
 
-#format-release-key span{
+#format-release-key span {
 	padding-right: 35px;
 	background-color:#ACC8E8;
 }
@@ -36,6 +55,7 @@ body {
 }
 
 #format-external-id span {
+	padding-right:43px;
 	background-color:#ACC8E8;
 }
 
@@ -62,14 +82,13 @@ body {
 }
 
 #format-license-type span {
-	padding-right:108px; 
+	padding-right:130px; 
 	background-color:#ACC8E8;
 }
 
 #format-expiry-date span {
 	padding-right:133px; 
-	background-color:#ACC8E8;
-	
+	background-color:#ACC8E8;	
 }
 
 #format-maximum-documents span {
@@ -131,31 +150,33 @@ body {
 	background-color:#ACC8E8;
 }
 
-
-/*This piece of code make responsive tabs which get stacked
-automatically*/
+/* For navegation bar responsiveness:
+This piece of code make responsive tabs which get stacked
+automatically */
 @media (max-width: 991px) { 
-	    .nav-tabs > li {
-	    float:none;
-	    border:1px solid #dddddd;
-	    border-radius: 5px 5px 0px 0px;
+	.nav-tabs > li {
+		float:none;
+		border:1px solid #dddddd;
+		border-radius: 5px 5px 0px 0px;
 	}
-	.nav-tabs > li.active > a{
-	    border:none;
+
+	.nav-tabs > li.active > a {
+		border:none;
 	}
+
 	.nav > li > a:hover, .nav > li > a:focus,
-	.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus
-	 {                    
-	    font-weight: bold;
-	    border:none;
+	.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {                    
+		font-weight: bold;
+		border:none;
 	}
 
 	.button-group > div {
-	    margin: 3px;
+		margin: 3px;
 	}
 }
 
-/*Piece of code that allow us to shrink the form earlier*/
+/* For general responsiveness:
+Piece of code that allow us to shrink the form earlier */
 @media (max-width: 991px) {
     .navbar-header {
         float: none;
@@ -188,10 +209,18 @@ automatically*/
         padding-top: 10px;
         padding-bottom: 10px;
     }
-    .collapse.in{
+    .collapse.in {
         display:block !important;
-    }
+    }    
 }
+
+@media (max-width: 441px) {
+	#alfresco_form #text-leyend {
+		padding-left: 0px;
+	}
+}
+
+
 
 
 
