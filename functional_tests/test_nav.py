@@ -13,16 +13,17 @@ class NavTest(FunctionalTest):
         # Alfrescan sees the nav bar has 4 clickable elements
         self.assertEqual(len(self.browser.find_elements_by_css_selector(".navbar a")), 4)
 
-    def test_home_link_redirects_to_home_page(self):
+    def test_home_link_redirects_to_top_home_page(self):
         # Alfrescan clicks the home link -Alfresco/Activiti license generator-
         home_url = self.browser.current_url
-        self.browser.find_element_by_id('home_link').click()
+        #self.browser.find_element_by_id('home_link').click()
+        self.browser.find_element_by_css_selector('nav [data-original-title="top home"]').click()
         # Alfrescan is redirected to the home page
-        self.assertEqual(home_url, self.browser.current_url)
+        self.assertEqual(home_url+"#", self.browser.current_url)
 
     def test_jira_link_redirects_to_jira(self):
         # Alfrescan clicks the jira link
-        self.browser.find_element_by_id('jira_link').click()
+        self.browser.find_element_by_css_selector('nav [data-original-title="raise jira ticket"]').click()
         self.browser.switch_to.window(self.browser.window_handles[1])
         # Alfrescan is redirected to the jira ticket page
         self.assertIn("jira", self.browser.current_url)
@@ -51,5 +52,5 @@ class NavTest(FunctionalTest):
     @skip
     def test_logout_link_redirects_to_login_page(self):
         # Alfrescan click the log out link
-        self.browser.find_element_by_id('log_out_link').click()
+        self.browser.find_element_by_css_selector('nav [data-original-title="log out"]').click()
         self.assertIn("login", self.browser.current_url)

@@ -29,7 +29,7 @@ class HomePageTest(FunctionalTest):
             form_elements['maximum_documents'] = self.browser.find_element_by_css_selector("#"+brand+"_form #field_max_docs")
             form_elements['cloud_sync_enabled'] = self.browser.find_element_by_css_selector("#"+brand+"_form #field_cloud_sync")
             form_elements['cryptodoc_enabled'] = self.browser.find_element_by_css_selector("#"+brand+"_form #field_cryptodoc_enabled")
-        else: #ACTIVITI
+        else:   #Activiti
             form_elements['number_admins'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_admins")
             form_elements['number_editors'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_editors")
             form_elements['multi_tenant'] = self.browser.find_element_by_css_selector("select#field_multi_tenant > option[selected='selected']")
@@ -41,7 +41,6 @@ class HomePageTest(FunctionalTest):
         return form_elements
 
     def check_form_elements_empty(self, brand, form_elements):
-
         self.assertEqual(form_elements['notes'].get_attribute('value'), "")
         self.assertEqual(form_elements['external_id'].get_attribute('value'), "")
         self.assertEqual(form_elements['external_id_type'].get_attribute('value'), "")
@@ -68,7 +67,7 @@ class HomePageTest(FunctionalTest):
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), False)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), False)
-        else: #ACTIVITI
+        else:   #Activiti
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "")
             self.assertEqual(form_elements['number_editors'].get_attribute('value'), "")
             self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "false")
@@ -80,7 +79,6 @@ class HomePageTest(FunctionalTest):
         self.assertEqual(form_elements['license_filename'].get_attribute('value'), "")
 
     def check_form_elements_filled(self, brand, form_elements):
-
         self.assertEqual(form_elements['notes'].get_attribute('value'), "some notes")
         self.assertEqual(form_elements['external_id'].get_attribute('value'), "some external id")
         self.assertEqual(form_elements['external_id_type'].get_attribute('value'), "some external id type")
@@ -107,7 +105,7 @@ class HomePageTest(FunctionalTest):
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "3")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), True)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), True)
-        else: #ACTIVITI
+        else:   #Activiti
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "3")
             self.assertEqual(form_elements['number_editors'].get_attribute('value'), "3")
             self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "true")
@@ -143,7 +141,7 @@ class HomePageTest(FunctionalTest):
             form_elements['maximum_documents'].send_keys('3')
             form_elements['cloud_sync_enabled'].click()
             form_elements['cryptodoc_enabled'].click()
-        else:
+        else: #Activiti
             form_elements['number_admins'].send_keys('3')
             form_elements['number_editors'].send_keys('3')
             form_elements['multi_tenant'] = self.browser.find_element_by_css_selector("select#field_multi_tenant > option[value='true']")
@@ -164,7 +162,6 @@ class HomePageTest(FunctionalTest):
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertEqual("License Generator", header_text)
 
-    @skip
     def test_home_page_contains_tabbed_form(self):
         # There are two tabs above a form
         tabs_form = self.browser.find_elements_by_css_selector("[role='tab']")
@@ -187,7 +184,6 @@ class HomePageTest(FunctionalTest):
         for header in actual_headers[:4]:
             self.assertIn(header.text, expected_headers)
 
-    @skip
     def test_home_page_has_tabs_to_change_visible_license_form(self):
         # Alfrescan sees tabs for the different data licenses
         license_tabs = self.browser.find_elements_by_css_selector('#myTab li a')
@@ -203,26 +199,15 @@ class HomePageTest(FunctionalTest):
 
         # Clicking the tabs changes the active tab from one to another
         default_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
-        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
         new_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
 
         self.assertEqual(default_tab_selected, new_tab_selected)
 
-        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
         last_tab_selected = self.browser.find_element_by_css_selector('#myTab li.active a')
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
-
-        # Clicking the tabs changes the sticky top navbar title
-        initial_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
-        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
-        new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
-
-        self.assertNotEqual(initial_topbar_title, new_topbar_title)
-
-        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
-        last_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
-        self.assertNotEqual(new_topbar_title, last_topbar_title)
 
         # Clicking the tabs changes the visible data
         original_content = self.browser.find_elements_by_css_selector('.panel')
@@ -232,10 +217,9 @@ class HomePageTest(FunctionalTest):
         final_content = self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
         self.assertNotEqual(new_content, final_content)
 
-    @skip
     def test_user_can_clear_info_from_alfresco_form(self):
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
-        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
         form_elements_alfresco = {}
 
         # Alfrescan check all form elements available to be filled
@@ -256,7 +240,7 @@ class HomePageTest(FunctionalTest):
 
     def test_user_can_clear_info_from_activiti_form(self):
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
-        self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
+        self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
         form_elements_activiti = {}
 
         # Alfrescan check all form elements available to be filled
