@@ -29,21 +29,36 @@ class NavTest(FunctionalTest):
         self.assertIn("jira", self.browser.current_url)
 
     def test_home_link_keeps_same_name_as_clicked_alfresco_tab(self):
-        # Alfrescan sees the Alfresco tab and click on it
-        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
-        selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a')
-        # Title of that tab matches with the text that appears on the navbar
-        nav_title = self.browser.find_element_by_css_selector('.navbar-brand')
+        # Alfrescan sees the default nav and tab title
+        default_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+        default_selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        self.assertEqual(default_topbar_title, default_selected_tab)
 
-        self.assertEqual(selected_tab.text, nav_title.text)
+        # Alfrescan clicks on the Alfresco tab
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
+        new_selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        self.assertEqual(default_selected_tab, new_selected_tab)
+
+        # Title of that tab matches with the text that appears on the navbar
+        new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+        self.assertEqual(default_topbar_title, new_topbar_title)
+        self.assertEqual(new_selected_tab, new_topbar_title)
 
     def test_home_link_keeps_same_name_as_clicked_activiti_tab(self):
-        # Alfrescan sees the Activiti tab and click on it
+        # Alfrescan sees the default nav and tab title
+        default_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+        default_selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        self.assertEqual(default_topbar_title, default_selected_tab)
+
+        # Alfrescan clicks on the Activiti tab
         self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
-        selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a')
+        new_selected_tab = self.browser.find_element_by_css_selector('#myTab li.active a').text
+        self.assertNotEqual(default_selected_tab, new_selected_tab)
+
         # Title of that tab matches with the text that appears on the navbar
-        nav_title = self.browser.find_element_by_css_selector('.navbar-brand')
-        self.assertEqual(selected_tab.text, nav_title.text)
+        new_topbar_title = self.browser.find_element_by_css_selector('.navbar-brand').text
+        self.assertNotEqual(default_topbar_title, new_topbar_title)
+        self.assertEqual(new_selected_tab, new_topbar_title)
 
     @skip
     def test_license_check_link_shows_popup(self):

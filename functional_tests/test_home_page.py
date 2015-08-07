@@ -4,6 +4,7 @@ from unittest import skip
 
 class HomePageTest(FunctionalTest):
 
+
     def get_form_elements(self, brand):
         form_elements = {}
         form_elements['notes'] = self.browser.find_element_by_css_selector("#"+brand+"_form #notes")
@@ -184,7 +185,7 @@ class HomePageTest(FunctionalTest):
         for header in actual_headers[:4]:
             self.assertIn(header.text, expected_headers)
 
-    def test_home_page_has_tabs_to_change_visible_license_form(self):
+    def test_home_page_has_tabs_to_switch_between_each_other(self):
         # Alfrescan sees tabs for the different data licenses
         license_tabs = self.browser.find_elements_by_css_selector('#myTab li a')
         self.assertEqual(len(license_tabs), 2)
@@ -209,13 +210,19 @@ class HomePageTest(FunctionalTest):
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
 
-        # Clicking the tabs changes the visible data
-        original_content = self.browser.find_elements_by_css_selector('.panel')
-        self.browser.find_elements_by_css_selector('#myTab li a')[0].click()
-        new_content = self.browser.find_elements_by_css_selector('.panel')
-        self.assertEqual(original_content, new_content)
-        final_content = self.browser.find_elements_by_css_selector('#myTab li a')[1].click()
-        self.assertNotEqual(new_content, final_content)
+
+    def test_home_page_has_tabs_to_change_visible_form_content(self):
+        default_content = self.browser.find_element_by_css_selector('div.active .panel')
+
+        # Alfrescan clicks on the Alfresco tab
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
+        new_content = self.browser.find_element_by_css_selector('div.active .panel')
+        self.assertEqual(default_content, new_content)
+
+        # Alfrescan clicks on the Activiti tab
+        self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
+        last_content = self.browser.find_element_by_css_selector('div.active.in .panel')
+        self.assertNotEqual(new_content, last_content)
 
     def test_user_can_clear_info_from_alfresco_form(self):
         # Alfrescan notices how all the input form elements are empty -Alfresco form-
