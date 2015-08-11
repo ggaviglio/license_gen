@@ -1,4 +1,8 @@
 
+@import url(responsiveness.css);
+
+*, *:after, *:before { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+
 /* For navigation image */
 nav img {
 	  height: 170%;
@@ -27,7 +31,7 @@ nav img {
 }
 
 div.panel hr {
-	border-color: orange;
+	border-color: #A9A9A9;
 }
 
 div.panel {
@@ -49,6 +53,11 @@ body {
 
 a {
 	color:#31bc86;
+}
+
+/* General layout colors */
+.jumbotron {
+	background-color:#ECF7E3;
 }
 
 .input-group span {
@@ -76,13 +85,6 @@ a {
 	padding-right:43px;	
 }
 
-#format-external-id-type span {
-	
-}
-
-#format-account-holder span {	
-}
-
 #format-expiry-days span {
 	padding-right:67px; 	
 }
@@ -105,10 +107,6 @@ a {
 
 #format-maximum-documents span {
 	padding-right:75px; 	
-}
-
-#format-transformation-server span {	
-	
 }
 
 #format-license-filename span {
@@ -151,75 +149,8 @@ a {
 	padding-right:57px; 	
 }
 
-/* For navegation bar responsiveness:
-This piece of code make responsive tabs which get stacked
-automatically */
-@media (max-width: 991px) { 
-	.nav-tabs > li {
-		float:none;
-		border:1px solid #dddddd;
-		border-radius: 5px 5px 0px 0px;
-	}
 
-	.nav-tabs > li.active > a {
-		border:none;
-	}
 
-	.nav > li > a:hover, .nav > li > a:focus,
-	.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {                    
-		font-weight: bold;
-		border:none;
-	}
-
-	.button-group > div {
-		margin: 3px;
-	}
-}
-
-/* For general responsiveness:
-Piece of code that allow us to shrink the form earlier */
-@media (max-width: 991px) {
-    .navbar-header {
-        float: none;
-    }
-    .navbar-left,.navbar-right {
-        float: none !important;
-    }
-    .navbar-toggle {
-        display: block;
-    }
-    .navbar-collapse {
-        border-top: 1px solid transparent;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-    .navbar-fixed-top {
-        top: 0;
-        border-width: 0 0 1px;
-    }
-    .navbar-collapse.collapse {
-        display: none!important;
-    }
-    .navbar-nav {
-        float: none!important;
-        margin-top: 7.5px;
-    }
-    .navbar-nav>li {
-        float: none;
-    }
-    .navbar-nav>li>a {
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-    .collapse.in {
-        display:block !important;
-    }    
-}
-
-@media (max-width: 441px) {
-	#alfresco_form #text-leyend {
-		padding-left: 0px;
-	}
-}
 
 
 
