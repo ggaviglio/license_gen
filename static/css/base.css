@@ -39,115 +39,116 @@ body {
 }
 
 /* For form elements appearance */
+h1 {
+	color: #7c8d87;	
+}
+
+body {
+	background-color: #f8f8f8;
+}
+
+a {
+	color:#31bc86;
+}
+
+.input-group span {
+	background-color:#B0DAC9;
+	font-weight: bold;
+}
+
+.checkbox label {
+	font-weight: bold;	
+}
+
 #text-leyend {
 	padding-left:125px;
 }
 
 #format-release-key span {
-	padding-right: 35px;
-	background-color:#ACC8E8;
+	padding-right: 35px;	
 }
 
 #format-notes span {
 	padding-right:73px; 
-	background-color:#ACC8E8;
-
 }
 
 #format-external-id span {
-	padding-right:43px;
-	background-color:#ACC8E8;
+	padding-right:43px;	
 }
 
 #format-external-id-type span {
-	background-color:#ACC8E8;
+	
 }
 
-#format-account-holder span {
-	background-color:#ACC8E8;	
+#format-account-holder span {	
 }
 
 #format-expiry-days span {
-	padding-right:67px; 
-	background-color:#ACC8E8;
+	padding-right:67px; 	
 }
 
 #format-maximum-users span {
-	padding-right:47px; 
-	background-color:#ACC8E8;
+	padding-right:47px; 	
 }
 
 #format-heartbeat-url span {
-	padding-right:73px; 	
+	padding-right:54px; 		
 }
 
 #format-license-type span {
-	padding-right:130px; 
-	background-color:#ACC8E8;
+	padding-right:130px; 	
 }
 
 #format-expiry-date span {
-	padding-right:133px; 
-	background-color:#ACC8E8;	
+	padding-right:133px; 	
 }
 
 #format-maximum-documents span {
-	padding-right:75px; 
-	background-color:#ACC8E8;
+	padding-right:75px; 	
 }
 
 #format-transformation-server span {	
-	background-color:#ACC8E8;
+	
 }
 
 #format-license-filename span {
-	padding-right:54px; 
-	background-color:#ACC8E8;
+	padding-right:54px; 	
 }
 
 #format-start-date span {
-	padding-right:44px; 
-	background-color:#ACC8E8;	
+	padding-right:44px; 	
 }
 
 #format-number-admins span {
-	padding-right:30px; 
-	background-color:#ACC8E8;
+	padding-right:30px; 	
 }
 
 #format-number-editors span {
-	padding-right:33px; 
-	background-color:#ACC8E8;
+	padding-right:33px; 	
 }
 
 #format-multi-tenant span {
-	padding-right:70px; 
-	background-color:#ACC8E8;
+	padding-right:70px; 	
 }
 
 #format-version span {
-	padding-right:100px; 
-	background-color:#ACC8E8;
+	padding-right:100px; 	
 }
 
 #format-end-date span {
-	padding-right:60px; 
-	background-color:#ACC8E8;
+	padding-right:60px; 	
 }
 
 #format-number-licenses span {
-	padding-right:25px; 
-	background-color:#ACC8E8;
+	padding-right:25px; 	
 }
 
 #format-number-processes span {
-	padding-right:10px; 
-	background-color:#ACC8E8;
+	padding-right:10px; 	
 }
 
 #format-default-tenant span {
-	padding-right:57px; 
-	background-color:#ACC8E8;
+	padding-right:57px; 	
 }
 
 /* For navegation bar responsiveness:
