@@ -73,3 +73,9 @@ automatically: 911px;
         margin: 3px;
     }
 }
+
+@media (min-width: 992px) {
+    #myTab li.active a {
+        background-color: #f8f8f8;
+    }
+}

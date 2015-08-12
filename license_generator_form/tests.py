@@ -14,5 +14,5 @@ class RootURLTest(TestCase):
     def test_root_url_returns_correct_html(self):
         request = HttpRequest()
         response = generator_selection(request)
-        expected_html = render_to_string('web_form.html')
+        expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
