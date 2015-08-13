@@ -37,7 +37,6 @@ Piece of code that allow us to shrink the form earlier: 911px;
     .collapse.in {
         display:block !important;
     }    
-
     #myNavbar li a:hover, #myNavbar li a:focus {
         font-size: 100%;
     }
@@ -60,11 +59,9 @@ automatically: 911px;
         border:1px solid #dddddd;
         border-radius: 5px 5px 0px 0px;
     }
-
     .nav-tabs > li.active > a {
         border:none;
     }
-
     .nav > li > a:hover, .nav > li > a:focus,
     .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {                    
         font-weight: bold;
@@ -72,7 +69,6 @@ automatically: 911px;
         font-size: 125%;
         background-color: #B0DAC9;
     }
-
     .button-group > div {
         margin: 3px;
     }
