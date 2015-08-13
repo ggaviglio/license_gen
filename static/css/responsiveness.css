@@ -37,6 +37,10 @@ Piece of code that allow us to shrink the form earlier: 911px;
     .collapse.in {
         display:block !important;
     }    
+
+    #myNavbar li a:hover, #myNavbar li a:focus {
+        font-size: 100%;
+    }
 }
 
 @media (max-width: 441px) {
