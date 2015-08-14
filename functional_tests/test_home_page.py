@@ -195,7 +195,6 @@ class HomePageTest(FunctionalTest):
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
 
-
     def test_home_page_has_tabs_to_change_visible_form_content(self):
         default_content = self.browser.find_element_by_css_selector('div.active .panel')
 
@@ -218,7 +217,7 @@ class HomePageTest(FunctionalTest):
         form_elements_alfresco = self.get_form_elements("alfresco")
         # Alfrescan sees how every form element is empty
         self.check_form_elements_empty("alfresco", form_elements_alfresco)
-        # Alfrescan procedes to fill in each form elements within the tab selected
+        # Alfrescan procedes to fill in each form elements in the tab selected
         self.fill_in_form_elements("alfresco", form_elements_alfresco)
         # Alfrescan sees how every form element hold some information
         self.check_form_elements_filled("alfresco", form_elements_alfresco)
@@ -239,7 +238,7 @@ class HomePageTest(FunctionalTest):
         form_elements_activiti = self.get_form_elements("activiti")
         # Alfrescan sees how every form element is empty
         self.check_form_elements_empty("activiti", form_elements_activiti)
-        # Alfrescan procedes to fill in each form elements within the tab selected
+        # Alfrescan procedes to fill in each form elements in the tab selected
         self.fill_in_form_elements("activiti", form_elements_activiti)
         # Alfrescan sees how every form element hold some information
         self.check_form_elements_filled("activiti", form_elements_activiti)
@@ -249,4 +248,38 @@ class HomePageTest(FunctionalTest):
         # Alfrescan check all form elements available to be filled
         form_elements_activiti = self.get_form_elements("activiti")
         # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("activiti", form_elements_activiti)
+
+    def test_user_can_clear_empty_alfresco_form(self):
+        # Alfrescan goes to the alfresco tab
+        self.browser.find_element_by_css_selector('#myTab li [href="#alfresco_tab"]').click()
+        form_elements_alfresco = {}
+
+        # Alfrescan checks all form elements available to be filled
+        form_elements_alfresco = self.get_form_elements("alfresco")
+        # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("alfresco", form_elements_alfresco)
+
+        # Knowing that all form elements are empty, Alfrescan goes straight
+        # to click the Clear form button
+        self.browser.find_element_by_css_selector("#alfresco_form #clear_form").click()
+
+        #Alfrescan sees how the form is still empty after click the clear form button
+        self.check_form_elements_empty("alfresco", form_elements_alfresco)
+
+    def test_user_can_clear_empty_activiti_form(self):
+        # Alfrescan clicks on the activiti tab
+        self.browser.find_element_by_css_selector('#myTab li [href="#activiti_tab"]').click()
+        form_elements_activiti = {}
+
+        # Alfrescan checks all form elements available to be filled
+        form_elements_activiti = self.get_form_elements("activiti")
+        # Alfrescan sees how every form element is empty
+        self.check_form_elements_empty("activiti", form_elements_activiti)
+
+        # Knowing that all form elements are empty, Alfrescan goes straight
+        # to click the Clear form button
+        self.browser.find_element_by_css_selector("#activiti_form #clear_form").click()
+
+        #Alfrescan sees how the form is still empty after click the clear form button
         self.check_form_elements_empty("activiti", form_elements_activiti)

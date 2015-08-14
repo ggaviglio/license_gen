@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from license_generator_form.views import home_page
-from license_generator_form.views import handler404
+from license_generator_form.views import handler404, handler500
 
 
 class HomePageTest(TestCase):
@@ -23,3 +23,8 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         response = handler404(request)
         self.assertEqual(response.status_code, 404)
+
+    def test_internal_server_error_returns_500(self):
+        request = HttpRequest()
+        response = handler500(request)
+        self.assertEqual(response.status_code, 500)
