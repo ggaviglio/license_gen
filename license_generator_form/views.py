@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
-import license_generator  # this is the module to be implemented by Dan
+#import license_generator  # this is the module to be implemented by Dan
 
 
 def home_page(request):
