@@ -38,7 +38,8 @@ class GenerateLicenseTest(TestCase):
     def test_calls_license_generator_with_good_alfresco_data(
             self, mock_license
     ):
-        mock_license.return_value = None
+
+        mock_license.alfresco.generate.return_value = b'This is a stream of bytes that I am supposed to received'
 
         alfresco_data = {
             'release_key': 'ent30',
@@ -65,14 +66,16 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Alfresco-ent50-.lic',
         }
 
-        self.client.post('/generate/', {'alfresco-data': alfresco_data})
-        mock_license.assert_called_once_with({'alfresco-data': alfresco_data})
+        response = self.client.post('/generate/', {'alfresco-data': alfresco_data})
+        mock_license.alfresco.generate.assert_called_once_with(alfresco_data)
+        self.assertEqual(56, len(mock_license.alfresco.generate(alfresco_data)))
+
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_good_activiti_data(
         self, mock_license
     ):
-        mock_license.return_value = None
+        mock_license.activiti.generate.return_value = b'This is a stream of bytes that I am supposed to received'
 
         activiti_data = {
             'notes': 'some notes',
@@ -97,33 +100,39 @@ class GenerateLicenseTest(TestCase):
         }
 
         self.client.post('/generate/', {'activiti-data': activiti_data})
-        mock_license.assert_called_once_with({'activiti-data': activiti_data})
+        self.assertTrue(mock_license.activiti.generate.called)
+        mock_license.activiti.generate.assert_called_once_with(activiti_data)
+        self.assertEqual(56, len(mock_license.activiti.generate(activiti_data)))
+
+
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_no_alfresco_data(
         self, mock_license
     ):
-        mock_license.return_value = None
+        mock_license.alfresco.generate.side_effect = Exception('dictionary is empty or incompleted!')
         alfresco_data = {}
-        response = self.client.post('/generate/', {'no-data-alfresco': alfresco_data})
-        expected_error = "There is no alfresco data to deal with"
-        self.assertContains(response, expected_error)
+        self.client.post('/generate/', {'alfresco-data': alfresco_data})
+        expected_error = "dictionary is empty"
+        mock_license.alfresco.generate.assert_called_with(alfresco_data)
+        self.assertContains(expected_error, mock_license.alfresco.generate(alfresco_data))
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_no_activiti_data(
         self, mock_license
     ):
-        mock_license.return_value = None
+        mock_license.activiti.generate.side_effect = Exception('dictionary is empty or incompleted!')
         activiti_data = {}
-        response = self.client.post('/generate/', {'no-activiti-data': activiti_data})
-        expected_error = "There is no activiti data to deal with"
-        self.assertContains(response, expected_error)
+        response = self.client.post('/generate/', {'activiti-data': activiti_data})
+        mock_license.activiti.generate.assert_called_with(activiti_data)
+        expected_error = "dictionary is empty"
+        self.assertContains(expected_error, mock_license.activiti.generate(activiti_data))
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_bad_alfresco_data(
             self, mock_license
     ):
-        mock_license.return_value = None
+        mock_license.alfresco.generate.side_effect = Exception('dictionary does contain bad data!')
 
         alfresco_data = {
             'release_key': 'ent30',
@@ -150,15 +159,16 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Alfresco-ent50-.lic',
         }
 
-        response = self.client.post('/generate/', {'bad-alfresco-data': alfresco_data})
-        expected_error = "BAD DATA!?"
-        self.assertContains(response, expected_error)
+        response = self.client.post('/generate/', {'alfresco-data': alfresco_data})
+        expected_error = "dictionary does contain bad data"
+        mock_license.alfresco.generate.assert_called_with(alfresco_data)
+        self.assertContains(expected_error, mock_license.alfresco.generate(alfresco_data))
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_bad_activiti_data(
         self, mock_license
     ):
-        mock_license.return_value = None
+        mock_license.activiti.generate.side_effect = Exception('dictionary does contain bad data!')
 
         activiti_data = {
             'notes': 'some notes',
@@ -182,6 +192,7 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Activiti-ent50-.lic',
         }
 
-        response = self.client.post('/generate/', {'bad-activiti-data': activiti_data})
-        expected_error = "BAD DATA!?"
-        self.assertContains(response, expected_error)
+        response = self.client.post('/generate/', {'activiti-data': activiti_data})
+        expected_error = "dictionary does contain bad data"
+        mock_license.activiti.generate.assert_called_with(activiti_data)
+        self.assertContains(expected_error, mock_license.activiti.generate(activiti_data))
