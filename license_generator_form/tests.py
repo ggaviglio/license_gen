@@ -70,6 +70,10 @@ class GenerateLicenseTest(TestCase):
         mock_license.alfresco.generate.assert_called_once_with(alfresco_data)
         self.assertEqual(56, len(mock_license.alfresco.generate(alfresco_data)))
 
+        self.assertEqual(response['Content-Type'], 'application/octet-stream')
+        self.assertEqual(response['Content-Length'], len(mock_license.alfresco.generate(alfresco_data)))
+
+
 
     @patch('license_generator_form.views.license_generator')
     def test_calls_license_generator_with_good_activiti_data(
@@ -103,6 +107,9 @@ class GenerateLicenseTest(TestCase):
         self.assertTrue(mock_license.activiti.generate.called)
         mock_license.activiti.generate.assert_called_once_with(activiti_data)
         self.assertEqual(56, len(mock_license.activiti.generate(activiti_data)))
+
+        self.assertEqual(response['Content-Type'], 'application/octet-stream')
+        self.assertEqual(response['Content-Length'], len(mock_license.activiti.generate(activiti_data)))
 
 
 
