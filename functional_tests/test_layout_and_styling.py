@@ -6,13 +6,11 @@ class LayoutAndStylingTest(FunctionalTest):
     def test_layout_and_styling(self):
         self.browser.set_window_size(1024, 768)
 
-        # Alfrescan notices the header is centered
-        header_element = self.browser.find_element_by_tag_name('h1')
-        self.assertAlmostEqual(
-            header_element.location['x'] + header_element.size['width'] / 2,
-            512,
-            delta=10
-        )
+        # Alfrescan notices the logo is positioned to the right
+        logo_element = self.browser.find_element_by_css_selector(".navbar-header img")
+        navbar_width = self.browser.find_element_by_css_selector(".navbar-header").size['width']
+
+        self.assertLess(logo_element.location['x'], navbar_width / 2)
 
     def test_responsive_layout_top_navbar(self):
         self.browser.set_window_size(1024, 768)

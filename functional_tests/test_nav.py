@@ -13,6 +13,11 @@ class NavTest(FunctionalTest):
         # Alfrescan sees the nav bar has 4 clickable elements
         self.assertEqual(len(self.browser.find_elements_by_css_selector(".navbar a")), 4)
 
+    def test_nav_has_logo(self):
+        # Alfrescan sees a logo
+        logo_element = self.browser.find_element_by_css_selector(".navbar-header img")
+        self.assertTrue(logo_element)
+
     def test_home_link_redirects_to_top_home_page(self):
         # Alfrescan clicks the home link -Alfresco/Activiti license generator-
         home_url = self.browser.current_url

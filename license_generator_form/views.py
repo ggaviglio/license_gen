@@ -30,7 +30,7 @@ def generate_license(request):
     # Following will be the expected dictionaries when we get a post
     # alfresco-data / activiti-data
     # no-alfresco-data / no-activiti-data
-    # bad-alfresco-data / bad-activiti-data    
+    # bad-alfresco-data / bad-activiti-data
 
     file_bytes = ""
     filename = ""
@@ -96,10 +96,12 @@ def generate_license(request):
 
     #except EmptyDictionary:
     except ValidationError:
-        pass
+        # If I am can not generate a file I will have to show some error messages an I might redirect
+        # the page to a the same view?
+        return redirect('/')
 
     except ValidationError:
-        pass
+        return redirect('/')
 
     else:
         ##########################################################################
@@ -108,6 +110,7 @@ def generate_license(request):
 
         #filename = request.POST.get('output_filename')
         response = HttpResponse(file_bytes)
+        filename_header = ''
         type, encoding = mimetypes.guess_type(file_bytes) # I think that this line is not necessary
 
         if type is None:
@@ -122,15 +125,19 @@ def generate_license(request):
         if u'WebKit' in request.META['HTTP_USER_AGENT']:
             # Safari 3.0 and Chrome 2.0 accepts UTF-8 encoded string directly.
             filename_header = 'filename=%s' % filename
-        elif u'MSIE' in request.META['HTTP_USER_AGENT']:
+
+        response['Content-Disposition'] = 'attachment; ' + filename_header
+
+        return response
+    '''    elif u'MSIE' in request.META['HTTP_USER_AGENT']:
             # IE does not support internationalized filename at all.
             # It can only recognize internationalized URL, so we do the trick via routing rules.
             filename_header = ''
         else:
             # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).
-            filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename)
+            filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename)'''
 
-        response['Content-Disposition'] = 'attachment; ' + filename_header
+        
 
-        return response
+        #return response
         #####################################################################

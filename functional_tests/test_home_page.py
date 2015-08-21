@@ -5,10 +5,8 @@ class HomePageTest(FunctionalTest):
 
     def test_site_loads(self):
         # Alfrescan wants to generate a license, visits the URL
-        # They notice the page title and header mention the license generator
+        # They notice the page title mention the license generator
         self.assertIn("License Generator", self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertEqual("License Generator", header_text)
 
     def test_home_page_contains_tabbed_form(self):
         # There are two tabs above a form
