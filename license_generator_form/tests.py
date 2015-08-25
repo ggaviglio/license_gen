@@ -32,54 +32,17 @@ class HomePageTest(TestCase):
         self.assertEqual(response.status_code, 500)
 
 
-class Probando(TestCase):
-
-    def test_uno_del_sevilla(self):
-        alfresco_data = {
-            'release_key': 'ent30',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'some url',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'enterprise',
-            'field_end_date': '17-08-2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17-08-2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent50-.lic',
-        }
-        response = self.client.post('/generate/', {'alfresco_generate_btn':'1'}, HTTP_USER_AGENT='Mozilla/5.0')
-        # http://codereply.com/answer/4rfqve/djangos-querydict-bizarre-behavior-bunches-post-dictionary-single-key.html
-        #https://docs.djangoproject.com/en/1.5/topics/testing/overview/#django.test.client.Client.post
-        # http://grokbase.com/t/gg/django-users/133880abz3/testcase-send-post-with-m2m-data
-        
-
-        self.assertEqual(response['Content-Type'], 'application/octet-stream')
-        #self.assertEqual(response['Content-Length'], 56)
-        self.assertEqual(response['Content-Disposition'], "I dunno")
-
-'''
 class GenerateLicenseTest(TestCase):
 
-    @patch('license_generator_form.views.license_generator')
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_good_alfresco_data(
             self, mock_license
     ):
 
-        mock_license.alfresco.generate.return_value = b'This is a stream of bytes that I am supposed to received'
+        mock_license.generate.return_value = b'Stream of bytes to receive'
 
         alfresco_data = {
+            'alfresco_generate_btn': '1',
             'release_key': 'ent30',
             'notes': 'some notes',
             'external_id': 'some external id',
@@ -101,23 +64,29 @@ class GenerateLicenseTest(TestCase):
             'field_cloud_sync': '1',
             'field_ats_end_date': '17-08-2015',
             'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent50-.lic',
+            'output_filename': 'Alfresco-ent30-.lic',
         }
 
-        response = self.client.post('/generate/', {'alfresco-data': alfresco_data})
-        mock_license.alfresco.generate.assert_called_once_with(alfresco_data)
-        self.assertEqual(56, len(mock_license.alfresco.generate(alfresco_data)))
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
+
+        mock_license.assert_called_once_with(alfresco_data)
+        self.assertEqual(26, len(mock_license.generate(alfresco_data)))
+        self.assertEqual(b'Stream of bytes to receive', mock_license.generate(alfresco_data))
 
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
-        self.assertEqual(response['Content-Length'], len(mock_license.alfresco.generate(alfresco_data)))
+        self.assertEqual(response['Content-Length'], '502')
+        self.assertIn('Alfresco-ent30-.lic', response['Content-Disposition'])
 
-    @patch('license_generator_form.views.license_generator')
+
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_good_activiti_data(
         self, mock_license
     ):
-        mock_license.activiti.generate.return_value = b'This is a stream of bytes that I am supposed to received'
+        mock_license.generate.return_value = b'Stream of bytes to receive'
 
         activiti_data = {
+            'activiti_generate_btn': '1',
             'notes': 'some notes',
             'external_id': 'some external id',
             'external_id_type': 'salesforce',
@@ -139,43 +108,99 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Activiti-ent50-.lic',
         }
 
-        self.client.post('/generate/', {'activiti-data': activiti_data})
-        self.assertTrue(mock_license.activiti.generate.called)
-        mock_license.activiti.generate.assert_called_once_with(activiti_data)
-        self.assertEqual(56, len(mock_license.activiti.generate(activiti_data)))
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
+
+        self.assertTrue(mock_license.called)
+        mock_license.assert_called_once_with(activiti_data)
+        self.assertEqual(26, len(mock_license.generate(activiti_data)))
+        self.assertEqual(b'Stream of bytes to receive', mock_license.generate(activiti_data))
 
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
-        self.assertEqual(response['Content-Length'], len(mock_license.activiti.generate(activiti_data)))
+        self.assertEqual(response['Content-Length'], '458')
+        self.assertIn('Activiti-ent50-.lic', response['Content-Disposition'])
+    
 
-    @patch('license_generator_form.views.license_generator')
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_no_alfresco_data(
         self, mock_license
     ):
-        mock_license.alfresco.generate.side_effect = Exception('dictionary is empty or incompleted!')
-        alfresco_data = {}
-        self.client.post('/generate/', {'alfresco-data': alfresco_data})
-        expected_error = "dictionary is empty"
-        mock_license.alfresco.generate.assert_called_with(alfresco_data)
-        self.assertContains(expected_error, mock_license.alfresco.generate(alfresco_data))
+        mock_license.generate.side_effect = Exception('dictionary is empty or incompleted!')
+        alfresco_data = {
+            'alfresco_generate_btn': '1',
+            'field_max_users': 0,
+            'release_key': 'ent50',
+            'field_end_date': '',
+            'tag_trial': 'None',
+            'tag_internal_use_only': 'None',
+            'tag_proof_of_concept': 'None',
+            'tag_perpetual': 'None',
+            'external_id': '',
+            'field_heartbeat_url': '',
+            'field_ats_end_date': '',
+            'tag_extension': 'None',
+            'field_days': 0,
+            'output_filename': '',
+            'external_id_type': '',
+            'field_no_heartbeat': 'None',
+            'field_cloud_sync': 'None',
+            'field_max_docs': 0,
+            'notes': '',
+            'field_cryptodoc_enabled': 'None',
+            'field_license_type': 'team',
+            'field_holder_name': '',
+            'field_cluster_enabled': 'None',
+        }
 
-    @patch('license_generator_form.views.license_generator')
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
+
+        mock_license.assert_called_with(alfresco_data)
+        self.assertRaises(Exception, mock_license.generate)
+
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_no_activiti_data(
         self, mock_license
     ):
-        mock_license.activiti.generate.side_effect = Exception('dictionary is empty or incompleted!')
-        activiti_data = {}
-        response = self.client.post('/generate/', {'activiti-data': activiti_data})
-        mock_license.activiti.generate.assert_called_with(activiti_data)
-        expected_error = "dictionary is empty"
-        self.assertContains(expected_error, mock_license.activiti.generate(activiti_data))
+        mock_license.generate.side_effect = Exception('dictionary is empty or incompleted!')
+        activiti_data = {
+            'activiti_generate_btn': '1',
+            'external_id_type': '',
+            'tag_proof_of_concept': 'None',
+            'field_holder_name': '',
+            'tag_perpetual': 'None',
+            'field_number_of_admins': 0,
+            'tag_extension': 'None',
+            'output_filename': '',
+            'tag_internal_use_only': 'None',
+            'field_default_tenant': '',
+            'field_version': '1.0ent',
+            'field_start_day': 'None',
+            'field_number_of_editors': 0,
+            'field_multi_tenant': 'false',
+            'field_end_date': '',
+            'field_number_of_licenses': 0,
+            'notes': '',
+            'tag_trial': 'None',
+            'external_id': '',
+            'field_number_of_processes': 0,
 
-    @patch('license_generator_form.views.license_generator')
+        }
+
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
+
+        mock_license.assert_called_with(activiti_data)
+        self.assertRaises(Exception, mock_license.generate)
+
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_bad_alfresco_data(
             self, mock_license
     ):
-        mock_license.alfresco.generate.side_effect = Exception('dictionary does contain bad data!')
+        mock_license.generate.side_effect = Exception('dictionary does contain bad data!')
 
         alfresco_data = {
+            'alfresco_generate_btn': '1'
             'release_key': 'ent30',
             'notes': 'some notes',
             'external_id': 'some external id',
@@ -200,18 +225,21 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Alfresco-ent50-.lic',
         }
 
-        response = self.client.post('/generate/', {'alfresco-data': alfresco_data})
-        expected_error = "dictionary does contain bad data"
-        mock_license.alfresco.generate.assert_called_with(alfresco_data)
-        self.assertContains(expected_error, mock_license.alfresco.generate(alfresco_data))
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
 
-    @patch('license_generator_form.views.license_generator')
+        mock_license.alfresco.generate.assert_called_with(alfresco_data)
+        self.assertRaises(Exception, mock_license.generate)
+
+
+    @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_bad_activiti_data(
         self, mock_license
     ):
-        mock_license.activiti.generate.side_effect = Exception('dictionary does contain bad data!')
+        mock_license.generate.side_effect = Exception('dictionary does contain bad data!')
 
         activiti_data = {
+            'activiti_generate_btn': '1'
             'notes': 'some notes',
             'external_id': 'some external id',
             'external_id_type': 'salesforce',
@@ -233,7 +261,8 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Activiti-ent50-.lic',
         }
 
-        response = self.client.post('/generate/', {'activiti-data': activiti_data})
-        expected_error = "dictionary does contain bad data"
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
+
         mock_license.activiti.generate.assert_called_with(activiti_data)
-        self.assertContains(expected_error, mock_license.activiti.generate(activiti_data))'''
+        self.assertRaises(Exception, mock_license.generate)
