@@ -119,7 +119,7 @@ class GenerateLicenseTest(TestCase):
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
         self.assertEqual(response['Content-Length'], '458')
         self.assertIn('Activiti-ent50-.lic', response['Content-Disposition'])
-    
+
 
     @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_no_alfresco_data(
