@@ -71,7 +71,7 @@ def generate_license(request):
             alfresco_data['output_filename'] = request.POST.get('output_filename')
             filename = alfresco_data['output_filename']
             # Ok, at this point I have all the values gathered from the form, so what I have got to do is just
-            # stream_bytes = license_generator.alfresco.generate(alfresco_data)
+            #stream_bytes = license_generator.alfresco.generate(alfresco_data)
             # Now in this point I have to generate the file to download and after this
             for key in alfresco_data:
                 file_bytes = file_bytes + key + ' ' + str(alfresco_data[key]) + '\n'
@@ -121,7 +121,7 @@ def generate_license(request):
             activiti_data['output_filename'] = request.POST.get('output_filename')
             filename = activiti_data['output_filename']
 
-            # file_bytes = license_generator.activiti.generate(activiti_data)
+            #file_bytes = license_generator.activiti.generate(activiti_data)
             for key in activiti_data:
                 file_bytes = file_bytes + key + ' ' + str(activiti_data[key]) + '\n'
 
