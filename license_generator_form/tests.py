@@ -200,7 +200,7 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = Exception('dictionary does contain bad data!')
 
         alfresco_data = {
-            'alfresco_generate_btn': '1'
+            'alfresco_generate_btn': '1',
             'release_key': 'ent30',
             'notes': 'some notes',
             'external_id': 'some external id',
@@ -239,7 +239,7 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = Exception('dictionary does contain bad data!')
 
         activiti_data = {
-            'activiti_generate_btn': '1'
+            'activiti_generate_btn': '1',
             'notes': 'some notes',
             'external_id': 'some external id',
             'external_id_type': 'salesforce',
