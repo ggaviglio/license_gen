@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from license_generator_form.views import home_page
 from license_generator_form.views import handler404, handler500
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 
 class HomePageTest(TestCase):
@@ -78,7 +78,6 @@ class GenerateLicenseTest(TestCase):
         self.assertEqual(response['Content-Length'], '502')
         self.assertIn('Alfresco-ent30-.lic', response['Content-Disposition'])
 
-
     @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_good_activiti_data(
         self, mock_license
@@ -119,7 +118,6 @@ class GenerateLicenseTest(TestCase):
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
         self.assertEqual(response['Content-Length'], '458')
         self.assertIn('Activiti-ent50-.lic', response['Content-Disposition'])
-
 
     @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_no_alfresco_data(
@@ -188,7 +186,7 @@ class GenerateLicenseTest(TestCase):
         }
 
         user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
+        self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
 
         mock_license.assert_called_with(activiti_data)
         self.assertRaises(Exception, mock_license.generate)
@@ -226,11 +224,9 @@ class GenerateLicenseTest(TestCase):
         }
 
         user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        response = self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
-
-       # mock_license.assert_called_with(alfresco_data)
+        self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
+        # mock_license.assert_called_with(alfresco_data)
         self.assertRaises(Exception, mock_license.generate)
-
 
     @patch('license_generator_form.views.generate')
     def test_calls_license_generator_with_bad_activiti_data(
@@ -262,7 +258,6 @@ class GenerateLicenseTest(TestCase):
         }
 
         user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
-
+        self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
         # mock_license.assert_called_with(activiti_data)
         self.assertRaises(Exception, mock_license.generate)

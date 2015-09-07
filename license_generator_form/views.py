@@ -24,6 +24,7 @@ def handler500(request):
     response.status_code = 500
     return response
 
+
 def generate_license(request):
 
     file_bytes = ""
@@ -77,7 +78,7 @@ def generate_license(request):
                 file_bytes = file_bytes + key + ' ' + str(alfresco_data[key]) + '\n'
 
             datos = alfresco_data
-            datos.update({'alfresco_generate_btn':'1'})
+            datos.update({'alfresco_generate_btn': '1'})
             generate(datos)
 
         elif request.POST.get('activiti_generate_btn'):
@@ -126,7 +127,7 @@ def generate_license(request):
                 file_bytes = file_bytes + key + ' ' + str(activiti_data[key]) + '\n'
 
             datos = activiti_data
-            datos.update({'activiti_generate_btn':'1'})
+            datos.update({'activiti_generate_btn': '1'})
 
             generate(datos)
 
@@ -169,7 +170,5 @@ def generate_license(request):
             filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename)
 
         response['Content-Disposition'] = 'attachment; ' + filename_header
-
-
         return response
         #####################################################################
