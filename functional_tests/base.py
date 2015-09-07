@@ -35,7 +35,7 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['maximum_documents'] = self.browser.find_element_by_css_selector("#alfresco_form #field_max_docs")
             form_elements['cloud_sync_enabled'] = self.browser.find_element_by_css_selector("#alfresco_form #field_cloud_sync")
             form_elements['cryptodoc_enabled'] = self.browser.find_element_by_css_selector("#alfresco_form #field_cryptodoc_enabled")
-        else:   #Activiti
+        else:   # Activiti
             form_elements['number_admins'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_admins")
             form_elements['number_editors'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_editors")
             form_elements['multi_tenant'] = self.browser.find_element_by_css_selector("select#field_multi_tenant > option[selected='selected']")
@@ -70,7 +70,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), False)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), False)
-        else:   #Activiti
+        else:   # Activiti
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "")
             self.assertEqual(form_elements['number_editors'].get_attribute('value'), "")
             self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "false")
@@ -105,7 +105,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "3")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), True)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), True)
-        else:   #Activiti
+        else:   # Activiti
             self.assertEqual(form_elements['number_admins'].get_attribute('value'), "3")
             self.assertEqual(form_elements['number_editors'].get_attribute('value'), "3")
             self.assertEqual(form_elements['multi_tenant'].get_attribute('value'), "true")
@@ -139,7 +139,7 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['maximum_documents'].send_keys('3')
             form_elements['cloud_sync_enabled'].click()
             form_elements['cryptodoc_enabled'].click()
-        else: #Activiti
+        else:  # Activiti
             form_elements['number_admins'].send_keys('3')
             form_elements['number_editors'].send_keys('3')
             form_elements['multi_tenant'] = self.browser.find_element_by_css_selector("select#field_multi_tenant > option[value='true']")
