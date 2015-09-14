@@ -70,7 +70,7 @@
 
                     <div class="input-group has-feedback" id="format-start-date">
                         <span class="input-group-addon" id="sizing-addon2">Valid from (date)</span>
-                        <input type="text" id="field_start_date" name="field_start_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd-mm-yyyy">
+                        <input type="text" id="field_start_date" name="field_start_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd/mm/yyyy">
                         <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                     </div>
                     <br>
@@ -95,7 +95,13 @@
                             <option value="false" selected="selected">False</option>
                         </select>
                     </div>
-                    <br>                                                        
+                    <br>  
+                    
+                    <div class="input-group" id="format-number-apps">
+                        <span class="input-group-addon" id="sizing-addon2">Number of Apps</span>
+                        <input type="number" id="field_number_of_apps" name="field_number_of_apps" class="form-control" aria-describedby="sizing-addon2" min="0">
+                    </div>
+                    <br>                                                      
                 </div>
 
                 <div class="col-md-6 col-xs-12">
@@ -110,7 +116,7 @@
 
                     <div class="input-group has-feedback" id="format-end-date">
                         <span class="input-group-addon" id="sizing-addon2">Valid to (date)</span>
-                        <input type="text" id="field_end_date" name="field_end_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd-mm-yyyy">
+                        <input type="text" id="field_end_date" name="field_end_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd/mm/yyyy">
                         <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                     </div>
                     <br>
@@ -132,7 +138,7 @@
                         <input type="text" id="field_default_tenant" name="field_default_tenant" class="form-control" aria-describedby="sizing-addon2">
                     </div>
                     <br>                                                        
-                </div>
+                </div>                
             </div>
             <!--/ row -->
         </div>

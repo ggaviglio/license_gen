@@ -43,6 +43,7 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['number_licenses'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_licenses")
             form_elements['number_processes'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_processes")
             form_elements['default_tenant'] = self.browser.find_element_by_css_selector("#activiti_form #field_default_tenant")
+            form_elements['number_apps'] = self.browser.find_element_by_css_selector("#activiti_form #field_number_of_apps")
 
         return form_elements
 
@@ -66,7 +67,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['no_heartbeat'].is_selected(), False)
             self.assertEqual(form_elements['heartbeat_url'].get_attribute('value'), "")
             self.assertEqual(form_elements['cluster_enabled'].is_selected(), False)
-            self.assertEqual(form_elements['license_type'].get_attribute('value'), 'team')
+            self.assertEqual(form_elements['license_type'].get_attribute('value'), 'TEAM')
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), False)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), False)
@@ -78,6 +79,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "")
             self.assertEqual(form_elements['number_processes'].get_attribute('value'), "")
             self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "")
+            self.assertEqual(form_elements['number_apps'].get_attribute('value'), "")
 
         self.assertEqual(form_elements['license_filename'].get_attribute('value'), "")
 
@@ -101,7 +103,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['no_heartbeat'].is_selected(), True)
             self.assertEqual(form_elements['heartbeat_url'].get_attribute('value'), "some heartbeat url")
             self.assertEqual(form_elements['cluster_enabled'].is_selected(), True)
-            self.assertEqual(form_elements['license_type'].get_attribute('value'), 'enterprise')
+            self.assertEqual(form_elements['license_type'].get_attribute('value'), 'ENTERPRISE')
             self.assertEqual(form_elements['maximum_documents'].get_attribute('value'), "3")
             self.assertEqual(form_elements['cloud_sync_enabled'].is_selected(), True)
             self.assertEqual(form_elements['cryptodoc_enabled'].is_selected(), True)
@@ -113,6 +115,7 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(form_elements['number_licenses'].get_attribute('value'), "3")
             self.assertEqual(form_elements['number_processes'].get_attribute('value'), "3")
             self.assertEqual(form_elements['default_tenant'].get_attribute('value'), "some tenant")
+            self.assertEqual(form_elements['number_apps'].get_attribute('value'), "25")
 
         self.assertEqual(form_elements['license_filename'].get_attribute('value'), "some license filename")
 
@@ -134,7 +137,7 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['no_heartbeat'].click()
             form_elements['heartbeat_url'] .send_keys('some heartbeat url')
             form_elements['cluster_enabled'].click()
-            form_elements['license_type'] = self.browser.find_element_by_css_selector("select#field_license_type > option[value='enterprise']")
+            form_elements['license_type'] = self.browser.find_element_by_css_selector("select#field_license_type > option[value='ENTERPRISE']")
             form_elements['license_type'].click()
             form_elements['maximum_documents'].send_keys('3')
             form_elements['cloud_sync_enabled'].click()
@@ -149,5 +152,6 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['number_licenses'].send_keys('3')
             form_elements['number_processes'].send_keys('3')
             form_elements['default_tenant'].send_keys('some tenant')
+            form_elements['number_apps'].send_keys('25')
 
         form_elements['license_filename'].send_keys('some license filename')
