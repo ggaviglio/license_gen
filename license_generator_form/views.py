@@ -3,9 +3,19 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.core.exceptions import ValidationError
-from license_generator_form.license_generator import generate
 import alfresco_license_generators
 import datetime
+
+
+def get_value_number(request, field):
+    result = None
+
+    if request.POST.get(field) == '':
+        result = 0
+    else:
+        result = int(request.POST.get(field))
+
+    return result
 
 
 def get_checkbox_value(value):
@@ -87,15 +97,8 @@ def generate_license(request):
             alfresco_data['tag_perpetual'] = get_checkbox_value(request.POST.get('tag_perpetual'))
             alfresco_data['field_holder_name'] = request.POST.get('field_holder_name')
 
-            if request.POST.get('field_days') == '':
-                alfresco_data['field_days'] = 0
-            else:
-                alfresco_data['field_days'] = int(request.POST.get('field_days'))
-
-            if request.POST.get('field_max_users') == '':
-                alfresco_data['field_max_users'] = 0
-            else:
-                alfresco_data['field_max_users'] = int(request.POST.get('field_max_users'))
+            alfresco_data['field_days'] = get_value_number(request, 'field_days')
+            alfresco_data['field_max_users'] = get_value_number(request, 'field_max_users')
 
             alfresco_data['field_no_heartbeat'] = get_checkbox_value(request.POST.get('field_no_heartbeat'))
             alfresco_data['field_heartbeat_url'] = request.POST.get('field_heartbeat_url')
@@ -103,16 +106,19 @@ def generate_license(request):
             alfresco_data['field_license_type'] = request.POST.get('field_license_type')
             alfresco_data['field_end_date'] = request.POST.get('field_end_date')
 
-            if request.POST.get('field_max_docs') == '':
-                alfresco_data['field_max_docs'] = 0
-            else:
-                alfresco_data['field_max_docs'] = int(request.POST.get('field_max_docs'))
+            alfresco_data['field_max_docs'] = get_value_number(request, 'field_max_docs')
 
             alfresco_data['field_cloud_sync'] = get_checkbox_value(request.POST.get('field_cloud_sync'))
             alfresco_data['field_ats_end_date'] = request.POST.get('field_ats_end_date')
             alfresco_data['field_cryptodoc_enabled'] = get_checkbox_value(request.POST.get('field_cryptodoc_enabled'))
             alfresco_data['output_filename'] = request.POST.get('output_filename')
             filename = alfresco_data['output_filename']
+
+            '''print("Ahora vamos a ver que tenemos aqui: ")
+            for key in alfresco_data:
+                file_bytes = file_bytes + key + ' ' + str(alfresco_data[key]) + '\n'
+
+            print(file_bytes)'''
 
             ## TESTINGGG
             stdout, binary = alfresco_license_generators.Alfresco.generate(
@@ -145,38 +151,26 @@ def generate_license(request):
             activiti_data['field_holder_name'] = request.POST.get('field_holder_name')
             activiti_data['field_start_date'] = request.POST.get('field_start_date')
 
-            if request.POST.get('field_number_of_admins') == '':
-                activiti_data['field_number_of_admins'] = 0
-            else:
-                activiti_data['field_number_of_admins'] = int(request.POST.get('field_number_of_admins'))
-
-            if request.POST.get('field_number_of_editors') == '':
-                activiti_data['field_number_of_editors'] = 0
-            else:
-                activiti_data['field_number_of_editors'] = int(request.POST.get('field_number_of_editors'))
+            activiti_data['field_number_of_admins'] = get_value_number(request, 'field_number_of_admins')
+            activiti_data['field_number_of_editors'] = get_value_number(request, 'field_number_of_editors')
 
             activiti_data['field_multi_tenant'] = request.POST.get('field_multi_tenant')
             activiti_data['field_version'] = request.POST.get('field_version')
             activiti_data['field_end_date'] = request.POST.get('field_end_date')
 
-            if request.POST.get('field_number_of_licenses') == '':
-                activiti_data['field_number_of_licenses'] = 0
-            else:
-                activiti_data['field_number_of_licenses'] = int(request.POST.get('field_number_of_licenses'))
-
-            if request.POST.get('field_number_of_processes') == '':
-                activiti_data['field_number_of_processes'] = 0
-            else:
-                activiti_data['field_number_of_processes'] = int(request.POST.get('field_number_of_processes'))
-
-            if request.POST.get('field_number_of_apps') == '':
-                activiti_data['field_number_of_apps'] = 0
-            else:
-                activiti_data['field_number_of_apps'] = int(request.POST.get('field_number_of_apps'))
+            activiti_data['field_number_of_licenses'] = get_value_number(request, 'field_number_of_licenses')
+            activiti_data['field_number_of_processes'] = get_value_number(request, 'field_number_of_processes')
+            activiti_data['field_number_of_apps'] = get_value_number(request, 'field_number_of_apps')
 
             activiti_data['field_default_tenant'] = request.POST.get('field_default_tenant')
             activiti_data['output_filename'] = request.POST.get('output_filename')
             filename = activiti_data['output_filename']
+
+            '''print("Ahora vamos a ver que tenemos aqui ACTIVITI: ")
+            for key in activiti_data:
+                file_bytes = file_bytes + key + ' ' + str(activiti_data[key]) + '\n'
+
+            print(file_bytes)'''
 
             ## TESTTTT
             stdout, binary = alfresco_license_generators.Activiti.generate(
@@ -194,15 +188,6 @@ def generate_license(request):
             )
             ## TESTTTT
             file_bytes = binary
-
-
-
-            '''for key in activiti_data:
-                file_bytes = file_bytes + key + ' ' + str(activiti_data[key]) + '\n'
-
-            datos = activiti_data
-            datos.update({'activiti_generate_btn': '1'})
-            generate(datos)'''
 
     #except EmptyDictionary:
     except ValidationError:
