@@ -22,11 +22,15 @@ class HomePageTest(TestCase):
     def test_wrong_url_returns_404(self):
         request = HttpRequest()
         response = handler404(request)
+        expected_404 = render_to_string('404.html')
+        self.assertEqual(response.content.decode(), expected_404)
         self.assertEqual(response.status_code, 404)
 
     def test_internal_server_error_returns_500(self):
         request = HttpRequest()
         response = handler500(request)
+        expected_505 = render_to_string('404.html')
+        self.assertEqual(response.content.decode(), expected_505)
         self.assertEqual(response.status_code, 500)
 
 
@@ -36,7 +40,10 @@ class GenerateLicenseTest(TestCase):
     def test_bytes_returned_alfresco_license(
             self, mock_license
     ):
-        mock_license.generate.return_value = ('Alfresco output message', b'Stream of bytes to receive')
+        mock_license.generate.return_value = (
+            'Alfresco output message',
+            b'Stream of bytes to receive'
+        )
 
         alfresco_data = {
             'alfresco_generate_btn': '1',
@@ -64,8 +71,13 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Alfresco-ent30-.lic'
         }
 
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        response = self.client.post('/generate/', alfresco_data, HTTP_USER_AGENT=user_agent)
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post(
+            '/generate/',
+            alfresco_data,
+            HTTP_USER_AGENT=user_agent
+        )
 
         mock_license.generate.assert_called_once_with(
             h='Sebastian',
@@ -82,35 +94,19 @@ class GenerateLicenseTest(TestCase):
             cloudsync=True
         )
 
-        stdout, binary = mock_license.generate(
-            h='Sebastian',
-            noheartbeat=True,
-            clusterenabled=True,
-            release='ent30',
-            l='TEAM',
-            md=3,
-            heartbeaturl='www.alfresco.com',
-            e="17/08/2015",
-            mu=10,
-            ats='17/08/2015',
-            cryptodocenabled=True,
-            cloudsync=True
-        )
-
-        self.assertEqual(
-            ('Alfresco output message', b'Stream of bytes to receive'),
-            (stdout, binary)
-        )
-
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
         self.assertEqual(response['Content-Length'], '26')
         self.assertIn('Alfresco-ent30-.lic', response['Content-Disposition'])
+        self.assertEqual(b'Stream of bytes to receive', response.content)
 
     @patch('alfresco_license_generators.Activiti')
     def test_bytes_returned_activiti_license(
         self, mock_license
     ):
-        mock_license.generate.return_value = ('Activiti output message', b'Stream of bytes to receive')
+        mock_license.generate.return_value = (
+            'Activiti output message',
+            b'Stream of bytes to receive'
+        )
 
         activiti_data = {
             'activiti_generate_btn': '1',
@@ -136,8 +132,13 @@ class GenerateLicenseTest(TestCase):
             'output_filename': 'Activiti-ent50-.lic',
         }
 
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        response = self.client.post('/generate/', activiti_data, HTTP_USER_AGENT=user_agent)
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+        response = self.client.post(
+            '/generate/',
+            activiti_data,
+            HTTP_USER_AGENT=user_agent
+        )
 
         mock_license.generate.assert_called_with(
             v='1.0ent',
@@ -155,35 +156,19 @@ class GenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
 
-        stdout, binary = mock_license.generate(
-            v='1.0ent',
-            multiTenant='true',
-            numberOfProcesses=6,
-            numberOfAdmins=5,
-            defaultTenant='Seb',
-            h='Sebastian',
-            numberOfLicenses=5,
-            numberOfEditors=3,
-            numberOfApps=2,
-            s='20150818',
-            e='20150820'
-        )
-
-        self.assertEqual(
-            ('Activiti output message', b'Stream of bytes to receive'),
-            (stdout, binary)
-        )
-
         self.assertEqual(response['Content-Type'], 'application/octet-stream')
         self.assertEqual(response['Content-Length'], '26')
         self.assertIn('Activiti-ent50-.lic', response['Content-Disposition'])
+        self.assertEqual(b'Stream of bytes to receive', response.content)
 
     @patch('alfresco_license_generators.Alfresco')
     def test_exception_raised_on_alfresco_license(
         self, mock_license
     ):
 
-        mock_license.generate.side_effect = Exception('dictionary is empty or incompleted!')
+        mock_license.generate.side_effect = Exception(
+            'dictionary is empty or incompleted!'
+        )
 
         with self.assertRaises(Exception):
             stdout, binary = mock_license.generate(
@@ -197,7 +182,9 @@ class GenerateLicenseTest(TestCase):
         self, mock_license
     ):
 
-        mock_license.generate.side_effect = Exception('dictionary is empty or incompleted!')
+        mock_license.generate.side_effect = Exception(
+            'dictionary is empty or incompleted!'
+        )
 
         with self.assertRaises(Exception):
             stdout, binary = mock_license.generate(

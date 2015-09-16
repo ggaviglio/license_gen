@@ -26,6 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SELENIUM_HOST = "192.168.59.103"
+
 
 # Application definition
 
