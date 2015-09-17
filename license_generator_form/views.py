@@ -29,6 +29,59 @@ def _get_checkbox_value(value):
     return result
 
 
+def _generate_alfresco_license(request):
+    stdout, binary = alfresco_license_generators.Alfresco.generate(
+        release=request.POST.get('release_key'),
+        cloudsync=_get_checkbox_value(request.POST.get('field_cloud_sync')),
+        h=request.POST.get('field_holder_name'),
+        e=request.POST.get('field_end_date'),
+        heartbeaturl=request.POST.get('field_heartbeat_url'),
+        ats=request.POST.get('field_ats_end_date'),
+        mu=_get_value_number(request, 'field_max_users'),
+        noheartbeat=_get_checkbox_value(
+            request.POST.get('field_no_heartbeat')
+        ),
+        l=request.POST.get('field_license_type'),
+        clusterenabled=_get_checkbox_value(
+            request.POST.get('field_cluster_enabled')
+        ),
+        md=_get_value_number(request, 'field_max_docs'),
+        cryptodocenabled=_get_checkbox_value(
+            request.POST.get('field_cryptodoc_enabled')
+        )
+    )
+    return (stdout, binary)
+
+
+def _generate_activiti_license(request):
+    stdout, binary = alfresco_license_generators.Activiti.generate(
+        numberOfAdmins=_get_value_number(request, 'field_number_of_admins'),
+        h=request.POST.get('field_holder_name'),
+        v=request.POST.get('field_version'),
+        e=datetime.datetime.strptime(
+            request.POST.get('field_end_date'),
+            '%d/%m/%Y'
+        ).strftime('%Y%m%d'),
+        numberOfLicenses=_get_value_number(
+            request,
+            'field_number_of_licenses'
+        ),
+        numberOfEditors=_get_value_number(request, 'field_number_of_editors'),
+        numberOfProcesses=_get_value_number(
+            request,
+            'field_number_of_processes'
+        ),
+        numberOfApps=_get_value_number(request, 'field_number_of_apps'),
+        s=datetime.datetime.strptime(
+            request.POST.get('field_start_date'),
+            '%d/%m/%Y'
+        ).strftime('%Y%m%d'),
+        multiTenant=request.POST.get('field_multi_tenant'),
+        defaultTenant=request.POST.get('field_default_tenant')
+    )
+    return (stdout, binary)
+
+
 def get_downloadable_binary_file(request, file_bytes, filename):
     response = HttpResponse(file_bytes)
     type = None
@@ -36,19 +89,22 @@ def get_downloadable_binary_file(request, file_bytes, filename):
     if type is None:
         type = 'application/octet-stream'
         response['Content-Type'] = type
-        response['Content-Length'] = str(len(file_bytes))  # It will retrieve the number of bytes
+        response['Content-Length'] = str(len(file_bytes))
 
-    # To inspect details for the below code, see http://greenbytes.de/tech/tc2231/
+    # To inspect details for the below code,
+    # see http://greenbytes.de/tech/tc2231/
     if u'WebKit' in request.META['HTTP_USER_AGENT']:
         # Safari 3.0 and Chrome 2.0 accepts UTF-8 encoded string directly.
         filename_header = 'filename=%s' % filename
 
     elif u'MSIE' in request.META['HTTP_USER_AGENT']:
         # IE does not support internationalized filename at all.
-        # It can only recognize internationalized URL, so we do the trick via routing rules.
+        # It can only recognize internationalized URL,
+        # so we do the trick via routing rules.
         filename_header = ''
     else:
-        # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).
+        # For others like Firefox, we follow RFC2231
+        # (encoding extension in HTTP headers).
         filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename)
 
     response['Content-Disposition'] = 'attachment; ' + filename_header
@@ -75,101 +131,18 @@ def handler500(request):
 
 def generate_license(request):
 
-    file_bytes = ''
     filename = ''
-    datos = {}
 
     try:
         if request.POST.get('alfresco_generate_btn'):
-            alfresco_data = {}
-            alfresco_data['release_key'] = request.POST.get('release_key')
-            alfresco_data['notes'] = request.POST.get('notes')
-            alfresco_data['external_id'] = request.POST.get('external_id')
-            alfresco_data['external_id_type'] = request.POST.get('external_id_type')
-            alfresco_data['tag_trial'] = _get_checkbox_value(request.POST.get('tag_trial'))
-            alfresco_data['tag_internal_use_only'] = _get_checkbox_value(request.POST.get('tag_internal_use_only'))
-            alfresco_data['tag_proof_of_concept'] = _get_checkbox_value(request.POST.get('tag_proof_of_concept'))
-            alfresco_data['tag_extension'] = _get_checkbox_value(request.POST.get('tag_extension'))
-            alfresco_data['tag_perpetual'] = _get_checkbox_value(request.POST.get('tag_perpetual'))
-            alfresco_data['field_holder_name'] = request.POST.get('field_holder_name')
 
-            alfresco_data['field_days'] = _get_value_number(request, 'field_days')
-            alfresco_data['field_max_users'] = _get_value_number(request, 'field_max_users')
-
-            alfresco_data['field_no_heartbeat'] = _get_checkbox_value(request.POST.get('field_no_heartbeat'))
-            alfresco_data['field_heartbeat_url'] = request.POST.get('field_heartbeat_url')
-            alfresco_data['field_cluster_enabled'] = _get_checkbox_value(request.POST.get('field_cluster_enabled'))
-            alfresco_data['field_license_type'] = request.POST.get('field_license_type')
-            alfresco_data['field_end_date'] = request.POST.get('field_end_date')
-
-            alfresco_data['field_max_docs'] = _get_value_number(request, 'field_max_docs')
-
-            alfresco_data['field_cloud_sync'] = _get_checkbox_value(request.POST.get('field_cloud_sync'))
-            alfresco_data['field_ats_end_date'] = request.POST.get('field_ats_end_date')
-            alfresco_data['field_cryptodoc_enabled'] = _get_checkbox_value(request.POST.get('field_cryptodoc_enabled'))
-            alfresco_data['output_filename'] = request.POST.get('output_filename')
-            filename = alfresco_data['output_filename']
-
-            stdout, binary = alfresco_license_generators.Alfresco.generate(
-                release=alfresco_data['release_key'],
-                cloudsync=alfresco_data['field_cloud_sync'],
-                h=alfresco_data['field_holder_name'],
-                e=alfresco_data['field_end_date'],
-                heartbeaturl=alfresco_data['field_heartbeat_url'],
-                ats=alfresco_data['field_ats_end_date'],
-                mu=alfresco_data['field_max_users'],
-                noheartbeat=alfresco_data['field_no_heartbeat'],
-                l=alfresco_data['field_license_type'],
-                clusterenabled=alfresco_data['field_cluster_enabled'],
-                md=alfresco_data['field_max_docs'],
-                cryptodocenabled=alfresco_data['field_cryptodoc_enabled']
-            )
-
-            file_bytes = binary
+            filename = request.POST.get('output_filename')
+            stdout, binary = _generate_alfresco_license(request)
 
         elif request.POST.get('activiti_generate_btn'):
-            activiti_data = {}
-            activiti_data['notes'] = request.POST.get('notes')
-            activiti_data['external_id'] = request.POST.get('external_id')
-            activiti_data['external_id_type'] = request.POST.get('external_id_type')
-            activiti_data['tag_trial'] = _get_checkbox_value(request.POST.get('tag_trial'))
-            activiti_data['tag_internal_use_only'] = _get_checkbox_value(request.POST.get('tag_internal_use_only'))
-            activiti_data['tag_proof_of_concept'] = _get_checkbox_value(request.POST.get('tag_proof_of_concept'))
-            activiti_data['tag_extension'] = _get_checkbox_value(request.POST.get('tag_extension'))
-            activiti_data['tag_perpetual'] = _get_checkbox_value(request.POST.get('tag_perpetual'))
-            activiti_data['field_holder_name'] = request.POST.get('field_holder_name')
-            activiti_data['field_start_date'] = request.POST.get('field_start_date')
 
-            activiti_data['field_number_of_admins'] = _get_value_number(request, 'field_number_of_admins')
-            activiti_data['field_number_of_editors'] = _get_value_number(request, 'field_number_of_editors')
-
-            activiti_data['field_multi_tenant'] = request.POST.get('field_multi_tenant')
-            activiti_data['field_version'] = request.POST.get('field_version')
-            activiti_data['field_end_date'] = request.POST.get('field_end_date')
-
-            activiti_data['field_number_of_licenses'] = _get_value_number(request, 'field_number_of_licenses')
-            activiti_data['field_number_of_processes'] = _get_value_number(request, 'field_number_of_processes')
-            activiti_data['field_number_of_apps'] = _get_value_number(request, 'field_number_of_apps')
-
-            activiti_data['field_default_tenant'] = request.POST.get('field_default_tenant')
-            activiti_data['output_filename'] = request.POST.get('output_filename')
-            filename = activiti_data['output_filename']
-
-            stdout, binary = alfresco_license_generators.Activiti.generate(
-                numberOfAdmins=activiti_data['field_number_of_admins'],
-                h=activiti_data['field_holder_name'],
-                v=activiti_data['field_version'],
-                e=datetime.datetime.strptime(activiti_data['field_end_date'], '%d/%m/%Y').strftime('%Y%m%d'),
-                numberOfLicenses=activiti_data['field_number_of_licenses'],
-                numberOfEditors=activiti_data['field_number_of_editors'],
-                numberOfProcesses=activiti_data['field_number_of_processes'],
-                numberOfApps=activiti_data['field_number_of_apps'],
-                s=datetime.datetime.strptime(activiti_data['field_start_date'], '%d/%m/%Y').strftime('%Y%m%d'),
-                multiTenant=activiti_data['field_multi_tenant'],
-                defaultTenant=activiti_data['field_default_tenant']
-            )
-
-            file_bytes = binary
+            filename = request.POST.get('output_filename')
+            stdout, binary = _generate_activiti_license(request)
 
     except ValidationError:
         return redirect('/')
@@ -178,4 +151,4 @@ def generate_license(request):
         return redirect('/')
 
     else:
-        return get_downloadable_binary_file(request, file_bytes, filename)
+        return get_downloadable_binary_file(request, binary, filename)
