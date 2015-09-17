@@ -29,7 +29,7 @@ class HomePageTest(TestCase):
     def test_internal_server_error_returns_500(self):
         request = HttpRequest()
         response = handler500(request)
-        expected_505 = render_to_string('404.html')
+        expected_505 = render_to_string('500.html')
         self.assertEqual(response.content.decode(), expected_505)
         self.assertEqual(response.status_code, 500)
 
