@@ -7,6 +7,20 @@ import alfresco_license_generators
 import datetime
 
 
+def _get_value_date(request, field):
+    result = None
+
+    if request.POST.get(field) == '':
+        result = ''
+    else:
+        result = datetime.datetime.strptime(
+            request.POST.get(field),
+            '%d/%m/%Y'
+        ).strftime('%Y%m%d')
+
+    return result
+
+
 def _get_value_number(request, field):
     result = None
 
@@ -58,10 +72,7 @@ def _generate_activiti_license(request):
         numberOfAdmins=_get_value_number(request, 'field_number_of_admins'),
         h=request.POST.get('field_holder_name'),
         v=request.POST.get('field_version'),
-        e=datetime.datetime.strptime(
-            request.POST.get('field_end_date'),
-            '%d/%m/%Y'
-        ).strftime('%Y%m%d'),
+        e=_get_value_date(request, 'field_end_date'),
         numberOfLicenses=_get_value_number(
             request,
             'field_number_of_licenses'
@@ -72,10 +83,7 @@ def _generate_activiti_license(request):
             'field_number_of_processes'
         ),
         numberOfApps=_get_value_number(request, 'field_number_of_apps'),
-        s=datetime.datetime.strptime(
-            request.POST.get('field_start_date'),
-            '%d/%m/%Y'
-        ).strftime('%Y%m%d'),
+        s=_get_value_date(request, 'field_start_date'),
         multiTenant=request.POST.get('field_multi_tenant'),
         defaultTenant=request.POST.get('field_default_tenant')
     )
@@ -145,10 +153,10 @@ def generate_license(request):
             stdout, binary = _generate_activiti_license(request)
 
     except ValidationError:
-        return redirect('/')
+        pass
 
     except ValidationError:
-        return redirect('/')
+        pass
 
     else:
         return get_downloadable_binary_file(request, binary, filename)
