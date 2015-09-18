@@ -140,6 +140,7 @@ def handler500(request):
 def generate_license(request):
 
     filename = ''
+    binary = b''
 
     try:
         if request.POST.get('alfresco_generate_btn'):
@@ -157,6 +158,9 @@ def generate_license(request):
 
     except ValidationError:
         pass
+
+    except:
+        return render(request, 'home.html', {'error_message': "ERROR MESSAGE?!"})
 
     else:
         return get_downloadable_binary_file(request, binary, filename)

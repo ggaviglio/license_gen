@@ -167,15 +167,31 @@ class GenerateLicenseTest(TestCase):
     ):
 
         mock_license.generate.side_effect = Exception(
-            'dictionary is empty or incompleted!'
+            'Your message could not being delivered. Java Not found Error!'
         )
 
-        with self.assertRaises(Exception):
-            stdout, binary = mock_license.generate(
-                release="ent50",
-                badargument="wontwork"
-            )
+        alfresco_data = {
+            'output_filename': 'Alfresco-ent30-.lic'
+        }
+
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+        response = self.client.post(
+            '/generate/',
+            alfresco_data,
+            HTTP_USER_AGENT=user_agent
+        )
+
+        #with self.assertRaises(Exception):
+        #    self.assertEqual("", response.content)
+        #    self.assertFalse(mock_license.generate.called)
+
+        self.assertRaises(Exception, mock_license.generate)
         self.assertTrue(mock_license.generate.called)
+
+        print("VALUE : ")
+        print(response.content)
 
     @patch('alfresco_license_generators.Activiti')
     def test_exception_raised_on_activiti_license(
