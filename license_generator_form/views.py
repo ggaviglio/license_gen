@@ -4,6 +4,10 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 import alfresco_license_generators
+from alfresco_license_generators import (
+    JavaNotFoundError,
+    GeneratorCommandError
+)
 import datetime
 
 
@@ -140,27 +144,36 @@ def handler500(request):
 def generate_license(request):
 
     filename = ''
-    binary = b''
 
     try:
         if request.POST.get('alfresco_generate_btn'):
-
             filename = request.POST.get('output_filename')
             stdout, binary = _generate_alfresco_license(request)
 
         elif request.POST.get('activiti_generate_btn'):
-
             filename = request.POST.get('output_filename')
             stdout, binary = _generate_activiti_license(request)
 
-    except ValidationError:
-        pass
+    except JavaNotFoundError as error_message:
+        return render(
+            request,
+            'home.html',
+            {'java_error_message': error_message}
+        )
 
-    except ValidationError:
-        pass
+    except GeneratorCommandError as error_message:
+        return render(
+            request,
+            'home.html',
+            {'generator_error_message': error_message}
+        )
 
-    except:
-        return render(request, 'home.html', {'error_message': "ERROR MESSAGE?!"})
+    except Exception as error_message:
+        return render(
+            request,
+            'home.html',
+            {'general_error_message': error_message}
+        )
 
     else:
         return get_downloadable_binary_file(request, binary, filename)
