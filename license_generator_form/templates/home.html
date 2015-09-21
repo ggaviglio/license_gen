@@ -12,19 +12,19 @@
 
                     <div role="tabpanel">
                         <ul id="myTab" class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class={% if tab_selected != "activiti" %}"active"{% endif %}>
+                            <li role="presentation" class={% if tab_selected != "Activiti" %}"active"{% endif %}>
                                 <a href="#alfresco_tab" aria-controls="alfresco_tab" data-toggle="tab" role="tab" >Alfresco License Generator</a>
                             </li>
-                            <li role="presentation" class={% if tab_selected == "activiti" %}"active"{% endif %}>
+                            <li role="presentation" class={% if tab_selected == "Activiti" %}"active"{% endif %}>
                                 <a href="#activiti_tab" aria-controls="activiti_tab" data-toggle="tab" role="tab" >Activiti License Generator</a>
                             </li>
                         </ul>
                         <div id="myTabContent" class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade {% if tab_selected != "activiti" %}in active{% endif %}" id="alfresco_tab"> 
+                            <div role="tabpanel" class="tab-pane fade {% if tab_selected != "Activiti" %}in active{% endif %}" id="alfresco_tab"> 
                                 {% include "alfresco_form.html" %}                                                             
                             </div>
 
-                            <div role="tabpanel" class="tab-pane fade {% if tab_selected == "activiti" %}in active{% endif %}" id="activiti_tab">
+                            <div role="tabpanel" class="tab-pane fade {% if tab_selected == "Activiti" %}in active{% endif %}" id="activiti_tab">
                                 {% include "activiti_form.html" %}                                 
                             </div>
                         </div>
@@ -40,19 +40,7 @@
         /* Allows to change the title of the nav bar*/               
         $("#myTab li a").click(function() {
             var text = $( this ).text();                
-            $(".navbar-brand #interactive-title").text(text);
-
-            /* We will check if there is any alert message and if so, we should either 
-                hide it or show it.*/
-            if($(".alert")[0].outerHTML.search("activiti") > -1 && $(":focus").text() == "Activiti License Generator" ||
-                $(".alert")[0].outerHTML.search("alfresco") > -1 && $(":focus").text() == "Alfresco License Generator" )
-            {                
-                $(".alert").show();                                
-            }
-            else 
-            {                      
-                $(".alert").hide();
-            }
+            $(".navbar-brand #interactive-title").text(text);            
         });  
         
         $(".date").datepicker({ 

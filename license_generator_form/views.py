@@ -148,12 +148,12 @@ def generate_license(request):
     try:
         if request.POST.get('alfresco_generate_btn'):
             filename = request.POST.get('output_filename')
-            tab_selected = 'alfresco'
+            tab_selected = 'Alfresco'
             stdout, binary = _generate_alfresco_license(request)
 
         elif request.POST.get('activiti_generate_btn'):
             filename = request.POST.get('output_filename')
-            tab_selected = 'activiti'
+            tab_selected = 'Activiti'
             stdout, binary = _generate_activiti_license(request)
 
     except JavaNotFoundError as error_message:
