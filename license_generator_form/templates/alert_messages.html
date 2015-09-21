@@ -1,0 +1,15 @@
+{% if generator_error_message %}
+    <div class="alert alert-danger {{tab_selected}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>                                    
+        <p><b>Server License Generator error:</b></p>
+        <p>{{ generator_error_message }}</p>
+    </div>
+{% elif java_error_message %}
+    <div class="alert alert-danger {{tab_selected}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>                    
+        <p><b>Java License Generator error:</b></p>
+        <p>{{ java_error_message }}</p>        
+    </div>
+{% endif %}
+
+

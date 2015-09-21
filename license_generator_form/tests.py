@@ -173,93 +173,6 @@ class GenerateLicenseTest(TestCase):
         self.assertEqual(b'Stream of bytes to receive', response.content)
 
     @patch('alfresco_license_generators.Alfresco')
-    def test_general_exception_raised_on_alfresco_license(
-        self, mock_license
-    ):
-
-        mock_license.generate.side_effect = Exception(GENERAL_ERROR_MESSAGE)
-
-        alfresco_data = {
-            'alfresco_generate_btn': '1',
-            'field_holder_name': '',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'TEAM',
-            'field_end_date': '17/08/2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17/08/2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent30-.lic'
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
-        response = self.client.post(
-            '/generate/',
-            alfresco_data,
-            HTTP_USER_AGENT=user_agent
-        )
-
-        self.assertTrue(mock_license.generate.called)
-        self.assertRaises(Exception, mock_license.generate)
-        self.assertNotIn(
-            GENERAL_ERROR_MESSAGE.encode('utf-8'),
-            response.content
-        )
-
-    @patch('alfresco_license_generators.Activiti')
-    def test_general_exception_raised_on_activiti_license(
-        self, mock_license
-    ):
-
-        mock_license.generate.side_effect = Exception(GENERAL_ERROR_MESSAGE)
-
-        activiti_data = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': '',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic',
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
-        response = self.client.post(
-            '/generate/',
-            activiti_data,
-            HTTP_USER_AGENT=user_agent
-        )
-
-        self.assertTrue(mock_license.generate.called)
-        self.assertRaises(Exception, mock_license.generate)
-        self.assertNotIn(
-            GENERAL_ERROR_MESSAGE.encode('utf-8'),
-            response.content
-        )
-
-    @patch('alfresco_license_generators.Alfresco')
     def test_java_exception_raised_on_alfresco_license(
         self, mock_license
     ):
@@ -295,7 +208,7 @@ class GenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
         self.assertRaises(JavaNotFoundError, mock_license.generate)
-        self.assertNotIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
+        self.assertIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
 
     @patch('alfresco_license_generators.Activiti')
     def test_java_exception_raised_on_activiti_license(
@@ -340,7 +253,7 @@ class GenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
         self.assertRaises(JavaNotFoundError, mock_license.generate)
-        self.assertNotIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
+        self.assertIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
 
     @patch('alfresco_license_generators.Alfresco')
     def test_generatorcommand_exception_raised_on_alfresco_license(
@@ -378,7 +291,7 @@ class GenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
         self.assertRaises(GeneratorCommandError, mock_license.generate)
-        self.assertNotIn(
+        self.assertIn(
             GENERATOR_ERROR_MESSAGE.encode('utf-8'),
             response.content
         )
@@ -426,7 +339,7 @@ class GenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
         self.assertRaises(GeneratorCommandError, mock_license.generate)
-        self.assertNotIn(
+        self.assertIn(
             GENERATOR_ERROR_MESSAGE.encode('utf-8'),
             response.content
         )
