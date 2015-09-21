@@ -1,0 +1,208 @@
+<form id="alfresco_form" name="alfresco_form" class="form-horizontal" role="form" action="/generate/" method="post">
+    <div class="panel">
+        <div class="panel-body jumbotron">                                              
+            <h3><b>Generate a new license</b></h3>
+            <hr>
+
+            <div class="input-group" id="format-release-key">
+                <span class="input-group-addon" id="sizing-addon2">Release key</span>
+                <label for="release_key"></label>
+                <select class="form-control" id="release_key" name="release_key" aria-describedby="sizing-addon2">
+                    <option value="ent22" >ent22</option>
+                    <option value="ent30" >ent30</option>
+                    <option value="ent31" >ent31</option>
+                    <option value="ent32" >ent32</option>
+                    <option value="ent33" >ent33</option>
+                    <option value="ent34" >ent34</option>
+                    <option value="ent35" >ent35</option>
+                    <option value="ent40" >ent40</option>
+                    <option value="ent41" >ent41</option>
+                    <option value="ent42" >ent42</option>
+                    <option value="ent43" >ent43</option>
+                    <option value="test42" >test42</option>
+                    <option value="unit10" >unit10</option>
+                    <option value="unit10Alfresco2" >unit10Alfresco2</option>
+                    <option value="unit11" >unit11</option>
+                    <option value="ent50" selected="selected">ent50</option>
+                </select>                                                    
+            </div>
+            <span id="text-leyend">Select the release this license is for</span>
+            <br><br>
+
+            <div class="input-group" id="format-notes">
+                <span class="input-group-addon" id="sizing-addon2">Notes</span>
+                <textarea id="notes" name="notes" rows="10" cols="50" class="form-control" aria-describedby="sizing-addon2" placeholder="Reason for generation, any other information worth logging for this license... etc."></textarea>
+            </div>
+            <br>
+
+            <div class="input-group" id="format-external-id">
+                <span class="input-group-addon" id="sizing-addon2">External ID</span>
+                <input type="text" id="external_id" name="external_id" class="form-control" aria-describedby="sizing-addon2">
+            </div>
+            <br>
+
+            <div class="input-group" id="format-external-id-type">
+                <span class="input-group-addon" id="sizing-addon2">External ID type</span>
+                <input type="text" id="external_id_type" name="external_id_type" class="form-control" aria-describedby="sizing-addon2">
+            </div>
+            <span id="text-leyend">e.g. 'salesforce'</span>
+            <br><br>                                            
+        </div>
+
+        <div class="panel-body jumbotron"> 
+            <h3><b>License types</b></h3>
+            <hr>
+            <fieldset  id="tag_license_types" name="tag_license_types">
+                <div class="checkbox checkbox-success">
+                    <input id="tag_trial" name="tag_trial" value="1" type="checkbox">
+                    <label for="tag_trial">Trial</label>
+                </div>
+
+                <div class="checkbox checkbox-success">
+                    <input id="tag_internal_use_only" name="tag_internal_use_only" value="1" type="checkbox">
+                    <label for="tag_internal_use_only">Internal use only</label>
+                </div>
+
+                <div class="checkbox checkbox-success">
+                    <input id="tag_proof_of_concept" name="tag_proof_of_concept" value="1" type="checkbox">
+                    <label for="tag_proof_of_concept">Proof of concept</label>
+                </div>
+
+                <div class="checkbox checkbox-success">
+                    <input id="tag_extension" name="tag_extension" value="1" type="checkbox">
+                    <label for="tag_extension">Extension</label>
+                </div>
+
+                <div class="checkbox checkbox-success">
+                    <input id="tag_perpetual" name="tag_perpetual" value="1" type="checkbox">
+                    <label for="tag_perpetual">Perpetual</label>
+                </div>
+            </fieldset>    
+            <br>
+        </div>
+
+        <div class="panel-body jumbotron"> 
+            <h3><b>License arguments</b></h3>
+            <hr>
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <div class="input-group" id="format-account-holder">
+                        <span class="input-group-addon" id="sizing-addon2">Account holder name</span>
+                        <input type="text" id="field_holder_name" name="field_holder_name" class="form-control" aria-describedby="sizing-addon2">
+                    </div>
+                    <br>
+
+                    <div class="input-group" id="format-expiry-days">
+                        <span class="input-group-addon" id="sizing-addon2">Expiry (days)</span>
+                        <input type="number" id="field_days" name="field_days" class="form-control" aria-describedby="sizing-addon2" min="0">
+                    </div>
+                    <br>
+
+                    <div class="input-group" id="format-maximum-users">
+                        <span class="input-group-addon" id="sizing-addon2">Maximum users</span>
+                        <input type="number" id="field_max_users" name="field_max_users" class="form-control" aria-describedby="sizing-addon2" min="0">
+                    </div>
+                    <br>
+
+                    <div class="input-group">
+                        <div class="checkbox checkbox-success">
+                            <input id="field_no_heartbeat" name="field_no_heartbeat" value="1" type="checkbox">
+                            <label for="field_no_heartbeat">No heartbeat</label>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="input-group" id="format-heartbeat-url">
+                        <span class="input-group-addon" id="sizing-addon2">Heartbeat URL</span>
+                        <input type="text" id="field_heartbeat_url" name="field_heartbeat_url" class="form-control" aria-describedby="sizing-addon2">
+                    </div>
+                    <br>
+
+                    <div class="input-group">
+                        <div class="checkbox checkbox-success">
+                            <input id="field_cluster_enabled" name="field_cluster_enabled" value="1" type="checkbox">
+                            <label for="field_cluster_enabled">Clustering enabled</label>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <!-- From now on we will have the other 6 field inputs left   -->
+                <div class="col-md-6 col-xs-12">
+                    <div class="input-group" id="format-license-type">
+                        <span class="input-group-addon" id="sizing-addon2">License type</span>
+                        
+                        <select class="form-control" id="field_license_type" name="field_license_type" aria-describedby="sizing-addon2">
+                            <option value="ENTERPRISE" >ENTERPRISE</option>
+                            <option value="TEAM" selected="selected">TEAM</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <div class="input-group has-feedback" id="format-expiry-date">
+                        <span class="input-group-addon" id="sizing-addon2">Expiry (date)</span>
+                        <input type="text" id="field_end_date" name="field_end_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd/mm/yyyy">
+                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+                    </div>
+                    <br>
+
+                    <div class="input-group" id="format-maximum-documents">
+                        <span class="input-group-addon" id="sizing-addon2">Maximum documents</span>
+                        <input type="number" id="field_max_docs" name="field_max_docs" class="form-control" aria-describedby="sizing-addon2" min="0">
+                    </div>
+                    <br>
+
+                    <div class="input-group">
+                        <div class="checkbox checkbox-success">
+                            <input id="field_cloud_sync" name="field_cloud_sync" value="1" type="checkbox">
+                            <label for="field_cloud_sync">Cloud sync enabled</label>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="input-group has-feedback" id="format-transformation-server">
+                        <span class="input-group-addon" id="sizing-addon2">Transformation Server end date</span>
+                        <input type="text" id="field_ats_end_date" name="field_ats_end_date" class="form-control date" aria-describedby="sizing-addon2" data-date-format="dd/mm/yyyy">
+                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+
+                    </div>
+                    <br>
+
+                    <div class="input-group">
+                        <div class="checkbox checkbox-success">
+                            <input id="field_cryptodoc_enabled" name="field_cryptodoc_enabled" value="1" type="checkbox">
+                            <label for="field_cryptodoc_enabled">CryptoDoc enabled</label>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>                                            
+            </div>
+            <!-- Till here I have put the other 6 field inputs I had left -->
+        </div>
+
+        <div class="panel-body jumbotron"> 
+            <h3><b>Generate</b></h3>
+            <hr>
+            <div id="format-license-filename">
+                <div class="input-group">
+                    <span class="input-group-addon" id="sizing-addon2">License Filename</span>
+                    <input type="text" id="output_filename" name="output_filename" class="form-control" aria-describedby="sizing-addon2">
+                </div>
+                <br>
+
+                <div class="button-group row">
+                    <div class="col-md-6 col-xs-12">    
+                        <button type="submit" class="btn btn-block btn-primary" id="generate_form_btn" name="alfresco_generate_btn" value="1">Generate and download</button>
+                    </div>
+
+                    <div class="col-md-6 col-xs-12">
+                        <button type="reset" class="btn btn-block btn-warning" id="clear_form" name="clear_form">Clear Form</button>
+                    </div>
+                </div>
+            </div>                                            
+            <br>
+        </div>
+        
+    </div>
+    {% csrf_token %}
+</form>

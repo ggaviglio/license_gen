@@ -12,6 +12,9 @@ RUN ssh-keyscan gitlab.alfresco.com >> /root/.ssh/known_hosts
 
 RUN pip3.4 install -r requirements.txt
 
+#Install Java for the license generators
+RUN yum install -y java
+
 #Allow external from a requirements file didn't seem to work
 RUN pip3.4 install mysql-connector-python --allow-external mysql-connector-python
 

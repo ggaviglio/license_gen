@@ -1,0 +1,33 @@
+{% load staticfiles %}
+
+<!-- Fixed navbar bootstrap -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">                    
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">   
+                    <span class="sr-only">Toggle navigation</span> 
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>                                             
+                <a class="navbar-brand" href="#" data-original-title="top home"><img src="{% static "images/alfresco-logo.png" %}">
+                <span id="interactive-title">Alfresco License Generator</span></a>
+            </div>
+            <div class="navbar-collapse collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a target="_blank" href="https://issues.alfresco.com/jira/secure/CreateIssue.jspa?pid=10130&issuetype=1" data-original-title="raise jira ticket">Raise a JIRA ticket for this app</a>
+                    </li>
+                    <li>
+                        <a href="#" data-original-title="upload and check license">Upload and check an existing license</a>
+                    </li> 
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" data-original-title="log out"><span class="glyphicon glyphicon-log-out"></span> Log out {{username}}</a></li>
+                </ul>                        
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- Fixed navbar bootstrap -->

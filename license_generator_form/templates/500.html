@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <div class="container-fluid" id="error-window">
+        <div>
+            <img alt="Alfresco Logo" src="{% static "images/Alfresco_logo404.png" %}" id="logo">       
+            <div class="error-details" class="text-danger">Internal Server Error. The server encountered an internal error and was unable to complete your request.</div>            
+            <a class="btn btn-large btn-primary" href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
+            <div class="row" id="copy-right">© 2005-2015 Alfresco Software Inc. All rights reserved.</div>
+        </div>
+    </div>
+{% endblock %}
