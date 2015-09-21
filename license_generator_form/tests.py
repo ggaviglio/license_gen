@@ -183,10 +183,6 @@ class GenerateLicenseTest(TestCase):
             HTTP_USER_AGENT=user_agent
         )
 
-        #with self.assertRaises(Exception):
-        #    self.assertEqual("", response.content)
-        #    self.assertFalse(mock_license.generate.called)
-
         self.assertRaises(Exception, mock_license.generate)
         self.assertTrue(mock_license.generate.called)
 

@@ -160,7 +160,9 @@ def generate_license(request):
         pass
 
     except:
-        return render(request, 'home.html', {'error_message': "ERROR MESSAGE?!"})
+        return render(
+            request, 'home.html', {'error_message': "ERROR MESSAGE?!"}
+            )
 
     else:
         return get_downloadable_binary_file(request, binary, filename)

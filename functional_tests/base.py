@@ -38,8 +38,8 @@ class FunctionalTest(LiveServerTestCase):
         if brand == "alfresco":
             form_elements['release_key'] = self.browser.\
                 find_element_by_css_selector(
-                    "#alfresco_form select#release_key >"
-                    + " option[selected='selected']"
+                    "#alfresco_form select#release_key >" +
+                    " option[selected='selected']"
                 )
             form_elements['expiry_days'] = self.browser.\
                 find_element_by_css_selector("#alfresco_form #field_days")

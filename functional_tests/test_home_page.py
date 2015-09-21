@@ -169,7 +169,7 @@ class HomePageTest(FunctionalTest):
             "#alfresco_form #clear_form"
         ).click()
 
-        #Alfrescan sees how the form is still empty
+        # Alfrescan sees how the form is still empty
         # after click the clear form button
         self.check_form_elements_empty("alfresco", form_elements_alfresco)
 

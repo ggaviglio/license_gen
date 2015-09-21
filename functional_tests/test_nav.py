@@ -26,7 +26,6 @@ class NavTest(FunctionalTest):
     def test_home_link_redirects_to_top_home_page(self):
         # Alfrescan clicks the home link -Alfresco/Activiti license generator-
         home_url = self.browser.current_url
-        #self.browser.find_element_by_id('home_link').click()
         self.browser.find_element_by_css_selector(
             'nav [data-original-title="top home"]'
         ).click()
