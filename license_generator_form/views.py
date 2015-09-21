@@ -167,7 +167,10 @@ def generate_license(request):
         return render(
             request,
             'home.html',
-            {'generator_error_message': error_message, 'tab_selected': tab_selected}
+            {
+                'generator_error_message': error_message,
+                'tab_selected': tab_selected
+            }
         )
 
     else:
