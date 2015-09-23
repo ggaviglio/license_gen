@@ -8,6 +8,8 @@ from alfresco_license_generators import (
     GeneratorCommandError
 )
 import datetime
+import json
+from django.http import JsonResponse
 
 
 def _get_value_date(request, field):
@@ -44,6 +46,53 @@ def _get_checkbox_value(value):
         result = False
 
     return result
+
+
+def _rest_generate_alfresco_license(data):
+    stdout, binary = alfresco_license_generators.Alfresco.generate(
+        release=data['release_key'],
+        cloudsync=_get_checkbox_value(data['field_cloud_sync']),
+        h=data['field_holder_name'],
+        e=data['field_end_date'],
+        heartbeaturl=data['field_heartbeat_url'],
+        ats=data['field_ats_end_date'],
+        mu=data['field_max_users'],
+        noheartbeat=_get_checkbox_value(
+            data['field_no_heartbeat']
+        ),
+        l=data['field_license_type'],
+        clusterenabled=_get_checkbox_value(
+            data['field_cluster_enabled']
+        ),
+        md=data['field_max_docs'],
+        cryptodocenabled=_get_checkbox_value(
+            data['field_cryptodoc_enabled']
+        )
+    )
+    return (stdout, binary)
+
+
+def _rest_generate_activiti_license(data):
+    stdout, binary = alfresco_license_generators.Activiti.generate(
+        numberOfAdmins=data['field_number_of_admins'],
+        h=data['field_holder_name'],
+        v=data['field_version'],
+        e=datetime.datetime.strptime(
+            data['field_end_date'],
+            '%d/%m/%Y'
+        ).strftime('%Y%m%d'),
+        numberOfLicenses=data['field_number_of_licenses'],
+        numberOfEditors=data['field_number_of_editors'],
+        numberOfProcesses=data['field_number_of_processes'],
+        numberOfApps=data['field_number_of_apps'],
+        s=datetime.datetime.strptime(
+            data['field_start_date'],
+            '%d/%m/%Y'
+        ).strftime('%Y%m%d'),
+        multiTenant=data['field_multi_tenant'],
+        defaultTenant=data['field_default_tenant']
+    )
+    return (stdout, binary)
 
 
 def _generate_alfresco_license(request):
@@ -175,3 +224,45 @@ def generate_license(request):
 
     else:
         return get_downloadable_binary_file(request, binary, filename)
+
+
+def rest_generate_alfresco_license(request):
+
+    try:
+        if (
+                request.method == 'POST' and
+                request.META.get('CONTENT_TYPE') == 'application/json'
+        ):
+            json_data = request.body.decode('UTF-8')
+            data = json.loads(json_data)
+            stdout, binary = _rest_generate_alfresco_license(data)
+
+    except JavaNotFoundError as error_message:
+        return JsonResponse({'java_error_message': str(error_message)})
+
+    except GeneratorCommandError as error_message:
+        return JsonResponse({'generator_error_message': str(error_message)})
+
+    else:
+        return JsonResponse({'stdout': stdout, 'binary': binary})
+
+
+def rest_generate_activiti_license(request):
+
+    try:
+        if (
+                request.method == 'POST' and
+                request.META.get('CONTENT_TYPE') == 'application/json'
+        ):
+            json_data = request.body.decode('UTF-8')
+            data = json.loads(json_data)
+            stdout, binary = _rest_generate_activiti_license(data)
+
+    except JavaNotFoundError as error_message:
+        return JsonResponse({'java_error_message': str(error_message)})
+
+    except GeneratorCommandError as error_message:
+        return JsonResponse({'generator_error_message': str(error_message)})
+
+    else:
+        return JsonResponse({'stdout': stdout, 'binary': binary})
