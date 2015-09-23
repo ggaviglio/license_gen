@@ -14,6 +14,16 @@ urlpatterns = patterns(
             'license_generator_form.views.generate_license',
             name='generate_license'
         ),
+    url(
+            r'^api/alfresco_license/$',
+            'license_generator_form.views.rest_generate_alfresco_license',
+            name='rest_generate_alfresco_license'
+        ),
+    url(
+            r'^api/activiti_license/$',
+            'license_generator_form.views.rest_generate_activiti_license',
+            name='rest_generate_activiti_license'
+        ),
 
     url(r'^admin/', include(admin.site.urls)),
 )
