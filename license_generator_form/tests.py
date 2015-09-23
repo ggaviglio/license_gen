@@ -5,6 +5,17 @@ from django.template.loader import render_to_string
 from license_generator_form.views import home_page
 from license_generator_form.views import handler404, handler500
 from unittest.mock import patch
+from alfresco_license_generators import (
+    JavaNotFoundError,
+    GeneratorCommandError
+)
+
+GENERAL_ERROR_MESSAGE = 'Your message could not being delivered.'\
+                        + ' General Error message!'
+JAVA_ERROR_MESSAGE = 'Your message could not being delivered.'\
+                     + ' Java not found Error message!'
+GENERATOR_ERROR_MESSAGE = 'Your message could not being delivered.'\
+                          + ' Generator Command Error message!'
 
 
 class HomePageTest(TestCase):
@@ -162,15 +173,27 @@ class GenerateLicenseTest(TestCase):
         self.assertEqual(b'Stream of bytes to receive', response.content)
 
     @patch('alfresco_license_generators.Alfresco')
-    def test_exception_raised_on_alfresco_license(
+    def test_java_exception_raised_on_alfresco_license(
         self, mock_license
     ):
 
-        mock_license.generate.side_effect = Exception(
-            'Your message could not being delivered. Java Not found Error!'
-        )
+        mock_license.generate.side_effect = \
+            JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
         alfresco_data = {
+            'alfresco_generate_btn': '1',
+            'field_holder_name': '',
+            'field_days': 20,
+            'field_max_users': 10,
+            'field_no_heartbeat': '1',
+            'field_heartbeat_url': 'www.alfresco.com',
+            'field_cluster_enabled': '1',
+            'field_license_type': 'TEAM',
+            'field_end_date': '17/08/2015',
+            'field_max_docs': 3,
+            'field_cloud_sync': '1',
+            'field_ats_end_date': '17/08/2015',
+            'field_cryptodoc_enabled': '1',
             'output_filename': 'Alfresco-ent30-.lic'
         }
 
@@ -183,23 +206,140 @@ class GenerateLicenseTest(TestCase):
             HTTP_USER_AGENT=user_agent
         )
 
-        self.assertRaises(Exception, mock_license.generate)
         self.assertTrue(mock_license.generate.called)
-
-        print("VALUE : ")
-        print(response.content)
+        self.assertRaises(JavaNotFoundError, mock_license.generate)
+        self.assertIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
 
     @patch('alfresco_license_generators.Activiti')
-    def test_exception_raised_on_activiti_license(
+    def test_java_exception_raised_on_activiti_license(
         self, mock_license
     ):
 
-        mock_license.generate.side_effect = Exception(
-            'dictionary is empty or incompleted!'
+        mock_license.generate.side_effect =\
+            JavaNotFoundError(JAVA_ERROR_MESSAGE)
+
+        activiti_data = {
+            'activiti_generate_btn': '1',
+            'notes': 'some notes',
+            'external_id': 'some external id',
+            'external_id_type': 'salesforce',
+            'tag_trial': '1',
+            'tag_internal_use_only': '1',
+            'tag_proof_of_concept': '1',
+            'tag_extension': '1',
+            'tag_perpetual': '1',
+            'field_holder_name': '',
+            'field_start_date': '18/08/2015',
+            'field_number_of_admins': 5,
+            'field_number_of_editors': 3,
+            'field_multi_tenant': 'true',
+            'field_version': '1.0ent',
+            'field_end_date': '20/08/2015',
+            'field_number_of_licenses': 5,
+            'field_number_of_processes': 6,
+            'field_number_of_apps': 2,
+            'field_default_tenant': 'Seb',
+            'output_filename': 'Activiti-ent50-.lic',
+        }
+
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+        response = self.client.post(
+            '/generate/',
+            activiti_data,
+            HTTP_USER_AGENT=user_agent
         )
 
-        with self.assertRaises(Exception):
-            stdout, binary = mock_license.generate(
-                badargument="wontwork"
-            )
         self.assertTrue(mock_license.generate.called)
+        self.assertRaises(JavaNotFoundError, mock_license.generate)
+        self.assertIn(JAVA_ERROR_MESSAGE.encode('utf-8'), response.content)
+
+    @patch('alfresco_license_generators.Alfresco')
+    def test_generatorcommand_exception_raised_on_alfresco_license(
+        self, mock_license
+    ):
+
+        mock_license.generate.side_effect =\
+            GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
+
+        alfresco_data = {
+            'alfresco_generate_btn': '1',
+            'field_holder_name': '',
+            'field_days': 20,
+            'field_max_users': 10,
+            'field_no_heartbeat': '1',
+            'field_heartbeat_url': 'www.alfresco.com',
+            'field_cluster_enabled': '1',
+            'field_license_type': 'TEAM',
+            'field_end_date': '17/08/2015',
+            'field_max_docs': 3,
+            'field_cloud_sync': '1',
+            'field_ats_end_date': '17/08/2015',
+            'field_cryptodoc_enabled': '1',
+            'output_filename': 'Alfresco-ent30-.lic'
+        }
+
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+        response = self.client.post(
+            '/generate/',
+            alfresco_data,
+            HTTP_USER_AGENT=user_agent
+        )
+
+        self.assertTrue(mock_license.generate.called)
+        self.assertRaises(GeneratorCommandError, mock_license.generate)
+        self.assertIn(
+            GENERATOR_ERROR_MESSAGE.encode('utf-8'),
+            response.content
+        )
+
+    @patch('alfresco_license_generators.Activiti')
+    def test_generatorcommand_exception_raised_on_activiti_license(
+        self, mock_license
+    ):
+
+        mock_license.generate.side_effect =\
+            GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
+
+        activiti_data = {
+            'activiti_generate_btn': '1',
+            'notes': 'some notes',
+            'external_id': 'some external id',
+            'external_id_type': 'salesforce',
+            'tag_trial': '1',
+            'tag_internal_use_only': '1',
+            'tag_proof_of_concept': '1',
+            'tag_extension': '1',
+            'tag_perpetual': '1',
+            'field_holder_name': '',
+            'field_start_date': '18/08/2015',
+            'field_number_of_admins': 5,
+            'field_number_of_editors': 3,
+            'field_multi_tenant': 'true',
+            'field_version': '1.0ent',
+            'field_end_date': '20/08/2015',
+            'field_number_of_licenses': 5,
+            'field_number_of_processes': 6,
+            'field_number_of_apps': 2,
+            'field_default_tenant': 'Seb',
+            'output_filename': 'Activiti-ent50-.lic',
+        }
+
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+        response = self.client.post(
+            '/generate/',
+            activiti_data,
+            HTTP_USER_AGENT=user_agent
+        )
+
+        self.assertTrue(mock_license.generate.called)
+        self.assertRaises(GeneratorCommandError, mock_license.generate)
+        self.assertIn(
+            GENERATOR_ERROR_MESSAGE.encode('utf-8'),
+            response.content
+        )
