@@ -12,10 +12,64 @@ from alfresco_license_generators import (
 import json
 
 
-JAVA_ERROR_MESSAGE = 'Your message could not being delivered.'\
-                     + ' Java not found Error message!'
 GENERATOR_ERROR_MESSAGE = 'Your message could not being delivered.'\
                           + ' Generator Command Error message!'
+
+JAVA_ERROR_MESSAGE = 'Your message could not being delivered.'\
+                     + ' Java not found Error message!'
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
+             + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+ALFRESCO_DATA = {
+    'alfresco_generate_btn': '1',
+    'release_key': 'ent30',
+    'notes': 'some notes',
+    'external_id': 'some external id',
+    'external_id_type': 'salesforce',
+    'tag_trial': '1',
+    'tag_internal_use_only': '1',
+    'tag_proof_of_concept': '1',
+    'tag_extension': '1',
+    'tag_perpetual': '1',
+    'field_holder_name': 'Sebastian',
+    'field_days': 20,
+    'field_max_users': 10,
+    'field_no_heartbeat': '1',
+    'field_heartbeat_url': 'www.alfresco.com',
+    'field_cluster_enabled': '1',
+    'field_license_type': 'TEAM',
+    'field_end_date': '17/08/2015',
+    'field_max_docs': 3,
+    'field_cloud_sync': '1',
+    'field_ats_end_date': '17/08/2015',
+    'field_cryptodoc_enabled': '1',
+    'output_filename': 'Alfresco-ent30-.lic'
+}
+
+ACTIVITI_DATA = {
+    'activiti_generate_btn': '1',
+    'notes': 'some notes',
+    'external_id': 'some external id',
+    'external_id_type': 'salesforce',
+    'tag_trial': '1',
+    'tag_internal_use_only': '1',
+    'tag_proof_of_concept': '1',
+    'tag_extension': '1',
+    'tag_perpetual': '1',
+    'field_holder_name': 'Sebastian',
+    'field_start_date': '18/08/2015',
+    'field_number_of_admins': 5,
+    'field_number_of_editors': 3,
+    'field_multi_tenant': 'true',
+    'field_version': '1.0ent',
+    'field_end_date': '20/08/2015',
+    'field_number_of_licenses': 5,
+    'field_number_of_processes': 6,
+    'field_number_of_apps': 2,
+    'field_default_tenant': 'Seb',
+    'output_filename': 'Activiti-ent50-.lic'
+}
 
 
 class HomePageTest(TestCase):
@@ -56,38 +110,10 @@ class GenerateLicenseTest(TestCase):
             b'Stream of bytes to receive'
         )
 
-        alfresco_data = {
-            'alfresco_generate_btn': '1',
-            'release_key': 'ent30',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'TEAM',
-            'field_end_date': '17/08/2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17/08/2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent30-.lic'
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
         response = self.client.post(
             '/generate/',
-            alfresco_data,
-            HTTP_USER_AGENT=user_agent
+            ALFRESCO_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         mock_license.generate.assert_called_once_with(
@@ -119,36 +145,10 @@ class GenerateLicenseTest(TestCase):
             b'Stream of bytes to receive'
         )
 
-        activiti_data = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic',
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
         response = self.client.post(
             '/generate/',
-            activiti_data,
-            HTTP_USER_AGENT=user_agent
+            ACTIVITI_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         mock_license.generate.assert_called_with(
@@ -176,34 +176,13 @@ class GenerateLicenseTest(TestCase):
     def test_java_exception_raised_on_alfresco_license(
         self, mock_license
     ):
-
         mock_license.generate.side_effect = \
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        alfresco_data = {
-            'alfresco_generate_btn': '1',
-            'field_holder_name': '',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'TEAM',
-            'field_end_date': '17/08/2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17/08/2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent30-.lic'
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
         response = self.client.post(
             '/generate/',
-            alfresco_data,
-            HTTP_USER_AGENT=user_agent
+            ALFRESCO_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         self.assertTrue(mock_license.generate.called)
@@ -218,37 +197,10 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.side_effect =\
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        activiti_data = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': '',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic',
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
         response = self.client.post(
             '/generate/',
-            activiti_data,
-            HTTP_USER_AGENT=user_agent
+            ACTIVITI_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         self.assertTrue(mock_license.generate.called)
@@ -263,30 +215,10 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.side_effect =\
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        alfresco_data = {
-            'alfresco_generate_btn': '1',
-            'field_holder_name': '',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'TEAM',
-            'field_end_date': '17/08/2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17/08/2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent30-.lic'
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
         response = self.client.post(
             '/generate/',
-            alfresco_data,
-            HTTP_USER_AGENT=user_agent
+            ALFRESCO_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         self.assertTrue(mock_license.generate.called)
@@ -304,37 +236,10 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.side_effect =\
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        activiti_data = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': '',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic',
-        }
-
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
-            + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-
         response = self.client.post(
             '/generate/',
-            activiti_data,
-            HTTP_USER_AGENT=user_agent
+            ACTIVITI_DATA,
+            HTTP_USER_AGENT=USER_AGENT
         )
 
         self.assertTrue(mock_license.generate.called)
@@ -351,38 +256,12 @@ class RestGenerateLicenseTest(TestCase):
     def test_rest_bytes_returned_alfresco_license(
             self, mock_license
     ):
-
         mock_license.generate.return_value = (
             'Alfresco output message',
             'Stream of bytes to receive'
         )
 
-        to_json = {
-            'release_key': 'ent30',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_days': 20,
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_cluster_enabled': '1',
-            'field_license_type': 'TEAM',
-            'field_end_date': '17/08/2015',
-            'field_max_docs': 3,
-            'field_cloud_sync': '1',
-            'field_ats_end_date': '17/08/2015',
-            'field_cryptodoc_enabled': '1',
-            'output_filename': 'Alfresco-ent30-.lic'
-        }
-
-        alfresco_data = json.dumps(to_json)
+        alfresco_data = json.dumps(ALFRESCO_DATA)
         response = self.client.post(
             '/api/alfresco_license/',
             alfresco_data,
@@ -405,9 +284,15 @@ class RestGenerateLicenseTest(TestCase):
             cloudsync=True
         )
         self.assertEqual(2, len(mock_license.generate(alfresco_data)))
-        return_values = json.loads(response.content.decode('utf-8'))
-        self.assertEqual('Alfresco output message', return_values['stdout'])
-        self.assertEqual('Stream of bytes to receive', return_values['binary'])
+        returned_values = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(
+            'Alfresco output message',
+            returned_values['stdout']
+        )
+        self.assertEqual(
+            'Stream of bytes to receive',
+            returned_values['binary']
+        )
 
     @patch('alfresco_license_generators.Activiti')
     def test_rest_bytes_returned_activiti_license(
@@ -419,31 +304,7 @@ class RestGenerateLicenseTest(TestCase):
             'Stream of bytes to receive'
         )
 
-        to_json = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic',
-        }
-
-        activiti_data = json.dumps(to_json)
+        activiti_data = json.dumps(ACTIVITI_DATA)
         response = self.client.post(
             '/api/activiti_license/',
             activiti_data,
@@ -465,9 +326,15 @@ class RestGenerateLicenseTest(TestCase):
             e='20150820'
         )
         self.assertEqual(2, len(mock_license.generate(activiti_data)))
-        return_values = json.loads(response.content.decode('utf-8'))
-        self.assertEqual('Activiti output message', return_values['stdout'])
-        self.assertEqual('Stream of bytes to receive', return_values['binary'])
+        returned_values = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(
+            'Activiti output message',
+            returned_values['stdout']
+        )
+        self.assertEqual(
+            'Stream of bytes to receive',
+            returned_values['binary']
+        )
 
     @patch('alfresco_license_generators.Alfresco')
     def test_rest_java_exception_raised_on_alfresco_license(
@@ -477,22 +344,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        to_json = {
-            'release_key': 'ent30',
-            'field_cloud_sync': '1',
-            'field_holder_name': 'Sebastian',
-            'field_end_date': '17/08/2015',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_ats_end_date': '17/08/2015',
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_license_type': 'TEAM',
-            'field_cluster_enabled': '1',
-            'field_max_docs': 3,
-            'field_cryptodoc_enabled': '1'
-        }
-
-        alfresco_data = json.dumps(to_json)
+        alfresco_data = json.dumps(ALFRESCO_DATA)
 
         response = self.client.post(
             '/api/alfresco_license/',
@@ -512,31 +364,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        to_json = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic'
-        }
-
-        activiti_data = json.dumps(to_json)
+        activiti_data = json.dumps(ACTIVITI_DATA)
 
         response = self.client.post(
             '/api/activiti_license/',
@@ -556,22 +384,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        to_json = {
-            'release_key': 'ent30',
-            'field_cloud_sync': '1',
-            'field_holder_name': 'Sebastian',
-            'field_end_date': '17/08/2015',
-            'field_heartbeat_url': 'www.alfresco.com',
-            'field_ats_end_date': '17/08/2015',
-            'field_max_users': 10,
-            'field_no_heartbeat': '1',
-            'field_license_type': 'TEAM',
-            'field_cluster_enabled': '1',
-            'field_max_docs': 3,
-            'field_cryptodoc_enabled': '1'
-        }
-
-        alfresco_data = json.dumps(to_json)
+        alfresco_data = json.dumps(ALFRESCO_DATA)
 
         response = self.client.post(
             '/api/alfresco_license/',
@@ -594,31 +407,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        to_json = {
-            'activiti_generate_btn': '1',
-            'notes': 'some notes',
-            'external_id': 'some external id',
-            'external_id_type': 'salesforce',
-            'tag_trial': '1',
-            'tag_internal_use_only': '1',
-            'tag_proof_of_concept': '1',
-            'tag_extension': '1',
-            'tag_perpetual': '1',
-            'field_holder_name': 'Sebastian',
-            'field_start_date': '18/08/2015',
-            'field_number_of_admins': 5,
-            'field_number_of_editors': 3,
-            'field_multi_tenant': 'true',
-            'field_version': '1.0ent',
-            'field_end_date': '20/08/2015',
-            'field_number_of_licenses': 5,
-            'field_number_of_processes': 6,
-            'field_number_of_apps': 2,
-            'field_default_tenant': 'Seb',
-            'output_filename': 'Activiti-ent50-.lic'
-        }
-
-        activiti_data = json.dumps(to_json)
+        activiti_data = json.dumps(ACTIVITI_DATA)
 
         response = self.client.post(
             '/api/activiti_license/',
