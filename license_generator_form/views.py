@@ -69,7 +69,7 @@ def _rest_generate_alfresco_license(data):
             data['field_cryptodoc_enabled']
         )
     )
-    return (stdout, binary)
+    return (str(stdout), str(binary))
 
 
 def _rest_generate_activiti_license(data):
@@ -92,7 +92,7 @@ def _rest_generate_activiti_license(data):
         multiTenant=data['field_multi_tenant'],
         defaultTenant=data['field_default_tenant']
     )
-    return (stdout, binary)
+    return (str(stdout), str(binary))
 
 
 def _generate_alfresco_license(request):
