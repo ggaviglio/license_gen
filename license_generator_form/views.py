@@ -191,9 +191,6 @@ def handler500(request):
 
 def generate_license(request):
 
-    filename = ''
-    stdout = ''
-
     try:
         if request.POST.get('alfresco_generate_btn'):
             filename = request.POST.get('output_filename')
