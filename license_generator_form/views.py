@@ -10,6 +10,7 @@ from alfresco_license_generators import (
 import datetime
 import json
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def _get_value_date(request, field):
@@ -223,43 +224,40 @@ def generate_license(request):
         return get_downloadable_binary_file(request, binary, filename)
 
 
-def rest_generate_alfresco_license(request):
+@csrf_exempt
+def rest_generate_license(request):
+    path = request.path.split('/')[3]
 
-    try:
-        if (
-                request.method == 'POST' and
-                request.META.get('CONTENT_TYPE') == 'application/json'
-        ):
-            json_data = request.body.decode('UTF-8')
-            data = json.loads(json_data)
-            stdout, binary = _rest_generate_alfresco_license(data)
+    if path is not "alfresco" and path is not "activiti":
+        if request.method == 'POST':
+            if request.META.get('CONTENT_TYPE') == 'application/json':
 
-    except JavaNotFoundError as error_message:
-        return JsonResponse({'java_error_message': str(error_message)})
+                json_data = request.body.decode('UTF-8')
+                data = json.loads(json_data)
 
-    except GeneratorCommandError as error_message:
-        return JsonResponse({'generator_error_message': str(error_message)})
+                try:
+                    if path == "alfresco":
+                        stdout, binary = _rest_generate_alfresco_license(data)
+                    else:
+                        stdout, binary = _rest_generate_activiti_license(data)
 
+                except JavaNotFoundError as e:
+                    return JsonResponse({'java_error_message': str(e)})
+
+                except GeneratorCommandError as e:
+                    return JsonResponse({'generator_error_message': str(e)})
+
+                except Exception as e:
+                    return JsonResponse({'generator_error_message': str(e)})
+
+                return JsonResponse({'stdout': stdout, 'binary': binary})
+
+            else:
+                # Unssuported media type
+                return HttpResponse(content="", status=415)
+        else:
+            # Method not allowed
+            return HttpResponse(content="", status=405)
     else:
-        return JsonResponse({'stdout': stdout, 'binary': binary})
-
-
-def rest_generate_activiti_license(request):
-
-    try:
-        if (
-                request.method == 'POST' and
-                request.META.get('CONTENT_TYPE') == 'application/json'
-        ):
-            json_data = request.body.decode('UTF-8')
-            data = json.loads(json_data)
-            stdout, binary = _rest_generate_activiti_license(data)
-
-    except JavaNotFoundError as error_message:
-        return JsonResponse({'java_error_message': str(error_message)})
-
-    except GeneratorCommandError as error_message:
-        return JsonResponse({'generator_error_message': str(error_message)})
-
-    else:
-        return JsonResponse({'stdout': stdout, 'binary': binary})
+        # Page not found
+        return HttpResponse(content="", status=404)
