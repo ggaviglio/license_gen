@@ -263,7 +263,7 @@ class RestGenerateLicenseTest(TestCase):
 
         alfresco_data = json.dumps(ALFRESCO_DATA)
         response = self.client.post(
-            '/api/alfresco_license/',
+            '/api/license/alfresco/',
             alfresco_data,
             'application/json'
         )
@@ -306,7 +306,7 @@ class RestGenerateLicenseTest(TestCase):
 
         activiti_data = json.dumps(ACTIVITI_DATA)
         response = self.client.post(
-            '/api/activiti_license/',
+            '/api/license/activiti/',
             activiti_data,
             'application/json'
         )
@@ -347,7 +347,7 @@ class RestGenerateLicenseTest(TestCase):
         alfresco_data = json.dumps(ALFRESCO_DATA)
 
         response = self.client.post(
-            '/api/alfresco_license/',
+            '/api/license/alfresco/',
             alfresco_data,
             'application/json'
         )
@@ -367,7 +367,7 @@ class RestGenerateLicenseTest(TestCase):
         activiti_data = json.dumps(ACTIVITI_DATA)
 
         response = self.client.post(
-            '/api/activiti_license/',
+            '/api/license/activiti/',
             activiti_data,
             'application/json'
         )
@@ -387,7 +387,7 @@ class RestGenerateLicenseTest(TestCase):
         alfresco_data = json.dumps(ALFRESCO_DATA)
 
         response = self.client.post(
-            '/api/alfresco_license/',
+            '/api/license/alfresco/',
             alfresco_data,
             'application/json'
         )
@@ -410,7 +410,7 @@ class RestGenerateLicenseTest(TestCase):
         activiti_data = json.dumps(ACTIVITI_DATA)
 
         response = self.client.post(
-            '/api/activiti_license/',
+            '/api/license/activiti/',
             activiti_data,
             'application/json'
         )
