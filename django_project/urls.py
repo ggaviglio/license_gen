@@ -15,12 +15,12 @@ urlpatterns = patterns(
             name='generate_license'
         ),
     url(
-            r'^api/alfresco_license/$',
+            r'^api/license/alfresco/$',
             'license_generator_form.views.rest_generate_alfresco_license',
             name='rest_generate_alfresco_license'
         ),
     url(
-            r'^api/activiti_license/$',
+            r'^api/license/activiti/$',
             'license_generator_form.views.rest_generate_activiti_license',
             name='rest_generate_activiti_license'
         ),
