@@ -2,7 +2,7 @@ from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from license_generator_form.views import home_page
+from license_generator_form.views import home_page, rest_generate_license
 from license_generator_form.views import handler404, handler500
 from unittest.mock import patch
 from alfresco_license_generators import (
@@ -262,11 +262,16 @@ class RestGenerateLicenseTest(TestCase):
         )
 
         alfresco_data = json.dumps(ALFRESCO_DATA)
-        response = self.client.post(
-            '/api/license/alfresco/',
-            alfresco_data,
-            'application/json'
-        )
+        
+
+        request = HttpRequest()
+        
+        request.content = alfresco_data
+        request.content_type = 'application/json'
+        request.method = 'POST'
+        request.path = '/api/license/alfresco/'
+
+        response = rest_generate_license(request)
 
         self.assertTrue(mock_license.generate.called)
         mock_license.generate.assert_called_once_with(
@@ -421,3 +426,22 @@ class RestGenerateLicenseTest(TestCase):
             GENERATOR_ERROR_MESSAGE.encode('utf-8'),
             response.content
         )
+
+    def test_rest_alfresco_license_page_not_found(self):
+        print("entramos en el metodo PAGE NOT FOUND")
+        alfresco_data = json.dumps(ALFRESCO_DATA)
+
+        response = HttpRequest(
+            content = alfresco_data,
+            content_type = 'application/json',
+            path = 'api/license/alfresco'
+        )
+
+        response = self.client.get(
+            '/api/license/alfresco/',
+            alfresco_data,
+            'application/json'
+        )
+
+        print(response.status)
+
