@@ -228,7 +228,7 @@ def generate_license(request):
 def rest_generate_license(request):
     path = request.path.split('/')[3]
 
-    if path == "alfresco" or path == "activiti":
+    if path in ['alfresco', 'activiti']:
         if request.method == 'POST':
             if request.META.get('CONTENT_TYPE') == 'application/json':
 
