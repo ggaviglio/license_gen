@@ -228,7 +228,7 @@ def generate_license(request):
 def rest_generate_license(request):
     path = request.path.split('/')[3]
 
-    if path is not "alfresco" and path is not "activiti":
+    if path == "alfresco" or path == "activiti":
         if request.method == 'POST':
             if request.META.get('CONTENT_TYPE') == 'application/json':
 
@@ -238,6 +238,7 @@ def rest_generate_license(request):
                 try:
                     if path == "alfresco":
                         stdout, binary = _rest_generate_alfresco_license(data)
+
                     else:
                         stdout, binary = _rest_generate_activiti_license(data)
 
@@ -253,7 +254,7 @@ def rest_generate_license(request):
                 return JsonResponse({'stdout': stdout, 'binary': binary})
 
             else:
-                # Unssuported media type
+                # Unsupported media type
                 return HttpResponse(content="", status=415)
         else:
             # Method not allowed
