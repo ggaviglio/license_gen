@@ -220,8 +220,7 @@ def generate_license(request):
             }
         )
 
-    else:
-        return get_downloadable_binary_file(request, binary, filename)
+    return get_downloadable_binary_file(request, binary, filename)
 
 
 @csrf_exempt
