@@ -262,16 +262,11 @@ class RestGenerateLicenseTest(TestCase):
         )
 
         alfresco_data = json.dumps(ALFRESCO_DATA)
-        
-
-        request = HttpRequest()
-        
-        request.content = alfresco_data
-        request.content_type = 'application/json'
-        request.method = 'POST'
-        request.path = '/api/license/alfresco/'
-
-        response = rest_generate_license(request)
+        response = self.client.post(
+            '/api/license/alfresco/',
+            alfresco_data,
+            'application/json'
+        )
 
         self.assertTrue(mock_license.generate.called)
         mock_license.generate.assert_called_once_with(
@@ -298,6 +293,7 @@ class RestGenerateLicenseTest(TestCase):
             'Stream of bytes to receive',
             returned_values['binary']
         )
+        self.assertEqual(response.status_code, 200)
 
     @patch('alfresco_license_generators.Activiti')
     def test_rest_bytes_returned_activiti_license(
@@ -340,6 +336,7 @@ class RestGenerateLicenseTest(TestCase):
             'Stream of bytes to receive',
             returned_values['binary']
         )
+        self.assertEqual(response.status_code, 200)
 
     @patch('alfresco_license_generators.Alfresco')
     def test_rest_java_exception_raised_on_alfresco_license(
@@ -427,21 +424,53 @@ class RestGenerateLicenseTest(TestCase):
             response.content
         )
 
-    def test_rest_alfresco_license_page_not_found(self):
-        print("entramos en el metodo PAGE NOT FOUND")
-        alfresco_data = json.dumps(ALFRESCO_DATA)
+    def test_rest_generate_license_page_not_found(self):
 
-        response = HttpRequest(
-            content = alfresco_data,
-            content_type = 'application/json',
-            path = 'api/license/alfresco'
-        )
+        request = HttpRequest()
+        request.path = '/api/license/wrong_location/'
 
-        response = self.client.get(
-            '/api/license/alfresco/',
-            alfresco_data,
-            'application/json'
-        )
+        response = rest_generate_license(request)
 
-        print(response.status)
+        self.assertEqual(response.status_code, 404)
 
+    def test_rest_alfresco_license_method_not_allowed(self):
+
+        request = HttpRequest()
+        request.path = '/api/license/alfresco/'
+        request.method = 'GET'
+
+        response = rest_generate_license(request)
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_rest_activiti_license_method_not_allowed(self):
+
+        request = HttpRequest()
+        request.path = '/api/license/activiti/'
+        request.method = 'GET'
+
+        response = rest_generate_license(request)
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_rest_alfresco_license_unsupported_media_file(self):
+
+        request = HttpRequest()
+        request.path = '/api/license/alfresco/'
+        request.method = 'POST'
+        request.META['CONTENT_TYPE'] = 'application/xml'
+
+        response = rest_generate_license(request)
+
+        self.assertEqual(response.status_code, 415)
+
+    def test_rest_activiti_license_unsupported_media_file(self):
+
+        request = HttpRequest()
+        request.path = '/api/license/activiti/'
+        request.method = 'POST'
+        request.META['CONTENT_TYPE'] = 'application/xml'
+
+        response = rest_generate_license(request)
+
+        self.assertEqual(response.status_code, 415)
