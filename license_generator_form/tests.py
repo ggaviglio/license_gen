@@ -71,6 +71,35 @@ ACTIVITI_DATA = {
     'output_filename': 'Activiti-ent50-.lic'
 }
 
+REST_ALFRESCO_DATA = {
+    'release_key': 'ent30',
+    'holder_name': 'Sebastian',
+    'max_users': 10,
+    'no_heartbeat': '1',
+    'heartbeat_url': 'www.alfresco.com',
+    'cluster_enabled': '1',
+    'license_type': 'TEAM',
+    'end_date': '17/08/2015',
+    'max_docs': 3,
+    'cloud_sync': '1',
+    'ats_end_date': '17/08/2015',
+    'cryptodoc_enabled': '1'
+}
+
+REST_ACTIVITI_DATA = {
+    'holder_name': 'Sebastian',
+    'start_date': '18/08/2015',
+    'number_of_admins': 5,
+    'number_of_editors': 3,
+    'multi_tenant': 'true',
+    'version': '1.0ent',
+    'end_date': '20/08/2015',
+    'number_of_licenses': 5,
+    'number_of_processes': 6,
+    'number_of_apps': 2,
+    'default_tenant': 'Seb'
+}
+
 
 class HomePageTest(TestCase):
 
@@ -261,7 +290,7 @@ class RestGenerateLicenseTest(TestCase):
             'Stream of bytes to receive'
         )
 
-        alfresco_data = json.dumps(ALFRESCO_DATA)
+        alfresco_data = json.dumps(REST_ALFRESCO_DATA)
         response = self.client.post(
             '/api/license/alfresco/',
             alfresco_data,
@@ -305,7 +334,7 @@ class RestGenerateLicenseTest(TestCase):
             'Stream of bytes to receive'
         )
 
-        activiti_data = json.dumps(ACTIVITI_DATA)
+        activiti_data = json.dumps(REST_ACTIVITI_DATA)
         response = self.client.post(
             '/api/license/activiti/',
             activiti_data,
@@ -346,7 +375,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        alfresco_data = json.dumps(ALFRESCO_DATA)
+        alfresco_data = json.dumps(REST_ALFRESCO_DATA)
 
         response = self.client.post(
             '/api/license/alfresco/',
@@ -366,7 +395,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             JavaNotFoundError(JAVA_ERROR_MESSAGE)
 
-        activiti_data = json.dumps(ACTIVITI_DATA)
+        activiti_data = json.dumps(REST_ACTIVITI_DATA)
 
         response = self.client.post(
             '/api/license/activiti/',
@@ -386,7 +415,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        alfresco_data = json.dumps(ALFRESCO_DATA)
+        alfresco_data = json.dumps(REST_ALFRESCO_DATA)
 
         response = self.client.post(
             '/api/license/alfresco/',
@@ -409,7 +438,7 @@ class RestGenerateLicenseTest(TestCase):
         mock_license.generate.side_effect = \
             GeneratorCommandError(GENERATOR_ERROR_MESSAGE)
 
-        activiti_data = json.dumps(ACTIVITI_DATA)
+        activiti_data = json.dumps(REST_ACTIVITI_DATA)
 
         response = self.client.post(
             '/api/license/activiti/',

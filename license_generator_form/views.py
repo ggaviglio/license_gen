@@ -52,22 +52,22 @@ def _get_checkbox_value(value):
 def _rest_generate_alfresco_license(data):
     stdout, binary = alfresco_license_generators.Alfresco.generate(
         release=data['release_key'],
-        cloudsync=_get_checkbox_value(data['field_cloud_sync']),
-        h=data['field_holder_name'],
-        e=data['field_end_date'],
-        heartbeaturl=data['field_heartbeat_url'],
-        ats=data['field_ats_end_date'],
-        mu=data['field_max_users'],
+        cloudsync=_get_checkbox_value(data['cloud_sync']),
+        h=data['holder_name'],
+        e=data['end_date'],
+        heartbeaturl=data['heartbeat_url'],
+        ats=data['ats_end_date'],
+        mu=data['max_users'],
         noheartbeat=_get_checkbox_value(
-            data['field_no_heartbeat']
+            data['no_heartbeat']
         ),
-        l=data['field_license_type'],
+        l=data['license_type'],
         clusterenabled=_get_checkbox_value(
-            data['field_cluster_enabled']
+            data['cluster_enabled']
         ),
-        md=data['field_max_docs'],
+        md=data['max_docs'],
         cryptodocenabled=_get_checkbox_value(
-            data['field_cryptodoc_enabled']
+            data['cryptodoc_enabled']
         )
     )
     return (str(stdout), str(binary))
@@ -75,23 +75,23 @@ def _rest_generate_alfresco_license(data):
 
 def _rest_generate_activiti_license(data):
     stdout, binary = alfresco_license_generators.Activiti.generate(
-        numberOfAdmins=data['field_number_of_admins'],
-        h=data['field_holder_name'],
-        v=data['field_version'],
+        numberOfAdmins=data['number_of_admins'],
+        h=data['holder_name'],
+        v=data['version'],
         e=datetime.datetime.strptime(
-            data['field_end_date'],
+            data['end_date'],
             '%d/%m/%Y'
         ).strftime('%Y%m%d'),
-        numberOfLicenses=data['field_number_of_licenses'],
-        numberOfEditors=data['field_number_of_editors'],
-        numberOfProcesses=data['field_number_of_processes'],
-        numberOfApps=data['field_number_of_apps'],
+        numberOfLicenses=data['number_of_licenses'],
+        numberOfEditors=data['number_of_editors'],
+        numberOfProcesses=data['number_of_processes'],
+        numberOfApps=data['number_of_apps'],
         s=datetime.datetime.strptime(
-            data['field_start_date'],
+            data['start_date'],
             '%d/%m/%Y'
         ).strftime('%Y%m%d'),
-        multiTenant=data['field_multi_tenant'],
-        defaultTenant=data['field_default_tenant']
+        multiTenant=data['multi_tenant'],
+        defaultTenant=data['default_tenant']
     )
     return (str(stdout), str(binary))
 
