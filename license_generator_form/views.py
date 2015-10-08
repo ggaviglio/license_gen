@@ -203,19 +203,19 @@ def generate_license(request):
             tab_selected = 'Activiti'
             stdout, binary = _generate_activiti_license(request)
 
-    except JavaNotFoundError as error_message:
+    except JavaNotFoundError as e:
         return render(
             request,
             'home.html',
-            {'java_error_message': error_message, 'tab_selected': tab_selected}
+            {'java_error_message': e, 'tab_selected': tab_selected}
         )
 
-    except GeneratorCommandError as error_message:
+    except GeneratorCommandError as e:
         return render(
             request,
             'home.html',
             {
-                'generator_error_message': error_message,
+                'generator_error_message': e,
                 'tab_selected': tab_selected
             }
         )
