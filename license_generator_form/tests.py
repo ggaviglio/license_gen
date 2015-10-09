@@ -151,10 +151,10 @@ class GenerateLicenseTest(TestCase):
             clusterenabled=True,
             release='ent30',
             l='TEAM',
-            md=3,
+            md='3',
             heartbeaturl='www.alfresco.com',
             e="17/08/2015",
-            mu=10,
+            mu='10',
             ats='17/08/2015',
             cryptodocenabled=True,
             cloudsync=True
@@ -183,13 +183,13 @@ class GenerateLicenseTest(TestCase):
         mock_license.generate.assert_called_with(
             v='1.0ent',
             multiTenant='true',
-            numberOfProcesses=6,
-            numberOfAdmins=5,
+            numberOfProcesses='6',
+            numberOfAdmins='5',
             defaultTenant='Seb',
             h='Sebastian',
-            numberOfLicenses=5,
-            numberOfEditors=3,
-            numberOfApps=2,
+            numberOfLicenses='5',
+            numberOfEditors='3',
+            numberOfApps='2',
             s='20150818',
             e='20150820'
         )

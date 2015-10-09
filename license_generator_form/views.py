@@ -13,31 +13,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 
-def _get_value_date(request, field):
-    result = None
-
-    if request.POST.get(field) == '':
-        result = ''
-    else:
-        result = datetime.datetime.strptime(
-            request.POST.get(field),
-            '%d/%m/%Y'
-        ).strftime('%Y%m%d')
-
-    return result
-
-
-def _get_value_number(request, field):
-    result = None
-
-    if request.POST.get(field) == '':
-        result = 0
-    else:
-        result = int(request.POST.get(field))
-
-    return result
-
-
 def _get_checkbox_value(value):
     result = ""
 
@@ -45,101 +20,152 @@ def _get_checkbox_value(value):
         result = True
     elif value is None:
         result = False
+    else:
+        result = value
 
     return result
 
 
 def _rest_generate_alfresco_license(data):
-    stdout, binary = alfresco_license_generators.Alfresco.generate(
-        release=data['release_key'],
-        cloudsync=_get_checkbox_value(data['cloud_sync']),
-        h=data['holder_name'],
-        e=data['end_date'],
-        heartbeaturl=data['heartbeat_url'],
-        ats=data['ats_end_date'],
-        mu=data['max_users'],
-        noheartbeat=_get_checkbox_value(
-            data['no_heartbeat']
-        ),
-        l=data['license_type'],
-        clusterenabled=_get_checkbox_value(
-            data['cluster_enabled']
-        ),
-        md=data['max_docs'],
-        cryptodocenabled=_get_checkbox_value(
-            data['cryptodoc_enabled']
-        )
-    )
+
+    args = {}
+    expected_arguments = {
+        'release_key': 'release',
+        'cloud_sync': 'cloudsync',
+        'holder_name': 'h',
+        'end_date': 'e',
+        'heartbeat_url': 'heartbeaturl',
+        'ats_end_date': 'ats',
+        'max_users': 'mu',
+        'no_heartbeat': 'noheartbeat',
+        'license_type': 'l',
+        'cluster_enabled': 'clusterenabled',
+        'max_docs': 'md',
+        'cryptodoc_enabled': 'cryptodocenabled'
+    }
+
+    for key, value in data.items():
+        if key in expected_arguments:
+            if _get_checkbox_value(value) != '':
+                args.update(
+                    {expected_arguments[key]: _get_checkbox_value(value)}
+                )
+
+        else:  # Bad request 400
+            raise Exception(
+                "\n\nError:\nArgument not expected: {}".format(key)
+            )
+
+    stdout, binary = alfresco_license_generators.Alfresco.generate(**args)
+
     return (str(stdout), str(binary))
 
 
 def _rest_generate_activiti_license(data):
-    stdout, binary = alfresco_license_generators.Activiti.generate(
-        numberOfAdmins=data['number_of_admins'],
-        h=data['holder_name'],
-        v=data['version'],
-        e=datetime.datetime.strptime(
-            data['end_date'],
-            '%d/%m/%Y'
-        ).strftime('%Y%m%d'),
-        numberOfLicenses=data['number_of_licenses'],
-        numberOfEditors=data['number_of_editors'],
-        numberOfProcesses=data['number_of_processes'],
-        numberOfApps=data['number_of_apps'],
-        s=datetime.datetime.strptime(
-            data['start_date'],
-            '%d/%m/%Y'
-        ).strftime('%Y%m%d'),
-        multiTenant=data['multi_tenant'],
-        defaultTenant=data['default_tenant']
-    )
+
+    args = {}
+    expected_arguments = {
+        'number_of_admins': 'numberOfAdmins',
+        'holder_name': 'h',
+        'version': 'v',
+        'end_date': 'e',
+        'number_of_licenses': 'numberOfLicenses',
+        'number_of_editors': 'numberOfEditors',
+        'number_of_processes': 'numberOfProcesses',
+        'number_of_apps': 'numberOfApps',
+        'start_date': 's',
+        'multi_tenant': 'multiTenant',
+        'default_tenant': 'defaultTenant'
+    }
+
+    for key, value in data.items():
+        if key in expected_arguments:
+            if _get_checkbox_value(value) != '':
+
+                if expected_arguments[key] in ['e', 's']:
+                    args.update({
+                        expected_arguments[key]: datetime.datetime.strptime(
+                            value,
+                            '%d/%m/%Y'
+                        ).strftime('%Y%m%d')
+                    })
+
+                else:
+                    args.update({expected_arguments[key]: value})
+
+        else:  # Bad request 400
+            raise Exception(
+                "\n\nError:\nArgument not expected: {}".format(key)
+            )
+
+    stdout, binary = alfresco_license_generators.Activiti.generate(**args)
+
     return (str(stdout), str(binary))
 
 
 def _generate_alfresco_license(request):
-    stdout, binary = alfresco_license_generators.Alfresco.generate(
-        release=request.POST.get('release_key'),
-        cloudsync=_get_checkbox_value(request.POST.get('field_cloud_sync')),
-        h=request.POST.get('field_holder_name'),
-        e=request.POST.get('field_end_date'),
-        heartbeaturl=request.POST.get('field_heartbeat_url'),
-        ats=request.POST.get('field_ats_end_date'),
-        mu=_get_value_number(request, 'field_max_users'),
-        noheartbeat=_get_checkbox_value(
-            request.POST.get('field_no_heartbeat')
-        ),
-        l=request.POST.get('field_license_type'),
-        clusterenabled=_get_checkbox_value(
-            request.POST.get('field_cluster_enabled')
-        ),
-        md=_get_value_number(request, 'field_max_docs'),
-        cryptodocenabled=_get_checkbox_value(
-            request.POST.get('field_cryptodoc_enabled')
-        )
-    )
+
+    args = {}
+    expected_arguments = {
+        'release_key': 'release',
+        'field_cloud_sync': 'cloudsync',
+        'field_holder_name': 'h',
+        'field_end_date': 'e',
+        'field_heartbeat_url': 'heartbeaturl',
+        'field_ats_end_date': 'ats',
+        'field_max_users': 'mu',
+        'field_no_heartbeat': 'noheartbeat',
+        'field_license_type': 'l',
+        'field_cluster_enabled': 'clusterenabled',
+        'field_max_docs': 'md',
+        'field_cryptodoc_enabled': 'cryptodocenabled'
+    }
+
+    for key, value in request.POST.items():
+        if key in expected_arguments:
+            if value != '':
+                args.update(
+                    {expected_arguments[key]: _get_checkbox_value(value)}
+                )
+
+    stdout, binary = alfresco_license_generators.Alfresco.generate(**args)
+
     return (stdout, binary)
 
 
 def _generate_activiti_license(request):
-    stdout, binary = alfresco_license_generators.Activiti.generate(
-        numberOfAdmins=_get_value_number(request, 'field_number_of_admins'),
-        h=request.POST.get('field_holder_name'),
-        v=request.POST.get('field_version'),
-        e=_get_value_date(request, 'field_end_date'),
-        numberOfLicenses=_get_value_number(
-            request,
-            'field_number_of_licenses'
-        ),
-        numberOfEditors=_get_value_number(request, 'field_number_of_editors'),
-        numberOfProcesses=_get_value_number(
-            request,
-            'field_number_of_processes'
-        ),
-        numberOfApps=_get_value_number(request, 'field_number_of_apps'),
-        s=_get_value_date(request, 'field_start_date'),
-        multiTenant=request.POST.get('field_multi_tenant'),
-        defaultTenant=request.POST.get('field_default_tenant')
-    )
+
+    args = {}
+    expected_arguments = {
+        'field_number_of_admins': 'numberOfAdmins',
+        'field_holder_name': 'h',
+        'field_version': 'v',
+        'field_end_date': 'e',
+        'field_number_of_licenses': 'numberOfLicenses',
+        'field_number_of_editors': 'numberOfEditors',
+        'field_number_of_processes': 'numberOfProcesses',
+        'field_number_of_apps': 'numberOfApps',
+        'field_start_date': 's',
+        'field_multi_tenant': 'multiTenant',
+        'field_default_tenant': 'defaultTenant'
+    }
+
+    for key, value in request.POST.items():
+        if key in expected_arguments:
+            if value != '':
+                if expected_arguments[key] in ['e', 's']:
+                    args.update({
+                        expected_arguments[key]: datetime.datetime.strptime(
+                            value,
+                            '%d/%m/%Y'
+                        ).strftime('%Y%m%d')
+                    })
+
+                else:
+                    args.update({expected_arguments[key]: value})
+
+    stdout, binary = alfresco_license_generators.Activiti.generate(**args)
+
     return (stdout, binary)
 
 
@@ -219,6 +245,12 @@ def generate_license(request):
                 'tab_selected': tab_selected
             }
         )
+    except Exception as e:
+        return render(
+            request,
+            'home.html',
+            {'general_error_message': e, 'tab_selected': tab_selected}
+        )
 
     return get_downloadable_binary_file(request, binary, filename)
 
@@ -231,10 +263,10 @@ def rest_generate_license(request):
         if request.method == 'POST':
             if request.META.get('CONTENT_TYPE') == 'application/json':
 
-                json_data = request.body.decode('UTF-8')
-                data = json.loads(json_data)
-
                 try:
+                    json_data = request.body.decode('UTF-8')
+                    data = json.loads(json_data)
+
                     if path == "alfresco":
                         stdout, binary = _rest_generate_alfresco_license(data)
 
@@ -242,13 +274,28 @@ def rest_generate_license(request):
                         stdout, binary = _rest_generate_activiti_license(data)
 
                 except JavaNotFoundError as e:
-                    return JsonResponse({'java_error_message': str(e)})
+                    msg = {u"java_error_message": str(e)}
+                    return HttpResponse(
+                        content=json.dumps(msg),
+                        content_type="application/json",
+                        status=400
+                    )
 
                 except GeneratorCommandError as e:
-                    return JsonResponse({'generator_error_message': str(e)})
+                    msg = {u"generator_error_message": str(e)}
+                    return HttpResponse(
+                        content=json.dumps(msg),
+                        content_type="application/json",
+                        status=400
+                    )
 
                 except Exception as e:
-                    return JsonResponse({'generator_error_message': str(e)})
+                    msg = {u"general_error_message": str(e)}
+                    return HttpResponse(
+                        content=json.dumps(msg),
+                        content_type="application/json",
+                        status=400
+                    )
 
                 return JsonResponse({'stdout': stdout, 'binary': binary})
 
