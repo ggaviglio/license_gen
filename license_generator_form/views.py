@@ -278,7 +278,7 @@ def rest_generate_license(request):
                     return HttpResponse(
                         content=json.dumps(msg),
                         content_type="application/json",
-                        status=400
+                        status=500
                     )
 
                 except GeneratorCommandError as e:
