@@ -152,7 +152,7 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['cluster_enabled'].is_selected(), False
             )
             self.assertEqual(
-                form_elements['license_type'].get_attribute('value'), 'TEAM'
+                form_elements['license_type'].get_attribute('value'), 'ENTERPRISE'
             )
             self.assertEqual(
                 form_elements['maximum_documents'].get_attribute('value'), ""

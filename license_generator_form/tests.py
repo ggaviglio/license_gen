@@ -426,7 +426,7 @@ class RestGenerateLicenseTest(TestCase):
         )
 
         self.assertTrue(mock_license.generate.called)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertRaises(GeneratorCommandError, mock_license.generate)
         self.assertIn(
             GENERATOR_ERROR_MESSAGE.encode('utf-8'),
@@ -451,7 +451,7 @@ class RestGenerateLicenseTest(TestCase):
 
         self.assertTrue(mock_license.generate.called)
         self.assertRaises(GeneratorCommandError, mock_license.generate)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertIn(
             GENERATOR_ERROR_MESSAGE.encode('utf-8'),
             response.content
