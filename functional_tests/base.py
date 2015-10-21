@@ -7,13 +7,16 @@ class FunctionalTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Remote(
-            "http://{0}:4444/wd/hub".format(settings.SELENIUM_HOST),
+            "http://{}:{}/wd/hub".format(
+                settings.SELENIUM_HOST,
+                settings.SELENIUM_PORT
+                ),
             webdriver.DesiredCapabilities.FIREFOX
         )
 
         self.browser.implicitly_wait(3)
         # Alfrescan wants to generate a license, visits the URL
-        self.browser.get("http://{0}".format(settings.SELENIUM_HOST))
+        self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
 
     def tearDown(self):
         self.browser.quit()
