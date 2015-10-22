@@ -1,6 +1,7 @@
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from django.conf import settings
+from selenium.webdriver.common.keys import Keys
 
 
 class FunctionalTest(LiveServerTestCase):
@@ -10,7 +11,7 @@ class FunctionalTest(LiveServerTestCase):
             "http://{}:{}/wd/hub".format(
                 settings.SELENIUM_HOST,
                 settings.SELENIUM_PORT
-                ),
+            ),
             webdriver.DesiredCapabilities.FIREFOX
         )
 
@@ -310,7 +311,7 @@ class FunctionalTest(LiveServerTestCase):
         form_elements['external_id_type'].send_keys('some external id type')
 
         for checkbox in form_elements['checkboxes']:
-            checkbox.click()
+            checkbox.send_keys(Keys.SPACE)
 
         form_elements['account_holder_name'].\
             send_keys('some account holder name')
