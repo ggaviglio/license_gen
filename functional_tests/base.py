@@ -1,19 +1,23 @@
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from django.conf import settings
+from selenium.webdriver.common.keys import Keys
 
 
 class FunctionalTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Remote(
-            "http://{0}:4444/wd/hub".format(settings.SELENIUM_HOST),
+            "http://{}:{}/wd/hub".format(
+                settings.SELENIUM_HOST,
+                settings.SELENIUM_PORT
+            ),
             webdriver.DesiredCapabilities.FIREFOX
         )
 
         self.browser.implicitly_wait(3)
         # Alfrescan wants to generate a license, visits the URL
-        self.browser.get("http://{0}".format(settings.SELENIUM_HOST))
+        self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
 
     def tearDown(self):
         self.browser.quit()
@@ -152,7 +156,8 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['cluster_enabled'].is_selected(), False
             )
             self.assertEqual(
-                form_elements['license_type'].get_attribute('value'), 'TEAM'
+                form_elements['license_type'].get_attribute('value'),
+                'ENTERPRISE'
             )
             self.assertEqual(
                 form_elements['maximum_documents'].get_attribute('value'), ""
@@ -307,7 +312,7 @@ class FunctionalTest(LiveServerTestCase):
         form_elements['external_id_type'].send_keys('some external id type')
 
         for checkbox in form_elements['checkboxes']:
-            checkbox.click()
+            checkbox.send_keys(Keys.SPACE)
 
         form_elements['account_holder_name'].\
             send_keys('some account holder name')

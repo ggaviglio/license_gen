@@ -21,6 +21,8 @@ webapp:
     - ./static:/opt/django_project/webapp/static
   ports:
     - "80:80"
+  links:
+    - selenium:selenium
 
 selenium:
   image: selenium/standalone-firefox
