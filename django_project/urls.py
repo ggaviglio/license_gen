@@ -10,20 +10,23 @@ urlpatterns = patterns(
             name='site_root'
         ),
     url(
-            r'^generate/$',
-            'license_generator_form.views.generate_license',
-            name='generate_license'
+            r'^generate/alfresco/$',
+            'license_generator_form.views.form_generate_alfresco',
+            name='form_generate_alfresco'
+        ),
+    url(
+            r'^generate/activiti/$',
+            'license_generator_form.views.form_generate_activiti',
+            name='form_generate_activiti'
         ),
     url(
             r'^api/license/alfresco/$',
-            'license_generator_form.views.rest_generate_license',
-            name='rest_generate_license'
+            'license_generator_form.views.rest_generate_alfresco',
+            name='rest_generate_alfresco'
         ),
     url(
             r'^api/license/activiti/$',
-            'license_generator_form.views.rest_generate_license',
-            name='rest_generate_license'
+            'license_generator_form.views.rest_generate_activiti',
+            name='rest_generate_activiti'
         ),
-
-    url(r'^admin/', include(admin.site.urls)),
 )

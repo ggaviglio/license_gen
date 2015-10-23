@@ -72,7 +72,7 @@ class GenerateLicenseTest(FunctionalTest):
         # Alfrescan will get an error message
         error_message = self.browser.find_element_by_css_selector(".alert p")\
             .text
-        expected_error = 'Activiti Server License Generator error:'
+        expected_error = 'Server error when processing Activiti license request:'
         self.assertEqual(error_message, expected_error)
 
         # Alfrescan switch to the Alfresco tab

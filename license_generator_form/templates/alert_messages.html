@@ -1,21 +1,7 @@
-{% if generator_error_message %}
+{% if error_message %}
     <div class="alert alert-danger">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>                                    
-        <p><b>{{tab_selected}} Server License Generator error:</b></p>
-        <p>{{ generator_error_message }}</p>
-    </div>
-{% elif java_error_message %}
-    <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>                    
-        <p><b>{{tab_selected}} Java License Generator error:</b></p>
-        <p>{{ java_error_message }}</p>        
-    </div>
-{% elif general_error_message %}
-    <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>                    
-        <p><b>{{tab_selected}} General License Generator error:</b></p>
-        <p>{{ general_error_message }}</p>        
+        <p><b>Server error when processing {{tab_selected}} license request:</b></p>
+        <p>{{ error_message }}</p>
     </div>
 {% endif %}
-
-
