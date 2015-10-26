@@ -15,6 +15,8 @@ from license_generator_form.license_request_unmarshal \
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import logging
+import datetime
 
 
 def handler404(request):
@@ -45,8 +47,8 @@ def form_generate_alfresco(request):
     _form_validate_request(request)
     args = LicenseRequestUnmarshaller.alfresco(request.POST)
     return _form_generate(
-        request, 
-        args, 
+        request,
+        args,
         alfresco_license_generators.Alfresco.generate,
         'Alfresco'
     )
@@ -56,8 +58,8 @@ def form_generate_activiti(request):
     _form_validate_request(request)
     args = LicenseRequestUnmarshaller.activiti(request.POST)
     return _form_generate(
-        request, 
-        args, 
+        request,
+        args,
         alfresco_license_generators.Activiti.generate,
         'Activiti'
     )
@@ -73,8 +75,8 @@ def rest_generate_alfresco(request):
         json.loads(request.body.decode('UTF-8'))
     )
     return _rest_generate(
-        request, 
-        args, 
+        request,
+        args,
         alfresco_license_generators.Alfresco.generate
     )
 
@@ -89,8 +91,8 @@ def rest_generate_activiti(request):
         json.loads(request.body.decode('UTF-8'))
     )
     return _rest_generate(
-        request, 
-        args, 
+        request,
+        args,
         alfresco_license_generators.Activiti.generate
     )
 
@@ -112,8 +114,8 @@ def _form_generate(request, args, generator, tab_selected):
     try:
         stdout, binary = generator(**args)
         return _get_downloadable_binary_file(
-            request, 
-            binary, 
+            request,
+            binary,
             request.POST.get('output_filename')
         )
     except Exception as e:
@@ -164,4 +166,70 @@ def _get_downloadable_binary_file(request, file_bytes, filename):
         filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename)
 
     response['Content-Disposition'] = 'attachment; ' + filename_header
+    return response
+
+
+def upload_and_check_license(request):
+
+    try:
+        if request.method == 'POST' and request.is_ajax():
+            if "Alfresco" in request.POST['radio_selected']:
+                dump = alfresco_license_generators.Alfresco.dump(
+                    request.FILES['file'].read()
+                )
+                dump_message = dump.decode('UTF-8')
+
+            elif "Activiti" in request.POST['radio_selected']:
+                dump = alfresco_license_generators.Activiti.dump(
+                    request.FILES['file'].read()
+                )
+                dump_message = dump.decode('UTF-8')
+
+            response = JsonResponse({'message': dump_message})
+
+        else:
+            # Method not allowed
+            error_message = "\nMethod not allowed."\
+                            + " Please check the uploaded file and try again,"\
+                            + " or raise a ticket with ITS if you "\
+                            + "feel this is in error."
+            response = HttpResponse(content=error_message, status=405)
+
+    except JavaNotFoundError as e:
+        java_message = "\nAn error was thrown by the license dumping tool"\
+                       + ", most likely because a Java error. "\
+                       + " Please check the uploaded file and try again, "\
+                       + "or raise a ticket with ITS if you "\
+                       + "feel this is in error."
+        response = HttpResponse(content=java_message, status=500)
+        logging.error(
+            "Error generating license dump (Java error): %s" % str(e)
+        )
+
+    except GeneratorCommandError as e:
+        generator_message = "\nAn error was thrown by the license dumping "\
+                            + "tool, most likely because an "\
+                            + "invalid license file was provided. Please "\
+                            + "check the uploaded file and try again,"\
+                            + " or raise a ticket with ITS if you feel this "\
+                            + "is in error."
+        response = HttpResponse(content=generator_message, status=500)
+        logging.error(
+            "Error generating license dump "
+            + "(Generator Command error): %s" % str(e)
+        )
+
+    except Exception as e:
+        regular_message = "\nAn error was thrown by the license dumping "\
+                          + "tool, most likely because an "\
+                          + "invalid license file was provided. Please "\
+                          + "check the uploaded file and try again,"\
+                          + " or raise a ticket with ITS if you feel this "\
+                          + "is in error."
+        response = HttpResponse(content=regular_message, status=500)
+        logging.error(
+            "Error generating license dump "
+            + "(Generator Command error): %s" % str(e)
+        )
+
     return response

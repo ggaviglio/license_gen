@@ -37,7 +37,7 @@ Piece of code that allow us to shrink the form earlier: 911px;
     .collapse.in {
         display:block !important;
     }    
-    #myNavbar li a:hover, #myNavbar li a:focus {
+    #LicenseNavbar li a:hover, #LicenseNavbar li a:focus {
         font-size: 100%;
     }
 }
@@ -75,7 +75,7 @@ automatically: 911px;
 }
 
 @media (min-width: 992px) {
-    #myTab li.active a {
+    #tabSwitcher li.active a {
         background-color: #f8f8f8;
     }
 }
