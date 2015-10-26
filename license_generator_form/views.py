@@ -16,7 +16,6 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
-import datetime
 
 
 def handler404(request):
