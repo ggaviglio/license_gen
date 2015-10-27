@@ -168,67 +168,46 @@ def _get_downloadable_binary_file(request, file_bytes, filename):
     return response
 
 
-def upload_and_check_license(request):
+def upload_alfresco_license(request):
+    _upload_validate_request(request)
 
+    return _upload_license(
+        request,
+        request.FILES['file'].read(),
+        alfresco_license_generators.Alfresco.dump
+    )
+
+
+def upload_activiti_license(request):
+    _upload_validate_request(request)
+
+    return _upload_license(
+        request,
+        request.FILES['file'].read(),
+        alfresco_license_generators.Activiti.dump
+    )
+
+
+def _upload_validate_request(request):
+    if not (request.method == 'POST' and request.is_ajax()):
+        # Method not allowed
+        error_message = "\nMethod not allowed."\
+                        + " Please check the uploaded file and try again,"\
+                        + " or raise a ticket with ITS if you "\
+                        + "feel this is in error."
+        return HttpResponse(content=error_message, status=405)
+
+
+def _upload_license(request, _file, uploader):
     try:
-        if request.method == 'POST' and request.is_ajax():
-            if "Alfresco" in request.POST['radio_selected']:
-                dump = alfresco_license_generators.Alfresco.dump(
-                    request.FILES['file'].read()
-                )
-                dump_message = dump.decode('UTF-8')
+        dump = uploader(_file)
+        dump_message = dump.decode('UTF-8')
+        return JsonResponse({'message': dump_message})
 
-            elif "Activiti" in request.POST['radio_selected']:
-                dump = alfresco_license_generators.Activiti.dump(
-                    request.FILES['file'].read()
-                )
-                dump_message = dump.decode('UTF-8')
-
-            response = JsonResponse({'message': dump_message})
-
-        else:
-            # Method not allowed
-            error_message = "\nMethod not allowed."\
-                            + " Please check the uploaded file and try again,"\
-                            + " or raise a ticket with ITS if you "\
-                            + "feel this is in error."
-            response = HttpResponse(content=error_message, status=405)
-
-    except JavaNotFoundError as e:
-        java_message = "\nAn error was thrown by the license dumping tool"\
-                       + ", most likely because a Java error. "\
-                       + " Please check the uploaded file and try again, "\
-                       + "or raise a ticket with ITS if you "\
-                       + "feel this is in error."
-        response = HttpResponse(content=java_message, status=500)
-        logging.error(
-            "Error generating license dump (Java error): %s" % str(e)
-        )
-
-    except GeneratorCommandError as e:
-        generator_message = "\nAn error was thrown by the license dumping "\
-                            + "tool, most likely because an "\
-                            + "invalid license file was provided. Please "\
-                            + "check the uploaded file and try again,"\
-                            + " or raise a ticket with ITS if you feel this "\
-                            + "is in error."
-        response = HttpResponse(content=generator_message, status=500)
-        logging.error(
-            "Error generating license dump "
-            + "(Generator Command error): %s" % str(e)
-        )
-
-    except Exception as e:
-        regular_message = "\nAn error was thrown by the license dumping "\
-                          + "tool, most likely because an "\
-                          + "invalid license file was provided. Please "\
-                          + "check the uploaded file and try again,"\
-                          + " or raise a ticket with ITS if you feel this "\
-                          + "is in error."
-        response = HttpResponse(content=regular_message, status=500)
-        logging.error(
-            "Error generating license dump "
-            + "(Generator Command error): %s" % str(e)
-        )
-
-    return response
+    except (JavaNotFoundError, GeneratorCommandError, Exception) as e:
+        logging.error(str(e))
+        error_message = "\nAn error was thrown by the license dumping "\
+                        + "tool. Please check the uploaded file and "\
+                        + "try again, or raise a ticket with ITS if "\
+                        + "you feel this is an error."
+        return HttpResponse(content=error_message, status=500)

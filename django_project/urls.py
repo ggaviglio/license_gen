@@ -31,12 +31,12 @@ urlpatterns = patterns(
         ),
     url(
             r'^api/license/alfresco/dump/$',
-            'license_generator_form.views.upload_and_check_license',
+            'license_generator_form.views.upload_alfresco_license',
             name='upload_alfresco_license'
         ),
     url(
             r'^api/license/activiti/dump/$',
-            'license_generator_form.views.upload_and_check_license',
+            'license_generator_form.views.upload_activiti_license',
             name='upload_activiti_license'
         ),
 

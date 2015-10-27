@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from license_generator_form.views import \
     home_page, rest_generate_alfresco, rest_generate_activiti,\
-    upload_and_check_license
+    _upload_validate_request
 from license_generator_form.views import handler404, handler500
 from unittest.mock import patch
 from alfresco_license_generators import (
@@ -27,18 +27,11 @@ GENERAL_ERROR_MESSAGE = 'Your message could not be delivered.'\
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
              + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
 
-UPLOAD_JAVA_ERROR = "\nAn error was thrown by the license dumping tool"\
-                    + ", most likely because a Java error. "\
-                    + " Please check the uploaded file and try again, "\
-                    + "or raise a ticket with ITS if you "\
-                    + "feel this is in error."
+UPLOAD_ERROR = "\nAn error was thrown by the license dumping "\
+               + "tool. Please check the uploaded file and "\
+               + "try again, or raise a ticket with ITS if "\
+               + "you feel this is an error."
 
-UPLOAD_GENERATOR_ERROR = "\nAn error was thrown by the license dumping "\
-                         + "tool, most likely because an "\
-                         + "invalid license file was provided. Please "\
-                         + "check the uploaded file and try again,"\
-                         + " or raise a ticket with ITS if you feel this "\
-                         + "is in error."
 
 ALFRESCO_DATA = {
     'release_key': 'ent30',
@@ -543,8 +536,7 @@ class UploadLicenseTest(TestCase):
         response = self.client.post(
             reverse('upload_alfresco_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Alfresco'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -566,15 +558,14 @@ class UploadLicenseTest(TestCase):
     ):
 
         mock_license.dump.side_effect = \
-            JavaNotFoundError(UPLOAD_JAVA_ERROR)
+            JavaNotFoundError(UPLOAD_ERROR)
 
         fake_file = tempfile.NamedTemporaryFile(delete=False)
 
         response = self.client.post(
             reverse('upload_alfresco_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Alfresco'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -585,7 +576,7 @@ class UploadLicenseTest(TestCase):
         self.assertRaises(JavaNotFoundError, mock_license.dump)
         fake_file.close()
 
-        self.assertIn(UPLOAD_JAVA_ERROR.encode('utf-8'), response.content)
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
 
     @patch('logging.error')
     @patch('alfresco_license_generators.Alfresco')
@@ -594,15 +585,14 @@ class UploadLicenseTest(TestCase):
     ):
 
         mock_license.dump.side_effect = \
-            GeneratorCommandError(UPLOAD_GENERATOR_ERROR)
+            GeneratorCommandError(UPLOAD_ERROR)
 
         fake_file = tempfile.NamedTemporaryFile(delete=False)
 
         response = self.client.post(
             reverse('upload_alfresco_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Alfresco'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -613,7 +603,7 @@ class UploadLicenseTest(TestCase):
         self.assertRaises(GeneratorCommandError, mock_license.dump)
         fake_file.close()
 
-        self.assertIn(UPLOAD_GENERATOR_ERROR.encode('utf-8'), response.content)
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
 
     @patch('alfresco_license_generators.Activiti')
     def test_dump_output_returned_on_upload_activiti_license(
@@ -626,8 +616,7 @@ class UploadLicenseTest(TestCase):
         response = self.client.post(
             reverse('upload_activiti_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Activiti'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -649,15 +638,14 @@ class UploadLicenseTest(TestCase):
     ):
 
         mock_license.dump.side_effect = \
-            JavaNotFoundError(UPLOAD_JAVA_ERROR)
+            JavaNotFoundError(UPLOAD_ERROR)
 
         fake_file = tempfile.NamedTemporaryFile(delete=False)
 
         response = self.client.post(
             reverse('upload_activiti_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Activiti'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -668,7 +656,7 @@ class UploadLicenseTest(TestCase):
         self.assertRaises(JavaNotFoundError, mock_license.dump)
         fake_file.close()
 
-        self.assertIn(UPLOAD_JAVA_ERROR.encode('utf-8'), response.content)
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
 
     @patch('logging.error')
     @patch('alfresco_license_generators.Activiti')
@@ -677,15 +665,14 @@ class UploadLicenseTest(TestCase):
     ):
 
         mock_license.dump.side_effect = \
-            GeneratorCommandError(UPLOAD_GENERATOR_ERROR)
+            GeneratorCommandError(UPLOAD_ERROR)
 
         fake_file = tempfile.NamedTemporaryFile(delete=False)
 
         response = self.client.post(
             reverse('upload_activiti_license'),
             data={
-                'file': fake_file,
-                'radio_selected': 'Activiti'
+                'file': fake_file
             },
             format='multipart',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -696,7 +683,7 @@ class UploadLicenseTest(TestCase):
         self.assertRaises(GeneratorCommandError, mock_license.dump)
         fake_file.close()
 
-        self.assertIn(UPLOAD_GENERATOR_ERROR.encode('utf-8'), response.content)
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
 
     def test_upload_license_method_not_allowed(self):
 
@@ -705,7 +692,7 @@ class UploadLicenseTest(TestCase):
         request.method = 'GET'
         request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
 
-        response = upload_and_check_license(request)
+        response = _upload_validate_request(request)
 
         self.assertEqual(response.status_code, 405)
 
@@ -716,6 +703,6 @@ class UploadLicenseTest(TestCase):
         request.method = 'POST'
         request.META['HTTP_X_REQUESTED_WITH'] = 'NO_AJAX'
 
-        response = upload_and_check_license(request)
+        response = _upload_validate_request(request)
 
         self.assertEqual(response.status_code, 405)
