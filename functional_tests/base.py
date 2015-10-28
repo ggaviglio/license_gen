@@ -168,6 +168,12 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(
                 form_elements['cryptodoc_enabled'].is_selected(), False
             )
+
+            #self.assertEqual(
+            #    form_elements['license_filename'].get_attribute('value'),
+            #    "Alfresco-ent50-.lic"
+            #)
+
         else:   # Activiti
             self.assertEqual(
                 form_elements['number_admins'].get_attribute('value'), ""
@@ -194,9 +200,10 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['number_apps'].get_attribute('value'), ""
             )
 
-        self.assertEqual(
-            form_elements['license_filename'].get_attribute('value'), ""
-        )
+            #self.assertEqual(
+            #    form_elements['license_filename'].get_attribute('value'),
+            #    "Activiti-1.0ent-.lic"
+            #)
 
     def check_form_elements_filled(self, brand, form_elements):
         self.assertEqual(
@@ -223,7 +230,7 @@ class FunctionalTest(LiveServerTestCase):
         )
         self.assertEqual(
             form_elements['account_holder_name'].get_attribute('value'),
-            "some account holder name"
+            "Sebastian"
         )
 
         if brand == "alfresco":
@@ -267,6 +274,11 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['cryptodoc_enabled'].is_selected(),
                 True
             )
+            self.assertEqual(
+                form_elements['license_filename'].get_attribute('value'),
+                "Alfresco-ent31-Sebastian-perpetual.lic"
+            )
+
         else:   # Activiti
             self.assertEqual(
                 form_elements['number_admins'].get_attribute('value'),
@@ -300,11 +312,10 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['number_apps'].get_attribute('value'),
                 "25"
             )
-
-        self.assertEqual(
-            form_elements['license_filename'].get_attribute('value'),
-            "some license filename"
-        )
+            self.assertEqual(
+                form_elements['license_filename'].get_attribute('value'),
+                "Activiti-1.0ent-Sebastian-temp.lic"
+            )
 
     def fill_in_form_elements(self, brand, form_elements):
         form_elements['notes'].send_keys('some notes')
@@ -315,7 +326,7 @@ class FunctionalTest(LiveServerTestCase):
             checkbox.send_keys(Keys.SPACE)
 
         form_elements['account_holder_name'].\
-            send_keys('some account holder name')
+            send_keys('Sebastian')
 
         if brand == "alfresco":
             form_elements['release_key'] = self.browser.\
@@ -353,5 +364,3 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['number_processes'].send_keys('3')
             form_elements['default_tenant'].send_keys('some tenant')
             form_elements['number_apps'].send_keys('25')
-
-        form_elements['license_filename'].send_keys('some license filename')
