@@ -169,11 +169,6 @@ class FunctionalTest(LiveServerTestCase):
                 form_elements['cryptodoc_enabled'].is_selected(), False
             )
 
-            #self.assertEqual(
-            #    form_elements['license_filename'].get_attribute('value'),
-            #    "Alfresco-ent50-.lic"
-            #)
-
         else:   # Activiti
             self.assertEqual(
                 form_elements['number_admins'].get_attribute('value'), ""
@@ -199,11 +194,6 @@ class FunctionalTest(LiveServerTestCase):
             self.assertEqual(
                 form_elements['number_apps'].get_attribute('value'), ""
             )
-
-            #self.assertEqual(
-            #    form_elements['license_filename'].get_attribute('value'),
-            #    "Activiti-1.0ent-.lic"
-            #)
 
     def check_form_elements_filled(self, brand, form_elements):
         self.assertEqual(
