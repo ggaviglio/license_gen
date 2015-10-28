@@ -10,7 +10,7 @@ class GenerateLicenseTest(FunctionalTest):
         form_elements_alfresco = {}
         # Alfrescan clicks the alfresco tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         # Alfrescan checks all form elements to be filled out
         form_elements_alfresco = self.get_form_elements("alfresco")
@@ -36,7 +36,7 @@ class GenerateLicenseTest(FunctionalTest):
         form_elements_activiti = {}
         # Alfrescan clicks the activiti tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         # Alfrescan checks all form elements to be filled out
         form_elements_activiti = self.get_form_elements("activiti")
@@ -59,7 +59,7 @@ class GenerateLicenseTest(FunctionalTest):
         form_elements_activiti = {}
         # Alfrescan clicks on the activiti tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         # Alfrescan checks all form elements
         form_elements_activiti = self.get_form_elements("activiti")
@@ -77,13 +77,13 @@ class GenerateLicenseTest(FunctionalTest):
 
         # Alfrescan switch to the Alfresco tab
         default_tab_selected = self.browser.\
-            find_element_by_css_selector('#myTab li.active a')
+            find_element_by_css_selector('#tabSwitcher li.active a')
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
 
         new_tab_selected = self.browser.\
-            find_element_by_css_selector('#myTab li.active a')
+            find_element_by_css_selector('#tabSwitcher li.active a')
 
         self.assertNotEqual(default_tab_selected, new_tab_selected)
 

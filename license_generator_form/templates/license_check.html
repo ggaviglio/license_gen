@@ -1,0 +1,46 @@
+<div class="modal fade col-md-12 col-xs-12" id="licenseCheck" tabindex="-1" role="dialog" aria-labelledby="AlfrescoModalLicense">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="AlfrescoModalLicense"><b>Upload and check an existing Alfresco license</b></h4>
+            </div>
+            <div class="modal-body">               
+             
+                <div id="uploaddiv">
+                    <form  method="post" enctype="multipart/form-data">  
+                        {% csrf_token %}  
+                        
+                        <div class="input-group" id="radioalternative">
+                            <p><b>What type of license are you uploading?</b></p>
+                            <label class="radio-inline"><input type="radio" name="optlicense" checked="checked" value="Alfresco">Alfresco License</label>
+                            <label class="radio-inline"><input type="radio" name="optlicense" value="Activiti">Activiti License</label>
+                        </div>  
+
+                        <div class="input-group has-feedback" id="format-file">
+                            <span class="input-group-addon btn btn-default" id="licenseChooseFile">Choose file</span>
+                            <input type="file" name="files" id="files" style="display:none;"/>
+                            <input type="text" id="file_name" name="file_name" class="form-control file" aria-describedby="sizing-addon2" value="..." readonly>
+                            <i class="glyphicon glyphicon-folder-open form-control-feedback"></i>                    
+                        </div>                                                 
+
+                        <div class="input-group has-feedback" id="uploadbutton">
+                            <button type="button" class="btn btn-primary" id="licenseCheckUpload" disabled>
+                                <i class="glyphicon glyphicon-upload"></i>
+                                Upload and check
+                            </button>
+                        </div> 
+                                             
+                    </form>  
+
+                    <div id="licenseInfoArea">
+                        <textarea class="form-control span5 hidden" rows="15" id="licenseCheckResult" disabled></textarea>                 
+                    </div>                    
+                </div>                      
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="licenseClose" >Done</button>                
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

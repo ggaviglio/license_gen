@@ -2,6 +2,7 @@
 
 {% block body %}
     {% include "navbar.html" %}
+    {% include "license_check.html" %}
     <!-- Begin content page -->
     <div class="container">        
         <br>
@@ -11,7 +12,7 @@
                     {% include "alert_messages.html" %}
 
                     <div role="tabpanel">
-                        <ul id="myTab" class="nav nav-tabs" role="tablist">
+                        <ul id="tabSwitcher" class="nav nav-tabs" role="tablist">
                             <li role="presentation" class={% if tab_selected != "Activiti" %}"active"{% endif %}>
                                 <a href="#alfresco_tab" aria-controls="alfresco_tab" data-toggle="tab" role="tab" >Alfresco License Generator</a>
                             </li>
@@ -19,7 +20,7 @@
                                 <a href="#activiti_tab" aria-controls="activiti_tab" data-toggle="tab" role="tab" >Activiti License Generator</a>
                             </li>
                         </ul>
-                        <div id="myTabContent" class="tab-content">
+                        <div id="tabSwitcherContent" class="tab-content">
                             <div role="tabpanel" class="tab-pane fade {% if tab_selected != "Activiti" %}in active{% endif %}" id="alfresco_tab"> 
                                 {% include "alfresco_form.html" %}                                                             
                             </div>
@@ -38,10 +39,31 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <script type="text/javascript">   
         /* Allows to change the title of the nav bar*/               
-        $("#myTab li a").click(function() {
+        $("#tabSwitcher li a").click(function() {
             var text = $( this ).text();                
             $(".navbar-brand #interactive-title").text(text);            
         });  
+
+        $("input[name='optlicense']").change(function(){                        
+            var text = $('input[name="optlicense"]:checked').val();
+
+            
+            if( $('#file_name').val() != "...") {
+                $("#licenseCheckUpload").prop("disabled", false);                 
+            }
+
+            if (text == 'Alfresco') {
+                $("#AlfrescoModalLicense").text("Upload and check an existing Alfresco license");
+            }
+            else {
+                $("#AlfrescoModalLicense").text("Upload and check an existing Activiti license");
+            }
+        });
+
+        $("#tabSwitcher li a").click(function() {
+            var text = $( this ).text();                
+            $(".navbar-brand #interactive-title").text(text);                     
+        });
         
         $(".date").datepicker({ 
             autoclose: true, 
@@ -52,6 +74,122 @@
         $(".navbar-brand").click(function() {
             event.preventDefault();
             $('html, body').animate({ scrollTop: 0 }, 'slow');
-        });       
+        });  
+
+        //Handle file uploads for license checking
+        var files;
+
+        $('input[type=file]').on('change', prepareUpload);
+
+        function prepareUpload(event){            
+            files = event.target.files;         
+
+            //If I don't select any file I will not enable the upload buttons
+            if($('#files').val()!=''){                
+                $("#licenseCheckUpload").prop("disabled", false);
+                $("#licenseCheckResult").css('visibility','visible').hide().fadeIn().addClass('hidden');    
+            }    
+            else {
+                // I make sure that the button is disabled
+                $("#licenseCheckUpload").prop("disabled", true);
+                // I do set a filename by default
+                $('#file_name').val("...");
+            }
+            
+        }
+
+        $('#licenseCheckUpload').on('click', uploadFiles);
+
+        //CSRF AJAX        
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        //CSRF AJAX
+        
+        //Catch the form submit and upload the files
+        function uploadFiles(event){            
+            //Create a formdata object and add the files
+            
+            url_selected = '';
+
+            if($('input[name="optlicense"]:checked').val() == 'Alfresco') {
+                url_selected = 'api/license/alfresco/dump/';
+            }
+            else {
+                url_selected = 'api/license/activiti/dump/';    
+            }            
+
+            var data = new FormData();
+            $.each(files, function(key, value){
+                data.append("file", value);                 
+                data.append('radio_selected', $('input[name="optlicense"]:checked').val());                                             
+            });
+
+            //I disabled the button ... 
+            $("#licenseCheckUpload").prop("disabled", true);
+
+            $.ajax({
+                url: url_selected,
+                type: 'POST',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                processData: false, 
+                contentType: false, 
+                success: function(data, textStatus, jqXHR){                                        
+                    $('#licenseCheckResult').val(data.message);                                        
+                    $("#licenseCheckResult").css('visibility','visible').hide().fadeIn().removeClass('hidden');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    //Handle errors here     
+                    console.log(textStatus);
+                    console.log(errorThrown);                                   
+                    $('#licenseCheckResult').val("Error processing license: " + jqXHR.responseText);
+                    $("#licenseCheckResult").css('visibility','visible').hide().fadeIn().removeClass('hidden');
+                }
+
+            });
+            
+        }
+
+        //Piece of code to deal with the uploading button in the right way
+        $('#licenseChooseFile').click(function(e){
+            //By default I will get disabled the upload button, always
+            $("#licenseCheckUpload").prop("disabled", true);            
+            $('#files').trigger('click');
+            $('input[type=file]').trigger('change');                        
+        });
+
+        $('input[type="file"]').change(function(e){                       
+            var fileName = e.target.files[0].name;                         
+            var fileSize = e.target.files[0].size;            
+            $('#file_name').val(fileName+"      "+fileSize+" KB");            
+        });
+     
     </script> 
 {% endblock %}

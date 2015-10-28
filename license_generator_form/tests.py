@@ -3,7 +3,8 @@ from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from license_generator_form.views import \
-    home_page, rest_generate_alfresco, rest_generate_activiti
+    home_page, rest_generate_alfresco, rest_generate_activiti,\
+    _upload_validate_request
 from license_generator_form.views import handler404, handler500
 from unittest.mock import patch
 from alfresco_license_generators import (
@@ -11,15 +12,26 @@ from alfresco_license_generators import (
     GeneratorCommandError
 )
 import json
+from django.core.urlresolvers import reverse
+import tempfile
 
 
-GENERATOR_ERROR_MESSAGE = 'Your message could not being delivered.'\
+GENERATOR_ERROR_MESSAGE = 'Your message could not be delivered.'\
                           + ' Generator Command Error message!'
 
 JAVA_ERROR_MESSAGE = 'Please make sure Java is installed'
 
+GENERAL_ERROR_MESSAGE = 'Your message could not be delivered.'\
+                        + ' General Error message!'
+
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.'\
              + '36\ (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+
+UPLOAD_ERROR = "\nAn error was thrown by the license dumping "\
+               + "tool. Please check the uploaded file and "\
+               + "try again, or raise a ticket with ITS if "\
+               + "you feel this is an error."
+
 
 ALFRESCO_DATA = {
     'release_key': 'ent30',
@@ -508,3 +520,189 @@ class RestGenerateLicenseTest(TestCase):
         response = rest_generate_activiti(request)
 
         self.assertEqual(response.status_code, 415)
+
+
+class UploadLicenseTest(TestCase):
+
+    @patch('alfresco_license_generators.Alfresco')
+    def test_dump_output_returned_on_upload_alfresco_license(
+        self, mock_license
+    ):
+
+        mock_license.dump.return_value = b"Alfresco license already checked"
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_alfresco_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        fake_file.close()
+
+        returned_value = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual(
+            "Alfresco license already checked", returned_value['message']
+        )
+
+    @patch('logging.error')
+    @patch('alfresco_license_generators.Alfresco')
+    def test_java_exception_raised_on_upload_alfresco_license(
+        self, mock_license, mock_error
+    ):
+
+        mock_license.dump.side_effect = \
+            JavaNotFoundError(UPLOAD_ERROR)
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_alfresco_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        self.assertTrue(mock_error.called)
+        self.assertRaises(JavaNotFoundError, mock_license.dump)
+        fake_file.close()
+
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
+
+    @patch('logging.error')
+    @patch('alfresco_license_generators.Alfresco')
+    def test_generatorcommand_exception_raised_on_upload_alfresco_license(
+        self, mock_license, mock_error
+    ):
+
+        mock_license.dump.side_effect = \
+            GeneratorCommandError(UPLOAD_ERROR)
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_alfresco_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        self.assertTrue(mock_error.called)
+        self.assertRaises(GeneratorCommandError, mock_license.dump)
+        fake_file.close()
+
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
+
+    @patch('alfresco_license_generators.Activiti')
+    def test_dump_output_returned_on_upload_activiti_license(
+        self, mock_license
+    ):
+        mock_license.dump.return_value = b"Activiti license already checked"
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_activiti_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        fake_file.close()
+
+        returned_value = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual(
+            "Activiti license already checked", returned_value['message']
+        )
+
+    @patch('logging.error')
+    @patch('alfresco_license_generators.Activiti')
+    def test_java_exception_raised_on_upload_activiti_license(
+        self, mock_license, mock_error
+    ):
+
+        mock_license.dump.side_effect = \
+            JavaNotFoundError(UPLOAD_ERROR)
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_activiti_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        self.assertTrue(mock_error.called)
+        self.assertRaises(JavaNotFoundError, mock_license.dump)
+        fake_file.close()
+
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
+
+    @patch('logging.error')
+    @patch('alfresco_license_generators.Activiti')
+    def test_generatorcommand_exception_raised_on_upload_activiti_license(
+        self, mock_license, mock_error
+    ):
+
+        mock_license.dump.side_effect = \
+            GeneratorCommandError(UPLOAD_ERROR)
+
+        fake_file = tempfile.NamedTemporaryFile(delete=False)
+
+        response = self.client.post(
+            reverse('upload_activiti_license'),
+            data={
+                'file': fake_file
+            },
+            format='multipart',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        self.assertTrue(mock_license.dump.called)
+        self.assertTrue(mock_error.called)
+        self.assertRaises(GeneratorCommandError, mock_license.dump)
+        fake_file.close()
+
+        self.assertIn(UPLOAD_ERROR.encode('utf-8'), response.content)
+
+    def test_upload_license_method_not_allowed(self):
+
+        request = HttpRequest()
+        request.path = reverse('upload_alfresco_license')
+        request.method = 'GET'
+        request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
+
+        response = _upload_validate_request(request)
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_upload_license_method_not_allowed_ajax(self):
+
+        request = HttpRequest()
+        request.path = reverse('upload_alfresco_license')
+        request.method = 'POST'
+        request.META['HTTP_X_REQUESTED_WITH'] = 'NO_AJAX'
+
+        response = _upload_validate_request(request)
+
+        self.assertEqual(response.status_code, 405)

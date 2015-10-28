@@ -40,7 +40,7 @@ class HomePageTest(FunctionalTest):
     def test_home_page_has_tabs_to_switch_between_each_other(self):
         # Alfrescan sees tabs for the different data licenses
         license_tabs = self.browser.\
-            find_elements_by_css_selector('#myTab li a')
+            find_elements_by_css_selector('#tabSwitcher li a')
         self.assertEqual(len(license_tabs), 2)
 
         # Alfrescan can see the title of both tabs as follows:
@@ -49,29 +49,29 @@ class HomePageTest(FunctionalTest):
             'Activiti License Generator'
         ]
         first_tab = self.browser.\
-            find_elements_by_css_selector('#myTab li a')[0]
+            find_elements_by_css_selector('#tabSwitcher li a')[0]
         second_tab = self.browser.\
-            find_elements_by_css_selector('#myTab li a')[1]
+            find_elements_by_css_selector('#tabSwitcher li a')[1]
 
         self.assertEqual(first_tab.text, expected_tabs[0])
         self.assertEqual(second_tab.text, expected_tabs[1])
 
         # Clicking the tabs changes the active tab from one to another
         default_tab_selected = self.browser.\
-            find_element_by_css_selector('#myTab li.active a')
+            find_element_by_css_selector('#tabSwitcher li.active a')
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         new_tab_selected = self.browser.\
-            find_element_by_css_selector('#myTab li.active a')
+            find_element_by_css_selector('#tabSwitcher li.active a')
 
         self.assertEqual(default_tab_selected, new_tab_selected)
 
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         last_tab_selected = self.browser.find_element_by_css_selector(
-            '#myTab li.active a'
+            '#tabSwitcher li.active a'
         )
 
         self.assertNotEqual(new_tab_selected, last_tab_selected)
@@ -83,7 +83,7 @@ class HomePageTest(FunctionalTest):
 
         # Alfrescan clicks on the Alfresco tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         new_content = self.browser.find_element_by_css_selector(
             'div.active .panel'
@@ -92,7 +92,7 @@ class HomePageTest(FunctionalTest):
 
         # Alfrescan clicks on the Activiti tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         last_content = self.browser.find_element_by_css_selector(
             'div.active.in .panel'
@@ -103,7 +103,7 @@ class HomePageTest(FunctionalTest):
         # Alfrescan notices how all the input form
         # elements are empty -Alfresco form-
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         form_elements_alfresco = {}
 
@@ -129,7 +129,7 @@ class HomePageTest(FunctionalTest):
         # Alfrescan notices how all the input form
         # elements are empty -Alfresco form-
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         form_elements_activiti = {}
 
@@ -154,7 +154,7 @@ class HomePageTest(FunctionalTest):
     def test_user_can_clear_empty_alfresco_form(self):
         # Alfrescan goes to the alfresco tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         form_elements_alfresco = {}
 
@@ -176,7 +176,7 @@ class HomePageTest(FunctionalTest):
     def test_user_can_clear_empty_activiti_form(self):
         # Alfrescan clicks on the activiti tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         form_elements_activiti = {}
 

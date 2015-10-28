@@ -1,5 +1,6 @@
 from .base import FunctionalTest
 from unittest import skip
+import time
 
 
 class NavTest(FunctionalTest):
@@ -47,16 +48,16 @@ class NavTest(FunctionalTest):
             '.navbar-brand'
         ).text
         default_selected_tab = self.browser.find_element_by_css_selector(
-            '#myTab li.active a'
+            '#tabSwitcher li.active a'
         ).text
         self.assertEqual(default_topbar_title, default_selected_tab)
 
         # Alfrescan clicks on the Alfresco tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#alfresco_tab"]'
+            '#tabSwitcher li [href="#alfresco_tab"]'
         ).click()
         new_selected_tab = self.browser.find_element_by_css_selector(
-            '#myTab li.active a'
+            '#tabSwitcher li.active a'
         ).text
         self.assertEqual(default_selected_tab, new_selected_tab)
 
@@ -73,16 +74,16 @@ class NavTest(FunctionalTest):
             '.navbar-brand'
         ).text
         default_selected_tab = self.browser.find_element_by_css_selector(
-            '#myTab li.active a'
+            '#tabSwitcher li.active a'
         ).text
         self.assertEqual(default_topbar_title, default_selected_tab)
 
         # Alfrescan clicks on the Activiti tab
         self.browser.find_element_by_css_selector(
-            '#myTab li [href="#activiti_tab"]'
+            '#tabSwitcher li [href="#activiti_tab"]'
         ).click()
         new_selected_tab = self.browser.find_element_by_css_selector(
-            '#myTab li.active a'
+            '#tabSwitcher li.active a'
         ).text
         self.assertNotEqual(default_selected_tab, new_selected_tab)
 
@@ -93,9 +94,100 @@ class NavTest(FunctionalTest):
         self.assertNotEqual(default_topbar_title, new_topbar_title)
         self.assertEqual(new_selected_tab, new_topbar_title)
 
-    @skip
-    def test_license_check_link_shows_popup(self):
-        pass
+    def test_license_check_link_shows_upload_dialog(self):
+        # Alfrescan clicks on the link
+        self.browser.find_element_by_css_selector(
+            '[data-original-title="upload and check license"]'
+        ).click()
+        time.sleep(0.5)
+        # Alfrescan sees a file upload dialog
+        upload_dialog = self.browser.find_element_by_css_selector(
+            '.modal-dialog'
+        )
+        self.assertTrue(upload_dialog.is_displayed())
+        # Alfrescan checks the text of this dialog
+        text_dialog = self.browser.\
+            find_element_by_css_selector('#AlfrescoModalLicense').text
+        self.assertEqual(
+            "Upload and check an existing Alfresco license", text_dialog
+        )
+
+    def test_license_check_dialog_turns_up_as_excepted(self):
+        upload_dialog = self.browser.find_element_by_css_selector(
+            '.modal-dialog'
+        )
+        # There is no upload dialog
+        self.assertFalse(upload_dialog.is_displayed())
+
+        # Alfrescan clicks on the license link
+        self.browser.find_element_by_css_selector(
+            '[data-original-title="upload and check license"]'
+        ).click()
+        time.sleep(0.5)
+
+        # Alfrescan sees the dialog
+        self.assertTrue(upload_dialog.is_displayed())
+
+        #Alfrescan closes the upload dialog
+        self.browser.find_element_by_css_selector('#licenseClose').click()
+        time.sleep(0.5)
+
+        # Alfrescan checks dialog is not visible anymore
+        self.assertFalse(upload_dialog.is_displayed())
+
+    def test_license_check_dialog_has_upload_button_disabled(self):
+        # Alfrescan clicks on the link
+        self.browser.find_element_by_css_selector(
+            '[data-original-title="upload and check license"]'
+        ).click()
+        time.sleep(0.5)
+
+        choose_btn = self.browser.find_element_by_css_selector(
+            '#licenseChooseFile'
+        )
+        upload_btn = self.browser.find_element_by_css_selector(
+            '#licenseCheckUpload'
+        )
+
+        # choosefile btn is enable
+        self.assertTrue(choose_btn.is_enabled())
+        # upload btn is disabled when no file selected
+        self.assertFalse(upload_btn.is_enabled())
+
+    def test_license_check_dialog_keeps_same_name_as_clicked_radio_btn(self):
+        # Alfrescan clicks on the link
+        self.browser.find_element_by_css_selector(
+            '[data-original-title="upload and check license"]'
+        ).click()
+        time.sleep(0.5)
+
+        # Alfrescan sees the default Modal title
+        default_topbar_title = self.browser.find_element_by_css_selector(
+            '#AlfrescoModalLicense'
+        ).text
+
+        default_selected_radio = self.browser.find_element_by_css_selector(
+            "#radioalternative input[checked='checked']"
+        ).get_attribute('value')
+
+        self.assertIn(default_selected_radio, default_topbar_title)
+
+        # Alfrescan select the Activiti radio button
+        self.browser.find_element_by_css_selector(
+            "#radioalternative input[value='Activiti']"
+        ).click()
+        new_selected_radio = self.browser.find_element_by_css_selector(
+            '#AlfrescoModalLicense'
+        ).text
+
+        self.assertNotEqual(default_selected_radio, new_selected_radio)
+
+        #Alfrescan sees the new Modal title
+        new_topbar_title = self.browser.find_element_by_css_selector(
+            '#AlfrescoModalLicense'
+        ).text
+
+        self.assertIn(new_selected_radio, new_topbar_title)
 
     @skip
     def test_logout_link_redirects_to_login_page(self):
