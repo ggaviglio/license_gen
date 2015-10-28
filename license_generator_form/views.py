@@ -190,7 +190,6 @@ def upload_activiti_license(request):
 
 def _upload_validate_request(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        # Method not allowed
         error_message = "\nMethod not allowed."\
                         + " Please check the uploaded file and try again,"\
                         + " or raise a ticket with ITS if you "\
