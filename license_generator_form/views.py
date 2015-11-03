@@ -16,6 +16,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from django.contrib.auth import logout
 
 
 def handler404(request):
@@ -210,3 +211,8 @@ def _upload_license(request, _file, uploader):
                         + "try again, or raise a ticket with ITS if "\
                         + "you feel this is an error."
         return HttpResponse(content=error_message, status=500)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
