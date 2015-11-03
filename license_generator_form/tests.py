@@ -14,6 +14,8 @@ from alfresco_license_generators import (
 import json
 from django.core.urlresolvers import reverse
 import tempfile
+from django.contrib.auth.models import User
+from django.contrib.auth import SESSION_KEY, authenticate
 
 
 GENERATOR_ERROR_MESSAGE = 'Your message could not be delivered.'\
@@ -706,3 +708,41 @@ class UploadLicenseTest(TestCase):
         response = _upload_validate_request(request)
 
         self.assertEqual(response.status_code, 405)
+
+
+class LoginPageTest(TestCase):
+
+    @patch('license_generator_form.views.authenticate')
+    def test_calls_authenticate_with_data_from_post(
+        self, mock_authenticate
+    ):
+        mock_authenticate.return_value = None
+        self.client.post(
+            '/login/',
+            {'username': 'assert username', 'password': 'assert password'}
+        )
+        mock_authenticate.assert_called_once_with(
+            username='assert username', password='assert password'
+        )
+
+    @patch('license_generator_form.views.authenticate')
+    def test_gets_logged_in_session_authenticate_returns_a_user(
+        self, mock_authenticate
+    ):
+        user = User.objects.create(username='username', password='password')
+        user.backend = ''
+        mock_authenticate.return_value = user
+        self.client.post(
+            '/login/', {'username': 'username', 'password': 'password'}
+        )
+        self.assertEqual(self.client.session[SESSION_KEY], user.pk)
+
+    @patch('license_generator_form.views.authenticate')
+    def test_does_not_get_logged_in_if_authenticate_returns_None(
+        self, mock_authenticate
+    ):
+        mock_authenticate.return_value = None
+        self.client.post(
+            '/login/', {'username': 'username', 'password': 'password'}
+        )
+        self.assertNotIn(SESSION_KEY, self.client.session)
