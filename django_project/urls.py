@@ -40,6 +40,11 @@ urlpatterns = patterns(
             name='upload_activiti_license'
         ),
     url(
+            r'^login/$',
+            'license_generator_form.views.okta_auth',
+            name='okta_auth'
+        ),
+    url(
             r'^logout/$',
             'license_generator_form.views.logout_view',
             name='logout'

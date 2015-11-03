@@ -16,7 +16,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def handler404(request):
@@ -39,6 +40,8 @@ def handler500(request):
     return response
 
 
+@csrf_exempt
+@login_required(login_url='/login/‘)
 def home_page(request):
     return render(request, 'home.html')
 
@@ -216,3 +219,24 @@ def _upload_license(request, _file, uploader):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+
+def okta_auth(request):
+    auth_error = False
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('site_root')
+
+        if username and password:
+            auth_error = True
+
+    form = AuthForm(request.POST or None)
+
+    return render(
+        request, 'auth_form.html', {'form': form, 'auth_error': auth_error}
+    )
