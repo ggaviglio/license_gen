@@ -88,3 +88,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_INFORMATION = {
+    'OKTA': {
+        'API_TOKEN': '001ezqS9ii6O4R27IS588Z3sHR4wUWR-9D3-DMPe8M',
+        'IDP_MEGADATA': 'https://dev-564794.oktapreview.com/api/v1/authn'
+    }
+}
+
+AUTHENTICATION_BACKENDS = (
+    'license_generator_form.backends.OKTABackend',
+)
