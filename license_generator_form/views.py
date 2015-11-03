@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 import logging
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from license_generator_form.forms import AuthForm
 
 
 def handler404(request):
@@ -41,7 +42,7 @@ def handler500(request):
 
 
 @csrf_exempt
-@login_required(login_url='/login/‘)
+@login_required(login_url='/login/')
 def home_page(request):
     return render(request, 'home.html')
 
