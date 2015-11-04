@@ -736,7 +736,7 @@ class LoginPageTest(TestCase):
         self.client.post(
             '/login/', {'username': 'username', 'password': 'password'}
         )
-        self.assertEqual(self.client.session[SESSION_KEY], user.pk)
+        self.assertEqual(int(self.client.session[SESSION_KEY]), user.pk)
 
     @patch('license_generator_form.views.authenticate')
     def test_does_not_get_logged_in_if_authenticate_returns_None(
@@ -747,39 +747,3 @@ class LoginPageTest(TestCase):
             '/login/', {'username': 'username', 'password': 'password'}
         )
         self.assertNotIn(SESSION_KEY, self.client.session)
-
-    @patch('license_generator_form.views.authenticate')
-    def test_an_alfrescan_user_is_logged_in(
-        self, mock_authenticate
-    ):
-
-        alfrescan = User.objects.create(username='sebastian', password='maidenhead is great')
-        alfrescan.backend = ''
-        mock_authenticate.return_value = alfrescan
-
-        self.client.post(
-            '/login/',
-            {'username': 'sebastian', 'password': 'maidenhead is great'}
-        )
-
-        mock_authenticate.assert_called_once_with(
-            username='sebastian',
-            password='maidenhead is great'
-        )
-        self.assertEqual(self.client.session[SESSION_KEY], alfrescan.pk)
-
-    @patch('license_generator_form.views.logout')
-    def test_an_alfrescan_can_get_logged_out(
-        self, mock_logout
-    ):
-        alfrescan = User.objects.create(username='sebastian', password='maidenhead is great')
-        alfrescan.backend = ''
-        mock_logout.return_value = ''
-
-        response = self.client.post(
-            '/logout/',
-            {'username': 'sebastian', 'password': 'maidenhead is great'}
-        )
-
-        self.assertTrue(mock_logout.called)
-        
