@@ -189,10 +189,14 @@ class NavTest(FunctionalTest):
 
         self.assertIn(new_selected_radio, new_topbar_title)
 
-    @skip
-    def test_logout_link_redirects_to_login_page(self):
-        # Alfrescan click the log out link
+    def test_submitting_logout_successfully_logout(self):
+        # Alfrescan wants to log out of the system, so the
+        # logout link is clicked
         self.browser.find_element_by_css_selector(
-            'nav [data-original-title="log out"]'
+            '[data-original-title="log out"]'
         ).click()
+
+        # We can see how the main login form it turns up
+        login_form = self.browser.find_element_by_class_name('main-login')
+        self.assertTrue(login_form.is_displayed())
         self.assertIn("login", self.browser.current_url)
