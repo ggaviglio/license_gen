@@ -45,8 +45,8 @@ class OKTABackend(ModelBackend):
         if is_valid:
             content = json.loads(r.content.decode('utf-8'))
             user_information = content['_embedded']['user']['profile']
-            #session_expiry = parse(content['expiresAt'])
-            #django_session_expiry = session_expiry + timedelta(hours=1)
+            session_expiry = parse(content['expiresAt'])
+            django_session_expiry = session_expiry + timedelta(hours=1)
             exact_username = user_information['login']
             first_name = user_information['firstName']
             last_name = user_information['lastName']

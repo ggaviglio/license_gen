@@ -123,7 +123,7 @@ class HomePageTest(TestCase):
     def test_root_url_returns_correct_html(self):
         request = HttpRequest()
         response = home_page(request)
-        expected_html = render_to_string('home.html')
+        expected_html = render_to_string('auth_form.html')
         self.assertEqual(response.content.decode(), expected_html)
 
     def test_wrong_url_returns_404(self):
@@ -722,7 +722,8 @@ class LoginPageTest(TestCase):
             {'username': 'assert username', 'password': 'assert password'}
         )
         mock_authenticate.assert_called_once_with(
-            username='assert username', password='assert password'
+            username='assert username',
+            password='assert password'
         )
 
     @patch('license_generator_form.views.authenticate')
@@ -746,3 +747,39 @@ class LoginPageTest(TestCase):
             '/login/', {'username': 'username', 'password': 'password'}
         )
         self.assertNotIn(SESSION_KEY, self.client.session)
+
+    @patch('license_generator_form.views.authenticate')
+    def test_an_alfrescan_user_is_logged_in(
+        self, mock_authenticate
+    ):
+
+        alfrescan = User.objects.create(username='sebastian', password='maidenhead is great')
+        alfrescan.backend = ''
+        mock_authenticate.return_value = alfrescan
+
+        self.client.post(
+            '/login/',
+            {'username': 'sebastian', 'password': 'maidenhead is great'}
+        )
+
+        mock_authenticate.assert_called_once_with(
+            username='sebastian',
+            password='maidenhead is great'
+        )
+        self.assertEqual(self.client.session[SESSION_KEY], alfrescan.pk)
+
+    @patch('license_generator_form.views.logout')
+    def test_an_alfrescan_can_get_logged_out(
+        self, mock_logout
+    ):
+        alfrescan = User.objects.create(username='sebastian', password='maidenhead is great')
+        alfrescan.backend = ''
+        mock_logout.return_value = ''
+
+        response = self.client.post(
+            '/logout/',
+            {'username': 'sebastian', 'password': 'maidenhead is great'}
+        )
+
+        self.assertTrue(mock_logout.called)
+        

@@ -15,9 +15,15 @@ class FunctionalTest(LiveServerTestCase):
             webdriver.DesiredCapabilities.FIREFOX
         )
 
-        self.browser.implicitly_wait(3)
         # Alfrescan wants to generate a license, visits the URL
         self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
+
+        self.browser.find_element_by_id('username').\
+            send_keys('sebastian.gonzalez@alfresco.com')
+        self.browser.find_element_by_id('password').\
+            send_keys('resistencia84S')
+        self.browser.find_element_by_css_selector('.main-login .btn').click()
+        self.browser.implicitly_wait(3)
 
     def tearDown(self):
         self.browser.quit()
