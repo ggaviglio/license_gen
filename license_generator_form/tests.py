@@ -15,7 +15,7 @@ import json
 from django.core.urlresolvers import reverse
 import tempfile
 from django.contrib.auth.models import User
-from django.contrib.auth import SESSION_KEY, authenticate
+from django.contrib.auth import SESSION_KEY
 
 
 GENERATOR_ERROR_MESSAGE = 'Your message could not be delivered.'\
@@ -122,8 +122,13 @@ class HomePageTest(TestCase):
 
     def test_root_url_returns_correct_html(self):
         request = HttpRequest()
+        fake_user = User.objects.create_user(
+            'AnonymousUser', 'anonymous@alfresco.com', 'anonymous'
+        )
+        fake_user.is_anonymous = True
+        request.user = fake_user
         response = home_page(request)
-        expected_html = render_to_string('auth_form.html')
+        expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
 
     def test_wrong_url_returns_404(self):

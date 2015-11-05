@@ -19,6 +19,7 @@ import logging
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from license_generator_form.forms import AuthForm
+from django.core.urlresolvers import reverse
 
 
 def handler404(request):
