@@ -89,12 +89,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_INFORMATION = {
-    'OKTA': {
-        'API_TOKEN': '001ezqS9ii6O4R27IS588Z3sHR4wUWR-9D3-DMPe8M',
-        'IDP_MEGADATA': 'https://dev-564794.oktapreview.com/api/v1/authn'
-    }
-}
+AUTH_INFORMATION = {}
 
 AUTHENTICATION_BACKENDS = (
     'license_generator_form.backends.OKTABackend',
