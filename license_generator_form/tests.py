@@ -752,3 +752,34 @@ class LoginPageTest(TestCase):
             '/login/', {'username': 'username', 'password': 'password'}
         )
         self.assertNotIn(SESSION_KEY, self.client.session)
+
+    @patch('license_generator_form.views.authenticate')
+    @patch('license_generator_form.views.login')
+    def test_alfrescan_gets_logged_in_after_input_right_information(
+        self, mock_authenticate, mock_login
+    ):
+        username = 'fake_user'
+        password = 'fake_password'
+        user = User.objects.create(username=username, password=password)
+        mock_authenticate.return_value = user
+        mock_login.return_value = ''
+
+        self.client.post(
+            '/login/',
+            {'username': username, 'password': password}
+        )
+
+        self.assertTrue(mock_authenticate.called)
+        self.assertTrue(mock_login.called)
+
+    @patch('license_generator_form.views.logout')
+    def test_alfrescan_gets_logged_out_successfully(
+        self, mock_logout
+    ):
+        mock_logout.return_value = None
+
+        self.client.post(
+            '/logout/'
+        )
+
+        self.assertTrue(mock_logout.called)
