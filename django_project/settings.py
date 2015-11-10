@@ -96,3 +96,8 @@ TEST_LOGIN_INFO = {}
 AUTHENTICATION_BACKENDS = (
     'license_generator_form.backends.OKTABackend',
 )
+
+try:
+    from .local_settings import *
+except ImportError as e:
+    pass
