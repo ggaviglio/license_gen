@@ -13,3 +13,5 @@ src/*.egg-info
 lib
 lib64
 *.DS_Store
+django_project/local_settings.py
+db.sqlite3

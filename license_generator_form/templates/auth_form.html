@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <div class="main-login container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="form-group">
+                    <img alt="Alfresco Logo" src="{% static "images/alfresco_logo.png" %}" id="logo">
+                </div>
+
+                {% if auth_error %}
+                    <div class="form-group">
+                        <p class="text-danger text-justify bg-danger" id="auth_error">
+                            <strong>
+                                Your authentication details have not been recognized or Alfresco may not be available at this time.
+                            </strong>
+                        </p>
+                    </div>
+                {% endif %}
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="username" data-error="{% if "username" in form.errors %}"True"{% else %}"False"{% endif %}">User Name</label>
+                        <input class="form-control" type="text" name="username" id="username" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" data-error="{% if "password" in form.errors %}"True"{% else %}"False"{% endif %}">Password</label>
+                        <input class="form-control" type="password" name="password" id="password" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-large btn-primary" type="submit">Login</button>
+                    </div>
+                </form>                
+
+                <div class="copy">© 2005-2015 Alfresco Software Inc. All rights reserved. Simple + Smart</div>
+            </div>
+        </div>        
+    </div>    
+
+    <div class="theme-trademark">
+        <img src="{% static "images/alfresco-trademark.png" %}">
+    </div>
+{% endblock %}

@@ -2,6 +2,8 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from django.conf import settings
 from selenium.webdriver.common.keys import Keys
+from django_project.settings import TEST_LOGIN_INFO
+LOGIN = TEST_LOGIN_INFO['OKTA']
 
 
 class FunctionalTest(LiveServerTestCase):
@@ -15,9 +17,15 @@ class FunctionalTest(LiveServerTestCase):
             webdriver.DesiredCapabilities.FIREFOX
         )
 
-        self.browser.implicitly_wait(3)
         # Alfrescan wants to generate a license, visits the URL
         self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
+
+        self.browser.find_element_by_id('username').\
+            send_keys(LOGIN['USERNAME'])
+        self.browser.find_element_by_id('password').\
+            send_keys(LOGIN['PASSWORD'])
+        self.browser.find_element_by_css_selector('.main-login .btn').click()
+        self.browser.implicitly_wait(3)
 
     def tearDown(self):
         self.browser.quit()

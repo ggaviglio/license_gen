@@ -16,6 +16,10 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from license_generator_form.forms import AuthForm
+from django.core.urlresolvers import reverse
 
 
 def handler404(request):
@@ -38,6 +42,8 @@ def handler500(request):
     return response
 
 
+@csrf_exempt
+@login_required(login_url='/login/')
 def home_page(request):
     return render(request, 'home.html')
 
@@ -210,3 +216,29 @@ def _upload_license(request, _file, uploader):
                         + "try again, or raise a ticket with ITS if "\
                         + "you feel this is an error."
         return HttpResponse(content=error_message, status=500)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
+
+def okta_auth(request):
+    auth_error = False
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('site_root')
+
+        if username and password:
+            auth_error = True
+
+    form = AuthForm(request.POST or None)
+
+    return render(
+        request, 'auth_form.html', {'form': form, 'auth_error': auth_error}
+    )
