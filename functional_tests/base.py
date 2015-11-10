@@ -21,9 +21,9 @@ class FunctionalTest(LiveServerTestCase):
         self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
 
         self.browser.find_element_by_id('username').\
-            send_keys('sebastian.gonzalez@alfresco.com')
+            send_keys(LOGIN['USERNAME'])
         self.browser.find_element_by_id('password').\
-            send_keys('resistencia84S')
+            send_keys(LOGIN['PASSWORD'])
         self.browser.find_element_by_css_selector('.main-login .btn').click()
         self.browser.implicitly_wait(3)
 
