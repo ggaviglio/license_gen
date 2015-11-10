@@ -2,6 +2,8 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from django.conf import settings
 from selenium.webdriver.common.keys import Keys
+from django_project.settings import TEST_LOGIN_INFO
+LOGIN = TEST_LOGIN_INFO['OKTA']
 
 
 class FunctionalTest(LiveServerTestCase):

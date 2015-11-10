@@ -1,4 +1,4 @@
-from .base import FunctionalTest
+from .base import FunctionalTest, LOGIN
 
 
 class LoginPageTest(FunctionalTest):
@@ -36,8 +36,8 @@ class LoginPageTest(FunctionalTest):
         self.view_login_page()
         username_input = self.browser.find_element_by_id('username')
         password_input = self.browser.find_element_by_id('password')
-        username_input.send_keys('sebastian.gonzalez@alfresco.com')
-        password_input.send_keys('resistencia84S')
+        username_input.send_keys(LOGIN['USERNAME'])
+        password_input.send_keys(LOGIN['PASSWORD'])
         self.browser.find_element_by_class_name('btn').click()
 
         # After being logged in successfully, it can be seen the navbar

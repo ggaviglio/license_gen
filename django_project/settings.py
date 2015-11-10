@@ -91,6 +91,8 @@ STATIC_URL = '/static/'
 
 AUTH_INFORMATION = {}
 
+TEST_LOGIN_INFO = {}
+
 AUTHENTICATION_BACKENDS = (
     'license_generator_form.backends.OKTABackend',
 )
