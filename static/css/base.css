@@ -156,6 +156,10 @@ a {
     padding-right:45px;     
 }
 
+#tag_license_types label {
+    font-weight: bold;
+}
+
 
 
 
