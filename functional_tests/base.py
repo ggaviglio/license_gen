@@ -209,21 +209,14 @@ class FunctionalTest(LiveServerTestCase):
             "some external id type"
         )
 
-        num_selected_checkboxes = 0
-        for checkbox in form_elements['checkboxes']:
-            if checkbox.is_selected() is True:
-                num_selected_checkboxes = num_selected_checkboxes + 1
-
-        self.assertEqual(
-            num_selected_checkboxes,
-            len(form_elements['checkboxes'])
-        )
         self.assertEqual(
             form_elements['account_holder_name'].get_attribute('value'),
             "Sebastian"
         )
 
         if brand == "alfresco":
+            form_elements['checkboxes'][0].is_selected()
+
             self.assertEqual(
                 form_elements['release_key'].get_attribute('value'),
                 "ent31"
@@ -266,10 +259,20 @@ class FunctionalTest(LiveServerTestCase):
             )
             self.assertEqual(
                 form_elements['license_filename'].get_attribute('value'),
-                "Alfresco-ent31-Sebastian-perpetual.lic"
+                "Alfresco-ent31-Sebastian-trial.lic"
             )
 
         else:   # Activiti
+            num_selected_checkboxes = 0
+            for checkbox in form_elements['checkboxes']:
+                if checkbox.is_selected() is True:
+                    num_selected_checkboxes = num_selected_checkboxes + 1
+
+            self.assertEqual(
+                num_selected_checkboxes,
+                len(form_elements['checkboxes'])
+            )
+
             self.assertEqual(
                 form_elements['number_admins'].get_attribute('value'),
                 "3"
@@ -312,13 +315,11 @@ class FunctionalTest(LiveServerTestCase):
         form_elements['external_id'].send_keys('some external id')
         form_elements['external_id_type'].send_keys('some external id type')
 
-        for checkbox in form_elements['checkboxes']:
-            checkbox.send_keys(Keys.SPACE)
-
         form_elements['account_holder_name'].\
             send_keys('Sebastian')
 
         if brand == "alfresco":
+            form_elements['checkboxes'][0].send_keys(Keys.SPACE)
             form_elements['release_key'] = self.browser.\
                 find_element_by_css_selector(
                     "#alfresco_form select#release_key > option[value='ent31']"
@@ -338,6 +339,9 @@ class FunctionalTest(LiveServerTestCase):
             form_elements['cloud_sync_enabled'].click()
             form_elements['cryptodoc_enabled'].click()
         else:  # Activiti
+            for checkbox in form_elements['checkboxes']:
+                checkbox.send_keys(Keys.SPACE)
+
             form_elements['number_admins'].send_keys('3')
             form_elements['number_editors'].send_keys('3')
             form_elements['multi_tenant'] = self.browser.\
