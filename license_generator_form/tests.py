@@ -528,6 +528,33 @@ class RestGenerateLicenseTest(TestCase):
 
         self.assertEqual(response.status_code, 415)
 
+    @patch('alfresco_license_generators.Activiti')
+    def test_rest_date_exception_raised_on_activiti_license(
+        self, mock_license
+    ):
+        mock_license.generate.side_effect = \
+            Exception(
+                "time data '01-01/2017' does not match format '%d/%m/%Y'"
+            )
+
+        REST_ACTIVITI_DATA_TMP = REST_ACTIVITI_DATA.copy()
+        REST_ACTIVITI_DATA_TMP['end_date'] = '01/30/2015'
+        activiti_data = json.dumps(REST_ACTIVITI_DATA_TMP)
+
+        response = self.client.post(
+            '/api/license/activiti/',
+            activiti_data,
+            'application/json'
+        )
+
+        self.assertRaises(Exception, mock_license.generate)
+        self.assertEqual(response.status_code, 401)
+
+        self.assertIn(
+            "does not match format '%d/%m/%Y'",
+            response.content.decode('utf-8')
+        )
+
 
 class UploadLicenseTest(TestCase):
 
