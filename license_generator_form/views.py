@@ -61,7 +61,9 @@ def form_generate_alfresco(request):
 
 def form_generate_activiti(request):
     _form_validate_request(request)
+
     args = LicenseRequestUnmarshaller.activiti(request.POST)
+
     return _form_generate(
         request,
         args,
@@ -91,10 +93,21 @@ def rest_generate_activiti(request):
     error_status_code = _rest_validate_request(request)
     if error_status_code:
         return HttpResponse(content="", status=error_status_code)
+    try:
+        args = LicenseRequestUnmarshaller.activiti(
+            json.loads(request.body.decode('UTF-8'))
+        )
+    except Exception as e:
+        message = e
+        status_code = 401
 
-    args = LicenseRequestUnmarshaller.activiti(
-        json.loads(request.body.decode('UTF-8'))
-    )
+        message = {u"error_message": str(message)}
+        return HttpResponse(
+            content=json.dumps(message),
+            content_type="application/json",
+            status=status_code
+        )
+
     return _rest_generate(
         request,
         args,
