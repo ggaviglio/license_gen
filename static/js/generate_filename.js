@@ -6,7 +6,6 @@ $.when(
     })
 ).done(function(){
 
-    //place your code here, the scripts are all loaded
     $(document).ready(function(){
         $("#tabSwitcher li.active a").trigger('click');
     });
