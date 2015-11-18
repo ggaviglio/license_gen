@@ -16,6 +16,10 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from license_generator_form.forms import AuthForm
+from django.core.urlresolvers import reverse
 
 
 def handler404(request):
@@ -38,6 +42,8 @@ def handler500(request):
     return response
 
 
+@csrf_exempt
+@login_required(login_url='/login/')
 def home_page(request):
     return render(request, 'home.html')
 
@@ -55,7 +61,9 @@ def form_generate_alfresco(request):
 
 def form_generate_activiti(request):
     _form_validate_request(request)
+
     args = LicenseRequestUnmarshaller.activiti(request.POST)
+
     return _form_generate(
         request,
         args,
@@ -85,10 +93,21 @@ def rest_generate_activiti(request):
     error_status_code = _rest_validate_request(request)
     if error_status_code:
         return HttpResponse(content="", status=error_status_code)
+    try:
+        args = LicenseRequestUnmarshaller.activiti(
+            json.loads(request.body.decode('UTF-8'))
+        )
+    except Exception as e:
+        message = e
+        status_code = 401
 
-    args = LicenseRequestUnmarshaller.activiti(
-        json.loads(request.body.decode('UTF-8'))
-    )
+        message = {u"error_message": str(message)}
+        return HttpResponse(
+            content=json.dumps(message),
+            content_type="application/json",
+            status=status_code
+        )
+
     return _rest_generate(
         request,
         args,
@@ -210,3 +229,29 @@ def _upload_license(request, _file, uploader):
                         + "try again, or raise a ticket with ITS if "\
                         + "you feel this is an error."
         return HttpResponse(content=error_message, status=500)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
+
+def okta_auth(request):
+    auth_error = False
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('site_root')
+
+        if username and password:
+            auth_error = True
+
+    form = AuthForm(request.POST or None)
+
+    return render(
+        request, 'auth_form.html', {'form': form, 'auth_error': auth_error}
+    )

@@ -14,6 +14,8 @@ from alfresco_license_generators import (
 import json
 from django.core.urlresolvers import reverse
 import tempfile
+from django.contrib.auth.models import User
+from django.contrib.auth import SESSION_KEY
 
 
 GENERATOR_ERROR_MESSAGE = 'Your message could not be delivered.'\
@@ -120,6 +122,11 @@ class HomePageTest(TestCase):
 
     def test_root_url_returns_correct_html(self):
         request = HttpRequest()
+        fake_user = User.objects.create_user(
+            'AnonymousUser', 'anonymous@alfresco.com', 'anonymous'
+        )
+        fake_user.is_anonymous = True
+        request.user = fake_user
         response = home_page(request)
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
@@ -521,6 +528,33 @@ class RestGenerateLicenseTest(TestCase):
 
         self.assertEqual(response.status_code, 415)
 
+    @patch('alfresco_license_generators.Activiti')
+    def test_rest_date_exception_raised_on_activiti_license(
+        self, mock_license
+    ):
+        mock_license.generate.side_effect = \
+            Exception(
+                "time data '01-01/2017' does not match format '%d/%m/%Y'"
+            )
+
+        REST_ACTIVITI_DATA_TMP = REST_ACTIVITI_DATA.copy()
+        REST_ACTIVITI_DATA_TMP['end_date'] = '01/30/2015'
+        activiti_data = json.dumps(REST_ACTIVITI_DATA_TMP)
+
+        response = self.client.post(
+            '/api/license/activiti/',
+            activiti_data,
+            'application/json'
+        )
+
+        self.assertRaises(Exception, mock_license.generate)
+        self.assertEqual(response.status_code, 401)
+
+        self.assertIn(
+            "does not match format '%d/%m/%Y'",
+            response.content.decode('utf-8')
+        )
+
 
 class UploadLicenseTest(TestCase):
 
@@ -706,3 +740,73 @@ class UploadLicenseTest(TestCase):
         response = _upload_validate_request(request)
 
         self.assertEqual(response.status_code, 405)
+
+
+class LoginPageTest(TestCase):
+
+    @patch('license_generator_form.views.authenticate')
+    def test_calls_authenticate_with_data_from_post(
+        self, mock_authenticate
+    ):
+        mock_authenticate.return_value = None
+        self.client.post(
+            '/login/',
+            {'username': 'assert username', 'password': 'assert password'}
+        )
+        mock_authenticate.assert_called_once_with(
+            username='assert username',
+            password='assert password'
+        )
+
+    @patch('license_generator_form.views.authenticate')
+    def test_gets_logged_in_session_authenticate_returns_a_user(
+        self, mock_authenticate
+    ):
+        user = User.objects.create(username='username', password='password')
+        user.backend = ''
+        mock_authenticate.return_value = user
+        self.client.post(
+            '/login/', {'username': 'username', 'password': 'password'}
+        )
+        self.assertEqual(int(self.client.session[SESSION_KEY]), user.pk)
+
+    @patch('license_generator_form.views.authenticate')
+    def test_does_not_get_logged_in_if_authenticate_returns_None(
+        self, mock_authenticate
+    ):
+        mock_authenticate.return_value = None
+        self.client.post(
+            '/login/', {'username': 'username', 'password': 'password'}
+        )
+        self.assertNotIn(SESSION_KEY, self.client.session)
+
+    @patch('license_generator_form.views.authenticate')
+    @patch('license_generator_form.views.login')
+    def test_alfrescan_gets_logged_in_after_input_right_information(
+        self, mock_authenticate, mock_login
+    ):
+        username = 'fake_user'
+        password = 'fake_password'
+        user = User.objects.create(username=username, password=password)
+        mock_authenticate.return_value = user
+        mock_login.return_value = ''
+
+        self.client.post(
+            '/login/',
+            {'username': username, 'password': password}
+        )
+
+        self.assertTrue(mock_authenticate.called)
+        self.assertTrue(mock_login.called)
+
+    @patch('license_generator_form.views.logout')
+    def test_alfrescan_gets_logged_out_successfully(
+        self, mock_logout
+    ):
+        mock_logout.return_value = None
+
+        self.client.post(
+            '/logout/'
+        )
+
+        self.assertTrue(mock_logout.called)

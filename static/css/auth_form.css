@@ -1,0 +1,106 @@
+.theme-trademark {
+    height: 50px;
+    width: 320px;
+    background: 
+    transparent
+    no-repeat;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    visibility: visible;
+}
+
+.main-login {
+    position: relative;
+    font: 13px/1.231 Open Sans,arial,helvetica,clean,sans-serif;
+    resize: both;
+}
+
+@media(min-width: 469px) {
+    .main-login {
+        color: #333;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        width: 469px;
+
+        top:100px;
+    }
+
+    .theme-trademark img{
+        width: 80%;
+        height: 80%;
+        position: absolute;
+        right: 10px;     
+    }
+
+    .main-login img {
+        width: 45%;
+    }
+}
+
+@media(max-width: 469px) {
+    .main-login {
+        top: -50px;
+        width: 100%;
+    }
+
+    .main-login img {
+        width: 40%;
+    }
+
+    .main-login .btn {
+        width: 100%;
+    }
+
+    .theme-trademark img{
+        width: 50%;
+        height: 50%;
+        position: absolute;
+        right: 10px;     
+    }
+}
+
+@media(max-height: 414px) {
+    .theme-trademark {
+        visibility: hidden;
+    }
+
+    .main-login {
+        top: -67px;
+        width: 100%;
+    }
+
+    .main-login .btn {
+        width: 100%;
+    }
+}
+
+.main-login form  label {
+    font-weight: normal;
+}
+
+.main-login form .form-control {
+    background-color: rgb(250, 255, 189);
+}
+
+.main-login .btn {
+    background-color: #7BC143;
+    border-color: #7BC143;
+}
+
+.main-login .btn:hover {
+    background-color: #629A36;
+    border-color: #629A36;
+}
+
+.main-login .copy {
+    color: #999;
+    font-size: 80%;
+    margin-top: 25px;
+}

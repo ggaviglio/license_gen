@@ -1,4 +1,5 @@
 from .base import FunctionalTest
+from selenium.webdriver.common.keys import Keys
 
 
 class GenerateLicenseTest(FunctionalTest):
@@ -72,7 +73,8 @@ class GenerateLicenseTest(FunctionalTest):
         # Alfrescan will get an error message
         error_message = self.browser.find_element_by_css_selector(".alert p")\
             .text
-        expected_error = 'Server error when processing Activiti license request:'
+        expected_error = \
+            'Server error when processing Activiti license request:'
         self.assertEqual(error_message, expected_error)
 
         # Alfrescan switch to the Alfresco tab
@@ -91,3 +93,83 @@ class GenerateLicenseTest(FunctionalTest):
         error_message = self.browser.find_element_by_css_selector(".alert p")\
             .text
         self.assertEqual(error_message, expected_error)
+
+
+class GenerateFilenameTest(FunctionalTest):
+
+    def test_default_generate_alfresco_filename(self):
+        # Alfrescan goes to the alfresco tab
+        self.browser.find_element_by_css_selector(
+            '#tabSwitcher li [href="#alfresco_tab"]'
+        ).click()
+
+        value = self.browser.\
+            find_element_by_css_selector(
+                "#alfresco_form #output_filename"
+            ).get_attribute('value')
+
+        self.assertEqual("Alfresco-ent50-.lic", value)
+
+    def test_default_generate_activiti_filename(self):
+        # Alfrescan goes to the activiti tab
+        self.browser.find_element_by_css_selector(
+            '#tabSwitcher li [href="#activiti_tab"]'
+        ).click()
+
+        value = self.browser.\
+            find_element_by_css_selector(
+                "#activiti_form #output_filename"
+            ).get_attribute('value')
+
+        self.assertEqual("Activiti-1.0ent-.lic", value)
+
+    def test_generate_alfresco_filename(self):
+        # Alfrescan goes to the alfresco tab
+        self.browser.find_element_by_css_selector(
+            '#tabSwitcher li [href="#alfresco_tab"]'
+        ).click()
+
+        # Alfrescan decides to type his name
+        self.browser.\
+            find_element_by_css_selector(
+                "#alfresco_form #field_holder_name"
+            ).send_keys("Sebastian")
+
+        # Alfrescan decides to tick one box
+        self.browser.find_element_by_css_selector(
+            "#alfresco_form #tag_internal_use_only"
+        ).send_keys(Keys.SPACE)
+
+        value = self.browser.\
+            find_element_by_css_selector(
+                "#alfresco_form #output_filename"
+            ).get_attribute('value')
+
+        self.assertEqual(
+            "Alfresco-ent50-Sebastian-internal-use-only.lic",
+            value
+        )
+
+    def test_generate_activiti_filename(self):
+        # Alfrescan goes to the activiti tab
+        self.browser.find_element_by_css_selector(
+            '#tabSwitcher li [href="#activiti_tab"]'
+        ).click()
+
+        # Alfrescan decides to type his name
+        self.browser.\
+            find_element_by_css_selector(
+                "#activiti_form #field_holder_name"
+            ).send_keys("Dan")
+
+        # Alfrescan decides to tick one box
+        self.browser.find_element_by_css_selector(
+            "#activiti_form #tag_extension"
+        ).send_keys(Keys.SPACE)
+
+        value = self.browser.\
+            find_element_by_css_selector(
+                "#activiti_form #output_filename"
+            ).get_attribute('value')
+
+        self.assertEqual("Activiti-1.0ent-Dan-temp.lic", value)
