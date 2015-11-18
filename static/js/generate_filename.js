@@ -1,6 +1,6 @@
 $.when(
-    $.getScript( "static/js/generate_alfresco_filename.js" ),
-    $.getScript( "static/js/generate_activiti_filename.js" ),
+    $.getScript( "/static/js/generate_alfresco_filename.js" ),
+    $.getScript( "/static/js/generate_activiti_filename.js" ),
     $.Deferred(function( deferred ){
         $( deferred.resolve );
     })
