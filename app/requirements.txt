@@ -2,7 +2,7 @@ Django==1.8.5
 gunicorn==19.3.0
 psycopg2==2.6
 selenium
-python-dateutil==2.4.2
-requests==0.11.1
+python-dateutil
+requests
 git+ssh://git@gitlab.alfresco.com/python-modules/alfresco-license-generators.git
 git+ssh://git@gitlab.alfresco.com/python-modules/datadog-logger.git
