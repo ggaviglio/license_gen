@@ -18,7 +18,7 @@ class FunctionalTest(LiveServerTestCase):
         )
 
         # Alfrescan wants to generate a license, visits the URL
-        self.browser.get("http://{0}".format(settings.SELENIUM_BASE_URL))
+        self.browser.get("http://{0}".format(settings.BASE_URL))
 
         self.browser.find_element_by_id('username').\
             send_keys(LOGIN['USERNAME'])
