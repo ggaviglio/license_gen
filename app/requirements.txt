@@ -1,0 +1,10 @@
+Django==1.8.5
+gunicorn==19.3.0
+psycopg2==2.6
+selenium
+python-dateutil
+requests
+redis
+django-redis-cache
+git+ssh://git@gitlab.alfresco.com/python-modules/alfresco-license-generators.git
+git+ssh://git@gitlab.alfresco.com/python-modules/datadog-logger.git

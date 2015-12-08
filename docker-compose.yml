@@ -1,30 +1,56 @@
-# MANAGING A DJANGO WEBAPP WITH FIG
-#
-# When starting a new project: 
-#	- Create a new working directory and add a 'volumes' directive below to mount it over /opt/django_project
-#	- Copy this fig file into your new working directory and 'fig up',
-#	- Run the setup project command from below, 'fig up' again, check django is running OK in a browser
-#
-# COMMANDS:
-#	Start/restart a server:
-#		fig up -d
-#	Setup project/directory structure (new projects):
-# 		fig run webapp django-admin.py startproject django_project /opt/django_project
-#	Initialise database (configure settings.py first):
-#		fig run webapp python3.4 /opt/django_project/manage.py syncdb
-#	Initialise app:
-#		fig run webapp python3.4 /opt/django_project/manage.py startapp [app_label]
-webapp:
-  build: .
+app:
+  restart: always
+  build: ./app
+  expose:
+    - "8000"
+  links:
+    - postgres:postgres
+    - dogstatsd:dogstatsd
+    - selenium:selenium
+    - redis:redis
   volumes:
-    - .:/opt/django_project
-    - ./static:/opt/django_project/webapp/static
+    - ./app:/usr/src/app
+    - ./app/static:/usr/src/app/static
+  env_file: ./env/.env
+  command: /usr/local/bin/gunicorn django_project.wsgi:application -w 2 -b :8000 --reload
+
+nginx:
+  restart: always
+  build: ./nginx/
   ports:
     - "80:80"
+  volumes:
+    - /www/static
+  volumes_from:
+    - app
   links:
-    - selenium:selenium
+    - app:app
+
+dogstatsd:
+  restart: always
+  image: datadog/docker-dd-agent
+  env_file: ./env/.env
+
+redis:
+  restart: always
+  image: redis:latest
+
+postgres:
+  restart: always
+  image: postgres:latest
+  volumes_from:
+    - data
+  ports:
+    - "5432:5432"
+
+data:
+  image: postgres:latest
+  volumes:
+    - /var/lib/postgresql
+  command: "true"
 
 selenium:
+  restart: always
   image: selenium/standalone-firefox
-  ports:
-    - "4444:4444"
+  expose:
+    - "4444"
