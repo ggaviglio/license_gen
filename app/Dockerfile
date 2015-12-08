@@ -7,7 +7,8 @@ RUN chmod 600 /root/.ssh/id_rsa
 RUN ssh-keyscan gitlab.alfresco.com >> /root/.ssh/known_hosts
 
 #Install Java for the license generators
-RUN yum install -y java
+RUN apt-get update
+RUN apt-get install -y default-jre
 
 WORKDIR /usr/src/app/
 
