@@ -103,6 +103,15 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'redis:6379',
+    },
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
