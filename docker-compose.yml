@@ -10,7 +10,7 @@ app:
     - redis:redis
   volumes:
     - ./app:/usr/src/app
-    - /usr/src/app/static
+    - ./app/static:/usr/src/app/static
   env_file: ./env/.env
   command: /usr/local/bin/gunicorn django_project.wsgi:application -w 2 -b :8000 --reload
 
