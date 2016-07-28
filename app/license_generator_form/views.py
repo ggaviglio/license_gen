@@ -20,6 +20,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from license_generator_form.forms import AuthForm
 from django.core.urlresolvers import reverse
+from license_generator_form.models import License
 
 
 def handler404(request):
@@ -51,6 +52,25 @@ def home_page(request):
 def form_generate_alfresco(request):
     _form_validate_request(request)
     args = LicenseRequestUnmarshaller.alfresco(request.POST)
+    License.objects.create(
+        release_key= request.POST['release_key'],
+        notes = request.POST['notes'],
+        external_id = request.POST['external_id'],
+        external_id_type = request.POST['external_id_type'],
+        license_type = request.POST['license_types'],
+        account_holder = request.POST['field_holder_name'],
+        expiry_days = request.POST['field_days'],
+        max_users =request.POST['field_max_users'],
+        no_heartbeat = request.POST['field_no_heartbeat'],
+        heartbeat_url = request.POST['field_heartbeat_url'],
+        clustering_enabled = request.POST['field_cluster_enabled'],
+        license_group = request.POST['field_license_group'],
+        expiry_date = request.POST['field_end_date'],
+        max_docs = request.POST['field_max_docs'],
+        cloud_sync = request.POST['field_cloud_sync'],
+        server_end_date = request.POST['field_ats_end_date'],
+        crypto_doc = request.POST['field_cryptodoc_enabled']
+    )
     return _form_generate(
         request,
         args,

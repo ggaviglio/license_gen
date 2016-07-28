@@ -133,7 +133,12 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR + '/static/'
 
-AUTH_INFORMATION = {}
+AUTH_INFORMATION = {
+        'OKTA': {
+        'API_TOKEN': os.environ['OKTA_API_TOKEN'],
+        'IDP_MEGADATA': os.environ['OKTA_IDP_MEGADATA'],
+        'USER_API': os.environ['OKTA_USER_API']
+    }}
 
 TEST_LOGIN_INFO = {}
 
